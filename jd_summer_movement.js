@@ -150,6 +150,7 @@ async function movement() {
     await takePostRequest('olympicgames_home');
     if($.homeData.result) $.userInfo = $.homeData.result.userActBaseInfo
     if($.userInfo){
+      if($.homeData.result.popWindows) console.log(`签到获得: ${JSON.stringify($.homeData.result.popWindows)}`)
       // console.log(JSON.stringify($.homeData.result.trainingInfo))
       console.log(`\n签到${$.homeData.result.continuedSignDays}天 待兑换金额：${Number($.userInfo.poolMoney)} 当前等级:${$.userInfo.medalLevel}  ${$.userInfo.poolCurrency}/${$.userInfo.exchangeThreshold}(攒卡领${Number($.userInfo.cash)}元)\n`);
       await $.wait(1000);
