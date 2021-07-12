@@ -54,7 +54,7 @@ const UA = $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT :
       '本脚本只助力SH\n' +
       '百元守卫战 开启时间早上8点过后\n' +
       '活动时间：2021-07-08至2021-08-08\n' +
-      '脚本更新时间：2021年7月10日 12点00分\n'
+      '脚本更新时间：2021年7月12日 09点00分\n'
       );
       if(Number(summer_movement_ShHelpFlag) === 1){
         console.log('您设置了 【百元守卫战SH】✅ || 互助✅')
@@ -137,7 +137,27 @@ async function movement() {
     $.taskList = [];
     $.shopSign = ``;
     $.userInfo = ''
-    if (new Date().getUTCHours() + 8 >= 8) {
+    $.hundred = false
+    await takePostRequest('olympicgames_home');
+    if($.homeData.result) $.userInfo = $.homeData.result.userActBaseInfo
+    if($.homeData.result.guardIcon) {
+      console.log(`已经开启百元守卫战`)
+      $.hundred = true
+    }else if($.userInfo){
+      if($.homeData.result.popWindows) {
+        let res = $.homeData.result.popWindows
+        if(res.type == 'continued_sign_pop'){
+          console.log(`签到获得: ${JSON.stringify($.homeData.result.popWindows.data || '')}`)
+        }else if(res.type == 'limited_time_hundred_pop'){
+          console.log(`开启百元守卫战: ${JSON.stringify($.homeData.result.popWindows || '')}`)
+          $.hundred = true
+        }else{
+          console.log(`弹窗信息: ${JSON.stringify($.homeData.result.popWindows)}`)
+        }
+      } 
+    }
+    
+    if ($.hundred) {
       console.log('\n百元守卫战')
       if(Number(summer_movement_ShHelpFlag) === 1 || Number(summer_movement_ShHelpFlag) === 2){
         $.Shend = false
@@ -150,7 +170,7 @@ async function movement() {
         }
       }
     }else{
-      console.log('\n百元守卫战开启时间还没到')
+      console.log('\n未开启百元守卫战')
     }
     
   } catch (e) {
@@ -162,6 +182,10 @@ async function takePostRequest(type) {
   let body = ``;
   let myRequest = ``;
   switch (type) {
+    case 'olympicgames_home':
+      body = `functionId=olympicgames_home&body={}&client=wh5&clientVersion=1.0.0&appid=${$.appid}`;
+      myRequest = await getPostRequest(`olympicgames_home`, body);
+      break;
     case 'olympicgames_receiveCash':
       let id = 6
       if ($.Shend) id = 4
@@ -205,6 +229,18 @@ async function dealReturn(type, res) {
     return;
   }
   switch (type) {
+    case 'olympicgames_home':
+    if (data.code === 0 && data.data && data.data.result) {
+        if (data.data['bizCode'] === 0) {
+          $.homeData = data.data;
+          $.secretpInfo[$.UserName] = true
+        }
+      } else if (data.data && data.data.bizMsg) {
+        console.log(data.data.bizMsg);
+      } else {
+        console.log(res);
+      }
+      break;
     case 'olympicgames_receiveCash':
       if (data.code === 0 && data.data && data.data.result) {
         if (data.data.result.couponVO) {
@@ -227,7 +263,7 @@ async function dealReturn(type, res) {
         console.log(`SH互助码：${data.data.result && data.data.result.inviteId || '助力已满，获取助力码失败\n'}`);
         if (data.data.result && data.data.result.inviteId) {
           let look = data.data.result
-          look.assistanceVOList = look.assistanceVOList.length
+          look.assistanceVOList = (look.assistanceVOList && look.assistanceVOList.length) || 0
           console.log(JSON.stringify(look))
           if (look.inviteId) $.ShInviteList.push(look.inviteId);
           console.log(`守护金额：${Number(look.activityLeftAmount || 0)} 助力次数：${look.assistanceVOList} 护盾剩余：${timeFn(Number(look.guardLeftSeconds || 0) * 1000)} 离结束剩：${timeFn(Number(look.activityLeftSeconds || 0) * 1000)}`)
