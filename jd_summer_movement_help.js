@@ -139,7 +139,7 @@ async function movement() {
     $.shopSign = ``;
     $.userInfo = ''
     $.hundred = false
-    if ($.hundred) {
+    if (new Date().getUTCHours() + 8 >= 8) {
       console.log('\n百元守卫战')
       if(Number(summer_movement_ShHelpFlag) === 1 || Number(summer_movement_ShHelpFlag) === 2){
         $.Shend = false
