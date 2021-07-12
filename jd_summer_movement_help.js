@@ -138,25 +138,6 @@ async function movement() {
     $.shopSign = ``;
     $.userInfo = ''
     $.hundred = false
-    await takePostRequest('olympicgames_home');
-    if($.homeData.result) $.userInfo = $.homeData.result.userActBaseInfo
-    if($.homeData.result.guardIcon) {
-      console.log(`已经开启百元守卫战`)
-      $.hundred = true
-    }else if($.userInfo){
-      if($.homeData.result.popWindows) {
-        let res = $.homeData.result.popWindows
-        if(res.type == 'continued_sign_pop'){
-          console.log(`签到获得: ${JSON.stringify($.homeData.result.popWindows.data || '')}`)
-        }else if(res.type == 'limited_time_hundred_pop'){
-          console.log(`开启百元守卫战: ${JSON.stringify($.homeData.result.popWindows || '')}`)
-          $.hundred = true
-        }else{
-          console.log(`弹窗信息: ${JSON.stringify($.homeData.result.popWindows)}`)
-        }
-      } 
-    }
-    
     if ($.hundred) {
       console.log('\n百元守卫战')
       if(Number(summer_movement_ShHelpFlag) === 1 || Number(summer_movement_ShHelpFlag) === 2){
