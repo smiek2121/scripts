@@ -232,7 +232,7 @@ async function run() {
       do{
         console.log(`去捡${name}第${o}次`)
         o++;
-        let res = await taskGet(`story/pickshell`, '_cfd_t,bizCode,dwEnv,dwType,ptag,source,strZone', `&ptag=&dwType=${b}`)
+        let res = await taskGet(`story/pickshell`, '_cfd_t,bizCode,dwEnv,dwType,ptag,source,strZone', `&ptag=&dwType=${i}`)
         await $.wait(200)
         if(res.iRet != 0){
           break
@@ -302,7 +302,7 @@ async function run() {
           if(res.ret == 0){
             console.log(`${item.taskName} 领取奖励:`, res.data.prizeInfo)
           }else{
-            console.log(`${item.taskName} 领取奖失败:`, JSON.stringify(res))
+            console.log(`${item.taskName} 领取奖励失败:`, JSON.stringify(res))
           }
           await $.wait(1000)
         }
@@ -319,7 +319,7 @@ async function run() {
             if(res.ret == 0){
               console.log(`${item.taskName} 领取奖励:`, res.data.prizeInfo)
             }else{
-              console.log(`${item.taskName} 领取奖失败:`, JSON.stringify(res))
+              console.log(`${item.taskName} 领取奖励失败:`, JSON.stringify(res))
             }
           }else if(item.awardStatus === 2 && [1].includes(item.orderId)){
           }
