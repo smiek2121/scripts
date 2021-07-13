@@ -78,9 +78,9 @@ function randomString(e) {
       '店铺任务 已添加\n' +
       '新增 入会环境变量 默认不入会\n' +
       '新增 微信任务\n' +
-      '移除百元守卫战 请到help食用\n' +
+      '新增活动火爆不做任务处理\n' +
       '活动时间：2021-07-08至2021-08-08\n' +
-      '脚本更新时间：2021年7月10日 23点00分\n'
+      '脚本更新时间：2021年7月13日 18点00分\n'
       );
       if(`${summer_movement_joinjoinjoinhui}` === "true") console.log('您设置了入会\n')
       if(`${summer_movement_HelpHelpHelpFlag}` === "true") console.log('您设置了只执行邀请助力\n')
@@ -202,19 +202,21 @@ async function movement() {
 
     console.log('\n运动\n')
     $.speedTraining = true;
-    await takePostRequest('olympicgames_startTraining');
-    await $.wait(1000);
-    for(let i=0;i<=3;i++){
-      if($.speedTraining){
-        await takePostRequest('olympicgames_speedTraining');
-        await $.wait(1000);
-      }else{
-        break;
+    if(!$.hotFlag){
+      await takePostRequest('olympicgames_startTraining');
+      await $.wait(1000);
+      for(let i=0;i<=3;i++){
+        if($.speedTraining){
+          await takePostRequest('olympicgames_speedTraining');
+          await $.wait(1000);
+        }else{
+          break;
+        }
       }
     }
     
     console.log(`\n做任务\n`);
-    await takePostRequest('olympicgames_getTaskDetail');
+    if(!$.hotFlag) await takePostRequest('olympicgames_getTaskDetail');
     if(`${summer_movement_HelpHelpHelpFlag}` === "true") return
     await $.wait(1000);
     //做任务
@@ -336,7 +338,7 @@ async function movement() {
     // 店铺
     console.log(`\n去做店铺任务\n`);
     $.shopInfoList = [];
-    await takePostRequest('qryCompositeMaterials');
+    if(!$.hotFlag) await takePostRequest('qryCompositeMaterials');
     for (let i = 0; i < $.shopInfoList.length; i++) {
       let taskbool = false
       if(!aabbiill()) continue;
@@ -603,15 +605,18 @@ async function dealReturn(type, res) {
       break;
     case 'add_car':
       if (data.code === 0) {
-        let acquiredScore = data.data.result.acquiredScore;
-        if (Number(acquiredScore) > 0) {
-          console.log(`加购成功,获得金币:${acquiredScore}`);
+        if (data.data && data.data.bizCode === 0 && data.data.result && data.data.result.acquiredScore) {
+          let acquiredScore = data.data.result.acquiredScore;
+          if (Number(acquiredScore) > 0) {
+            console.log(`加购成功,获得金币:${acquiredScore}`);
+          } else {
+            console.log(`加购成功`);
+          }
+        } else if (data.data && data.data.bizMsg) {
+          console.log(data.data.bizMsg);
         } else {
-          console.log(`加购成功`);
+          console.log(res);
         }
-      } else {
-        console.log(res);
-        console.log(`加购失败`);
       }
       break
     case 'shHelp':
