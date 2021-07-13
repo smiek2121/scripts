@@ -56,10 +56,10 @@ $.appId = 10032;
   }
   // 助力
   let res = [], res2 = [];
-  $.innerInviteList = await getAuthorShareCode('https://raw.githubusercontent.com/smiek2221/updateTeam/master/areCodes/wealth_island_code_one.json');
-  res2 = await getAuthorShareCode('https://raw.githubusercontent.com/smiek2221/updateTeam/master/areCodes/wealth_island_code.json');
   $.InviteLists = []
   if (HelpAuthorFlag) {
+    $.innerInviteList = await getAuthorShareCode('https://raw.githubusercontent.com/smiek2221/updateTeam/master/shareCodes/wealth_island_code_one.json');
+    res2 = await getAuthorShareCode('https://raw.githubusercontent.com/smiek2221/updateTeam/master/shareCodes/wealth_island_code.json');
     $.innerInviteLists = getRandomArrayElements([...res, ...res2], [...res, ...res2].length);
     $.InviteLists.push(...$.InviteList,...$.innerInviteList,...$.innerInviteLists);
   }else{
@@ -208,6 +208,18 @@ async function run() {
         }
       }
     }
+    if($.Aggrtask && $.Aggrtask.Data && $.Aggrtask.Data.Employee && $.Aggrtask.Data.Employee.EmployeeList){
+      for(let i of $.Aggrtask.Data.Employee.EmployeeList){
+        if(i.dwStatus == 0){
+          let res = await taskGet(`story/helpdraw`, '_cfd_t,bizCode,dwEnv,dwUserId,ptag,source,strZone', `&ptag=&dwUserId=${i.dwId}`)
+          if(res && res.iRet ==0){
+            console.log(`领取邀请奖励:${res.Data && res.Data.ddwCoin || 0}金币`)
+          }else{
+            conso.log(`领取失败:${JSON.stringify(res)}`)
+          }
+        }
+      }
+    }
     // pickshell dwType 1珍珠 2海螺 3大海螺  4海星
     // let b = (item.targetTimes-item.completedTimes)
     let b = 4
@@ -315,7 +327,6 @@ async function run() {
   catch (e) {
     console.log(e);
   }
-
 }
 async function GetHomePageInfo() {
   let additional= `&ddwTaskId&strShareId&strMarkList=guider_step%2Ccollect_coin_auth%2Cguider_medal%2Cguider_over_flag%2Cbuild_food_full%2Cbuild_sea_full%2Cbuild_shop_full%2Cbuild_fun_full%2Cmedal_guider_show%2Cguide_guider_show%2Cguide_receive_vistor`
