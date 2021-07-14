@@ -155,7 +155,6 @@ async function movement() {
       await takePostRequest('olympicgames_home');
       await takePostRequest('olympicgames_startTraining');
       await $.wait(1000);
-      $.secretpInfo[$.UserName] = $.hotFlag;//火爆账号不执行助力
       if(!$.hotFlag){
         if(Number(summer_movement_ShHelpFlag) === 1 || Number(summer_movement_ShHelpFlag) === 2){
           $.Shend = false
