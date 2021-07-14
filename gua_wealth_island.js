@@ -344,7 +344,7 @@ async function run() {
       if($.Biztask.Data.dwStatus == 3 && $.Biztask.Data.dwTotalTaskNum && $.Biztask.Data.dwCompleteTaskNum && $.Biztask.Data.dwTotalTaskNum == $.Biztask.Data.dwCompleteTaskNum){
         res = await taskGet(`story/ActTaskAward`, '_cfd_t,bizCode,dwEnv,ptag,source,strZone', `&ptag=`)
         if(res.iRet == 0){
-          console.log(`领取全部任务奖励:`, res.data.ddwBigReward || '')
+          console.log(`领取全部任务奖励:`, res.Data.ddwBigReward || '')
         }else{
           console.log(`领取全部任务奖励失败:`, JSON.stringify(res))
         }
