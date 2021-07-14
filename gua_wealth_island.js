@@ -412,9 +412,12 @@ function getGetRequest(type, stk='', additional='') {
   let stks = ''
   if(stk) stks = `&_stk=${stk}`
   let url = `https://m.jingxi.com/jxbfd/${type}?strZone=jxbfd&bizCode=jxbfd&source=jxbfd&dwEnv=7&_cfd_t=${Date.now()}&ptag=${additional}${stks}&_=${Date.now()}&sceneval=2`;
-  if(type == 'GetUserTaskStatusList' || type == 'Award' || type == 'DoTask'){
-    let bizCode = 'jxbfddch'
-    if(type == 'GetUserTaskStatusList') bizCode = 'jxbfd'
+  if(type == 'GetUserTaskStatusList' || type == 'Award' || type == 'Award1' || type == 'DoTask'){
+    let bizCode = 'jxbfd'
+    if(type == 'Award1'){
+      bizCode = 'jxbfddch'
+      type == 'Award'
+    }
     url = `https://m.jingxi.com/newtasksys/newtasksys_front/${type}?strZone=jxbfd&bizCode=${bizCode}&source=jxbfd&dwEnv=3&_cfd_t=${Date.now()}${additional}${stks}&_ste=1&_=${Date.now()}&sceneval=2&g_login_type=1`
   }
   url += `&h5st=${decrypt(Date.now(), stk, '', url)}`;
