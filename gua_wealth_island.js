@@ -41,7 +41,6 @@ $.appId = 10032;
 想要我的财富吗
 我把它放在一个神奇的岛屿
 去找吧
-
 `)
   await requestAlgo();
   for (let i = 0; i < cookiesArr.length; i++) {
@@ -110,7 +109,6 @@ async function run() {
       $.InviteList.push($.HomeInfo.strMyShareId)
       console.log(`等级:${$.HomeInfo.dwLandLvl} 当前金币:${$.HomeInfo.ddwCoinBalance} 当前财富:${$.HomeInfo.ddwRichBalance} 助力码:${$.HomeInfo.strMyShareId}`)
     }
-
     if($.LeadInfo && $.LeadInfo.dwLeadType == 2){
       await $.wait(2000)
       console.log(`\n新手引导`)
@@ -119,6 +117,82 @@ async function run() {
       await $.wait(1000)
     }
 
+    if($.HomeInfo.StoryInfo && $.HomeInfo.StoryInfo.StoryList){
+      let additional = ``
+      let stk = ``
+      let type = ``
+      let res = ``
+      await $.wait(1000)
+      // 点击故事
+      if($.HomeInfo.StoryInfo.StoryList[0].dwStatus == 1){
+        if($.HomeInfo.StoryInfo.StoryList[0].dwType == 4){
+          console.log(`\n贩卖`)
+          additional = `&ptag=&strStoryId=${$.HomeInfo.StoryInfo.StoryList[0].strStoryId}&dwType=2&ddwTriggerDay=${$.HomeInfo.StoryInfo.StoryList[0].ddwTriggerDay}`
+          stk = `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone`
+          type = `CollectorOper`
+          res = await taskGet(`story/${type}`, stk, additional)
+          // console.log(JSON.stringify(res))
+        }else if($.HomeInfo.StoryInfo.StoryList[0].dwType == 1){
+          console.log(`\n故事会:${$.HomeInfo.StoryInfo.StoryList[0].Special.strName} `)
+          additional = `&ptag=&strStoryId=${$.HomeInfo.StoryInfo.StoryList[0].strStoryId}&dwType=2&triggerType=${$.HomeInfo.StoryInfo.StoryList[0].Special.dwTriggerType}&ddwTriggerDay=${$.HomeInfo.StoryInfo.StoryList[0].ddwTriggerDay}`
+          stk = `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone,triggerType`
+          type = `SpecialUserOper`
+          res = await taskGet(`story/${type}`, stk, additional)
+          // console.log(JSON.stringify(res))
+        }else if($.HomeInfo.StoryInfo.StoryList[0].dwType == 2){
+          console.log(`\n美人鱼`)
+          additional = `&ptag=&strStoryId=${$.HomeInfo.StoryInfo.StoryList[0].strStoryId}&dwType=1&ddwTriggerDay=${$.HomeInfo.StoryInfo.StoryList[0].ddwTriggerDay}`
+          stk = `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone`
+          type = `MermaidOper`
+          res = await taskGet(`story/${type}`, stk, additional)
+          console.log(JSON.stringify(res))
+        }
+      }
+      if($.HomeInfo.StoryInfo.StoryList[0].dwType == 4 && ( (res && res.iRet == 0) || res == '')){
+        await pickshell(4)
+        await $.wait(1000)
+        console.log(`查询背包`)
+        additional = `&ptag=`
+        stk = `_cfd_t,bizCode,dwEnv,ptag,source,strZone`
+        res = await taskGet(`story/querystorageroom`, stk, additional)
+        let TypeCnt = []
+        if(res.Data && res.Data.Office){
+          for(let i of res.Data.Office){
+            TypeCnt.push(`${i.dwType}:${i.dwCount}`)
+          }
+        }
+        TypeCnt = TypeCnt.join(`|`)
+        if(TypeCnt){
+          console.log(`出售`)
+          await $.wait(1000)
+          additional = `&ptag=&strTypeCnt=${TypeCnt}&dwSceneId=1`
+          stk = `_cfd_t,bizCode,dwEnv,dwSceneId,ptag,source,strTypeCnt,strZone`
+          res = await taskGet(`story/sellgoods`, stk, additional)
+          await printRes(res)
+        }
+      }else if($.HomeInfo.StoryInfo.StoryList[0].dwType == 1 && ( (res && res.iRet == 0) || res == '')){
+        if(res && res.iRet == 0 && res.Data && res.Data.Serve && res.Data.Serve.dwWaitTime){
+          console.log(`等待 ${res.Data.Serve.dwWaitTime}秒`)
+          await $.wait(res.Data.Serve.dwWaitTime * 1000)
+          await $.wait(1000)
+        }
+        additional = `&ptag=&strStoryId=${$.HomeInfo.StoryInfo.StoryList[0].strStoryId}&dwType=3&triggerType=${$.HomeInfo.StoryInfo.StoryList[0].Special.dwTriggerType}&ddwTriggerDay=${$.HomeInfo.StoryInfo.StoryList[0].ddwTriggerDay}`
+        stk = `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone,triggerType`
+        type = `SpecialUserOper`
+        res = await taskGet(`story/${type}`, stk, additional)
+        await printRes(res)
+        // console.log(JSON.stringify(res))
+
+      }else if($.HomeInfo.StoryInfo.StoryList[0].dwType == 2 && ( (res && res.iRet == 0) || res == '')){
+        await $.wait(5000)
+        additional = `&ptag=&strStoryId=${$.HomeInfo.StoryInfo.StoryList[0].strStoryId}&dwType=2&ddwTriggerDay=${$.HomeInfo.StoryInfo.StoryList[0].ddwTriggerDay}`
+        stk = `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone`
+        type = `MermaidOper`
+        res = await taskGet(`story/${type}`, stk, additional)
+        await printRes(res)
+        // console.log(JSON.stringify(res))
+      }
+    }
     await $.wait(2000)
     console.log(`\n升级房屋、收集金币`)
     if($.buildList){
@@ -137,7 +211,7 @@ async function run() {
         let additional = `&strBuildIndex=${item.strBuildIndex}`
         let stk= `_cfd_t,bizCode,dwEnv,ptag,source,strBuildIndex,strZone`
         let GetBuildInfo = await taskGet(`user/GetBuildInfo`, stk, additional)
-        let msg = `[${title}] 当前等级:${item.dwLvl} 可升级次数:${item.dwCanLvlUp} 接待收入:${item.ddwOneceVistorAddCoin} 座位人数:${item.dwContain}`
+        let msg = `[${title}] 当前等级:${item.dwLvl} 接待收入:${item.ddwOneceVistorAddCoin}/人 座位人数:${item.dwContain}`
         if(GetBuildInfo) msg += ` 升级->需要金币:${GetBuildInfo.ddwNextLvlCostCoin} 获得财富:${GetBuildInfo.ddwLvlRich}`
         console.log(msg)
         await $.wait(1000)
@@ -155,7 +229,7 @@ async function run() {
                 await $.wait(1000)
                 additional= `&strToken=${update.story.strToken}&ddwTriTime=${update.story.ddwTriTime}`
                 stk = `_cfd_t,bizCode,dwEnv,ptag,source,strBuildIndex,strZone`
-                await taskGet(`story/QueryUserStory`, stk, additional)
+                // await taskGet(`story/QueryUserStory`, stk, additional)
               }
             }
           }
@@ -169,7 +243,7 @@ async function run() {
           await $.wait(Number(CollectCoin.story.dwWaitTriTime) * 1000)
           additional= `&strToken=${CollectCoin.story.strToken}&ddwTriTime=${CollectCoin.story.ddwTriTime}`
           stk = `_cfd_t,bizCode,dwEnv,ptag,source,strBuildIndex,strZone`
-          await taskGet(`story/QueryUserStory`, stk, additional)
+          // await taskGet(`story/QueryUserStory`, stk, additional)
         }
         await $.wait(1000)
       }
@@ -232,39 +306,20 @@ async function run() {
       }
     }
     // 捡垃圾
-    // pickshell dwType 1珍珠 2海螺 3大海螺  4海星
-    await $.wait(2000)
-    console.log(`\n捡垃圾`)
-    $.queryshell = await taskGet(`story/queryshell`, '_cfd_t,bizCode,dwEnv,ptag,source,strZone', `&ptag=`)
-    let b = 4
-    for(i=1;b--;i++){
-      let o = 1
-      let name = '珍珠'
-      if(i == 2) name = '海螺'
-      if(i == 3) name = '大海螺'
-      if(i == 4) name = '海星'
-      do{
-        console.log(`去捡${name}第${o}次`)
-        o++;
-        let res = await taskGet(`story/pickshell`, '_cfd_t,bizCode,dwEnv,dwType,ptag,source,strZone', `&ptag=&dwType=${i}`)
-        await $.wait(200)
-        if(res.iRet != 0){
-          break
+    await pickshell(1)
+    if(false){
+      // 倒垃圾
+      await $.wait(2000)
+      console.log(`\n倒垃圾`)
+      $.QueryRubbishInfo = await taskGet(`story/QueryRubbishInfo`, '_cfd_t,bizCode,dwEnv,ptag,source,strZone', '&ptag=')
+      // console.log($.QueryRubbishInfo)
+      for(let i of $.QueryRubbishInfo && $.QueryRubbishInfo.Data && $.QueryRubbishInfo.Data.StoryInfo.StoryList || []){
+        $.RubbishOper = await taskGet(`story/RubbishOper`, '_cfd_t,bizCode,dwEnv,dwRewardType,dwType,ptag,source,strZone', '&ptag=&dwType=1&dwRewardType=0')
+        for(let j of $.RubbishOper.Data.ThrowRubbish.Game.RubbishList || []){
+          let res = await taskGet(`story/RubbishOper`, '_cfd_t,bizCode,dwEnv,dwRewardType,dwRubbishId,dwType,ptag,source,strZone', `&ptag=&dwType=2&dwRewardType=0&dwRubbishId=${j.dwId}`)
+          console.log(JSON.stringify(res))
+          await $.wait(2000)
         }
-      }while (o < 20)
-    }
-
-    // 倒垃圾
-    await $.wait(2000)
-    console.log(`\n倒垃圾`)
-    $.QueryRubbishInfo = await taskGet(`story/QueryRubbishInfo`, '_cfd_t,bizCode,dwEnv,ptag,source,strZone', '&ptag=')
-    // console.log($.QueryRubbishInfo)
-    for(let i of $.QueryRubbishInfo && $.QueryRubbishInfo.Data && $.QueryRubbishInfo.Data.StoryInfo.StoryList || []){
-      $.RubbishOper = await taskGet(`story/RubbishOper`, '_cfd_t,bizCode,dwEnv,dwRewardType,dwType,ptag,source,strZone', '&ptag=&dwType=1&dwRewardType=0')
-      for(let j of $.RubbishOper.Data.ThrowRubbish.Game.RubbishList || []){
-        let res = await taskGet(`story/RubbishOper`, '_cfd_t,bizCode,dwEnv,dwRewardType,dwRubbishId,dwType,ptag,source,strZone', `&ptag=&dwType=2&dwRewardType=0&dwRubbishId=${j.dwId}`)
-        console.log(JSON.stringify(res))
-        await $.wait(2000)
       }
     }
     // 导游
@@ -289,7 +344,7 @@ async function run() {
         arr = larr
       }
       for(let i of arr){
-        console.log(`${i.strGuideName} 可工作时长:${i.ddwConfWorkTm}s 收益:${i.ddwProductCoin} 支付成本:${i.ddwCostCoin} 剩余工作时长:${timeFn(Number(i.ddwRemainTm || 0) * 1000)}`)
+        console.log(`${i.strGuideName} 收益:${i.ddwProductCoin} 支付成本:${i.ddwCostCoin} 剩余工作时长:${timeFn(Number(i.ddwRemainTm || 0) * 1000)}`)
         let dwIsFree = 0
         let ddwConsumeCoin = i.ddwCostCoin
         if(i.dwFreeMin != 0) dwIsFree = 1
@@ -356,7 +411,11 @@ async function run() {
         if (item.dwAwardStatus == 2 && item.dwCompleteNum === item.dwTargetNum) {
           res = await taskGet(`Award1`, '_cfd_t,bizCode,dwEnv,ptag,source,strZone,taskId', `&ptag=&taskId=${item.ddwTaskId}`)
           if(res.ret == 0){
-            console.log(`${item.strTaskName} 领取奖励:`, res.data.prizeInfo)
+            if(res.data.prizeInfo.ddwCoin || res.data.prizeInfo.ddwMoney){
+              console.log(`${item.strTaskName} 领取奖励:${res.data.prizeInfo.ddwCoin && res.data.prizeInfo.ddwCoin+'金币' || ''} ${res.data.prizeInfo.ddwMoney && res.data.prizeInfo.ddwMoney+'财富' || ''}`)
+            }else{
+              console.log(`${item.strTaskName} 领取奖励 :`, res.data.prizeInfo)
+            }
           }else{
             console.log(`${item.strTaskName} 领取奖励失败:`, JSON.stringify(res))
           }
@@ -373,13 +432,17 @@ async function run() {
               if(res && res.iRet == 0){
                 additional= `&strToken=${res.story.strToken}&ddwTriTime=${res.story.ddwTriTime}`
                 stk = `_cfd_t,bizCode,dwEnv,ptag,source,strBuildIndex,strZone`
-                await taskGet(`story/QueryUserStory`, stk, additional)
+                // await taskGet(`story/QueryUserStory`, stk, additional)
                 await $.wait(1000)
               }
             }
             res = await taskGet(`Award1`, '_cfd_t,bizCode,dwEnv,ptag,source,strZone,taskId', `&ptag=&taskId=${item.ddwTaskId}`)
             if(res.ret == 0){
-              console.log(`${item.strTaskName} 领取奖励:`, res.data.prizeInfo)
+              if(res.data.prizeInfo.ddwCoin || res.data.prizeInfo.ddwMoney){
+                console.log(`${item.strTaskName} 领取奖励:${res.data.prizeInfo.ddwCoin && res.data.prizeInfo.ddwCoin+'金币' || ''} ${res.data.prizeInfo.ddwMoney && res.data.prizeInfo.ddwMoney+'财富' || ''}`)
+              }else{
+                console.log(`${item.strTaskName} 领取奖励 :`, res.data.prizeInfo)
+              }
             }else{
               console.log(`${item.strTaskName} 领取奖励失败:`, JSON.stringify(res))
             }
@@ -391,16 +454,20 @@ async function run() {
 
     await $.wait(2000)
     $.task = await taskGet(`GetUserTaskStatusList`, '_cfd_t,bizCode,dwEnv,ptag,source,strZone,taskId', '&ptag=&taskId=0')
-      console.log(`\n日常任务、成就任务`)
-      if($.task && $.task.data && $.task.data.userTaskStatusList){
+    if($.task && $.task.data && $.task.data.userTaskStatusList){
+        console.log(`\n日常任务、成就任务`)
       for(let i in $.task.data.userTaskStatusList){
         let item = $.task.data.userTaskStatusList[i]
         if(item.awardStatus != 2 && item.completedTimes === item.targetTimes) continue
-        console.log(`去做任务 ${item.taskName},${item.dateType},${item.awardStatus},${item.orderId},${item.completedTimes},${item.targetTimes}`)
+        console.log(`任务 ${item.taskName} (${item.completedTimes}/${item.targetTimes})`)
         if (item.awardStatus == 2 && item.completedTimes === item.targetTimes) {
           res = await taskGet(`Award`, '_cfd_t,bizCode,dwEnv,ptag,source,strZone,taskId', `&ptag=&taskId=${item.taskId}`)
           if(res.ret == 0){
-            console.log(`${item.taskName} 领取奖励:`, res.data.prizeInfo)
+            if(res.data.prizeInfo.ddwCoin || res.data.prizeInfo.ddwMoney){
+              console.log(`${item.taskName} 领取奖励:${res.data.prizeInfo.ddwCoin && res.data.prizeInfo.ddwCoin+'金币' || ''} ${res.data.prizeInfo.ddwMoney && res.data.prizeInfo.ddwMoney+'财富' || ''}`)
+            }else{
+              console.log(`${item.taskName} 领取奖励 :`, res.data.prizeInfo)
+            }
           }else{
             console.log(`${item.taskName} 领取奖励失败:`, JSON.stringify(res))
           }
@@ -417,7 +484,11 @@ async function run() {
             }
             res = await taskGet(`Award`, '_cfd_t,bizCode,dwEnv,ptag,source,strZone,taskId', `&ptag=&taskId=${item.taskId}`)
             if(res.ret == 0){
-              console.log(`${item.taskName} 领取奖励:`, res.data.prizeInfo)
+              if(res.data.prizeInfo.ddwCoin || res.data.prizeInfo.ddwMoney){
+                console.log(`${item.taskName} 领取奖励:${res.data.prizeInfo.ddwCoin && res.data.prizeInfo.ddwCoin+'金币' || ''} ${res.data.prizeInfo.ddwMoney && res.data.prizeInfo.ddwMoney+'财富' || ''}`)
+              }else{
+                console.log(`${item.taskName} 领取奖励 :`, res.data.prizeInfo)
+              }
             }else{
               console.log(`${item.taskName} 领取奖励失败:`, JSON.stringify(res))
             }
@@ -449,9 +520,55 @@ async function GetHomePageInfo() {
     }
   }
 }
-
+async function pickshell(num = 1){
+  return new Promise(async (resolve) => {
+    try{
+      console.log(`\n捡垃圾`)
+      // pickshell dwType 1珍珠 2海螺 3大海螺  4海星
+      for(i=1;num--;i++){
+        await $.wait(2000)
+        $.queryshell = await taskGet(`story/queryshell`, '_cfd_t,bizCode,dwEnv,ptag,source,strZone', `&ptag=`)
+        let c = 4
+        for(i=1;c--;i++){
+          let o = 1
+          let name = '珍珠'
+          if(i == 2) name = '海螺'
+          if(i == 3) name = '大海螺'
+          if(i == 4) name = '海星'
+          do{
+            console.log(`去捡${name}第${o}次`)
+            o++;
+            let res = await taskGet(`story/pickshell`, '_cfd_t,bizCode,dwEnv,dwType,ptag,source,strZone', `&ptag=&dwType=${i}`)
+            await $.wait(200)
+            if(res.iRet != 0){
+              break
+            }
+          }while (o < 20)
+        }
+      }
+    }catch (e) {
+      $.logErr(e);
+    }
+    finally {
+      resolve();
+    }
+  })
+}
 async function StoryInfo(){
   
+}
+function printRes(res){
+  if(res.iRet == 0 && res.Data){
+    if(res.Data.ddwCoin || res.Data.ddwMoney){
+      console.log(`获得:${res.Data.ddwCoin && res.Data.ddwCoin+'金币' || ''} ${res.Data.ddwMoney && res.Data.ddwMoney+'财富' || ''}`)
+    }else{
+      console.log(`完成`)
+    }
+  }else if(res && res.sErrMsg){
+    console.log(res.sErrMsg)
+  }else{
+    console.log(JSON.stringify(res))
+  }
 }
 async function noviceTask(){
   let additional= ``
