@@ -1,5 +1,5 @@
 /*
-Last Modified time: 2021-6-6 10:22:37
+Last Modified time: 2021-7-15 8:22:37
 活动入口：京东APP我的-更多工具-宠汪汪
 最近经常出现给偷好友积分与狗粮失败的情况，故建议cron设置为多次
 jd宠汪汪偷好友积分与狗粮,及给好友喂食
@@ -286,7 +286,7 @@ async function helpFriendsFeed() {
 }
 function getFriends(currentPage = '1') {
   return new Promise(resolve => {
-    const url = `${JD_API_HOST}/common/pet/h5/getFriends?itemsPerPage=20&currentPage=${currentPage * 1}&reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE`
+    const url = `${JD_API_HOST}/common/pet/h5/getFriends?itemsPerPage=20&currentPage=${currentPage * 1}&reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F`
     const options = {
       url,
       headers: {
@@ -465,7 +465,7 @@ function getRandomFood(friendPin) {
 }
 function getCoinChanges() {
   return new Promise(resolve => {
-    const url = `${JD_API_HOST}/common/pet/getCoinChanges?changeDate=${Date.now()}&reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE`
+    const url = `${JD_API_HOST}/common/pet/getCoinChanges?changeDate=${Date.now()}&reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F`
     const options = {
       url,
       headers: {
@@ -583,7 +583,7 @@ function TotalBean() {
   })
 }
 function taskUrl(functionId, friendPin) {
-  const url = `${JD_API_HOST}/common/pet/${functionId}?reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE${friendPin && "&friendPin=" + encodeURI(friendPin)}`
+  const url = `${JD_API_HOST}/common/pet/${functionId}?reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F${friendPin && "&friendPin=" + encodeURI(friendPin)}`
   return {
     url,
     headers: {
