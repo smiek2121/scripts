@@ -4,6 +4,9 @@ cron 14 10 * * * https://raw.githubusercontent.com/smiek2221/scripts/master/jd_s
 需要安装依赖 
 npm i png-js 或者 npm i png-js -S
 
+如果 read ECONNRESET 错误 可以试试
+环境变量 JOY_HOST
+修改域名 https://jdjoy.jd.com 可以改成ip https://49.7.27.236
 */
 
 const validator = require('./JDJRValidator_Pure.js');
@@ -29,6 +32,10 @@ let UA = ""
 let signFlag = false
 let successNum = 0
 let errorNum = 0
+let JD_API_HOST = 'https://jdjoy.jd.com'
+if(process.env.JOY_HOST){
+  JD_API_HOST = process.env.JOY_HOST
+}
 
 const turnTableId = [
   { "name": "京东商城-内衣", "id": 1071, "url": "https://prodev.m.jd.com/mall/active/4PgpL1xqPSW1sVXCJ3xopDbB1f69/index.html" },
@@ -138,7 +145,7 @@ function Login(i) {
       try {
         if (err) {
           console.log(`\n${turnTableId[i].name} 登录: API查询请求失败 ‼️‼️`)
-          throw new Error(err);
+          console.log(`${JSON.stringify(err)}`)
         } else {
           if (data) {
             // console.log(data)
@@ -221,7 +228,7 @@ function getEid(arr) {
 }
 
 function taskUrl(turnTableId) {
-  const url = `https://jdjoy.jd.com/api/turncard/channel/detail?turnTableId=${turnTableId}&invokeKey=NRp8OPxZMFXmGkaE`
+  const url = `${JD_API_HOST}/api/turncard/channel/detail?turnTableId=${turnTableId}&invokeKey=qRKHmL4sna8ZOP9F`
   return {
     url,
     headers: {
@@ -230,6 +237,7 @@ function taskUrl(turnTableId) {
       "Accept-Language": "zh-cn",
       "Connection": "keep-alive",
       'Cookie': cookie,
+      'Host': `jdjoy.jd.com`,
       "Origin": "https://prodev.m.jd.com",
       "Referer": "https://prodev.m.jd.com/",
       "User-Agent": UA,
@@ -238,7 +246,7 @@ function taskUrl(turnTableId) {
 }
 
 function tasPostkUrl(turnTableId) {
-  const url = `https://jdjoy.jd.com/api/turncard/channel/sign?turnTableId=${turnTableId}&fp=${fp}&eid=${eid}&invokeKey=NRp8OPxZMFXmGkaE`
+  const url = `${JD_API_HOST}/api/turncard/channel/sign?turnTableId=${turnTableId}&fp=${fp}&eid=${eid}&invokeKey=qRKHmL4sna8ZOP9F`
   return {
     url,
     headers: {
@@ -248,6 +256,7 @@ function tasPostkUrl(turnTableId) {
       "Connection": "keep-alive",
       "Content-Type": "application/x-www-form-urlencoded",
       'Cookie': cookie,
+      'Host': `jdjoy.jd.com`,
       "Origin": "https://prodev.m.jd.com",
       "Referer": "https://prodev.m.jd.com/",
       "User-Agent": UA,
