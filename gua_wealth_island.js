@@ -105,6 +105,7 @@ async function run() {
     $.Employtask = []
     
     await GetHomePageInfo()
+
     if($.HomeInfo){
       $.InviteList.push($.HomeInfo.strMyShareId)
       console.log(`等级:${$.HomeInfo.dwLandLvl} 当前金币:${$.HomeInfo.ddwCoinBalance} 当前财富:${$.HomeInfo.ddwRichBalance} 助力码:${$.HomeInfo.strMyShareId}`)
@@ -116,7 +117,46 @@ async function run() {
       await GetHomePageInfo()
       await $.wait(1000)
     }
+    // 故事会
+    await StoryInfo()
+    // 建筑升级
+    await buildList()
+    // 签到 邀请奖励
+    await sign()
+    // 捡垃圾
+    await pickshell(1)
+    // 倒垃圾
+    await RubbishOper()
+    // 导游
+    await Guide()
+    // 撸珍珠
+    await Pearl()
+    // 牛牛任务
+    await ActTask()
+    // 日常任务、成就任务
+    await UserTask()
 
+  }
+  catch (e) {
+    console.log(e);
+  }
+}
+async function GetHomePageInfo() {
+  let additional= `&ddwTaskId&strShareId&strMarkList=guider_step%2Ccollect_coin_auth%2Cguider_medal%2Cguider_over_flag%2Cbuild_food_full%2Cbuild_sea_full%2Cbuild_shop_full%2Cbuild_fun_full%2Cmedal_guider_show%2Cguide_guider_show%2Cguide_receive_vistor`
+  let stk= `_cfd_t,bizCode,ddwTaskId,dwEnv,ptag,source,strMarkList,strShareId,strZone`
+  $.HomeInfo = await taskGet(`user/QueryUserInfo`, stk, additional)
+  if($.HomeInfo){
+    $.Fund = $.HomeInfo.Fund || ''
+    $.LeadInfo = $.HomeInfo.LeadInfo || ''
+    $.buildInfo = $.HomeInfo.buildInfo || ''
+    if($.buildInfo.buildList){
+      $.buildList = $.buildInfo.buildList || ''
+    }
+  }
+}
+// 故事会
+async function StoryInfo(){
+  try{
     if($.HomeInfo.StoryInfo && $.HomeInfo.StoryInfo.StoryList){
       let additional = ``
       let stk = ``
@@ -133,7 +173,7 @@ async function run() {
           res = await taskGet(`story/${type}`, stk, additional)
           // console.log(JSON.stringify(res))
         }else if($.HomeInfo.StoryInfo.StoryList[0].dwType == 1){
-          console.log(`\n故事会:${$.HomeInfo.StoryInfo.StoryList[0].Special.strName} `)
+          console.log(`\n故事会[${$.HomeInfo.StoryInfo.StoryList[0].Special.strName}]`)
           additional = `&ptag=&strStoryId=${$.HomeInfo.StoryInfo.StoryList[0].strStoryId}&dwType=2&triggerType=${$.HomeInfo.StoryInfo.StoryList[0].Special.dwTriggerType}&ddwTriggerDay=${$.HomeInfo.StoryInfo.StoryList[0].ddwTriggerDay}`
           stk = `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone,triggerType`
           type = `SpecialUserOper`
@@ -168,7 +208,7 @@ async function run() {
           additional = `&ptag=&strTypeCnt=${TypeCnt}&dwSceneId=1`
           stk = `_cfd_t,bizCode,dwEnv,dwSceneId,ptag,source,strTypeCnt,strZone`
           res = await taskGet(`story/sellgoods`, stk, additional)
-          await printRes(res)
+          await printRes(res, '贩卖')
         }
       }else if($.HomeInfo.StoryInfo.StoryList[0].dwType == 1 && ( (res && res.iRet == 0) || res == '')){
         if(res && res.iRet == 0 && res.Data && res.Data.Serve && res.Data.Serve.dwWaitTime){
@@ -180,7 +220,7 @@ async function run() {
         stk = `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone,triggerType`
         type = `SpecialUserOper`
         res = await taskGet(`story/${type}`, stk, additional)
-        await printRes(res)
+        await printRes(res, `故事会[${$.HomeInfo.StoryInfo.StoryList[0].Special.strName}]`)
         // console.log(JSON.stringify(res))
 
       }else if($.HomeInfo.StoryInfo.StoryList[0].dwType == 2 && ( (res && res.iRet == 0) || res == '')){
@@ -193,11 +233,17 @@ async function run() {
         stk = `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone`
         type = `MermaidOper`
         res = await taskGet(`story/${type}`, stk, additional)
-        await printRes(res)
+        await printRes(res,'美人鱼')
         // console.log(JSON.stringify(res))
       }
     }
-    
+  }catch (e) {
+    $.logErr(e);
+  }
+}
+// 建筑升级
+async function buildList(){
+  try{
     await $.wait(2000)
     console.log(`\n升级房屋、收集金币`)
     if($.buildList){
@@ -262,12 +308,19 @@ async function run() {
       let drawpackprize = await taskGet(`user/drawpackprize`, stk, additional)
     }
 
+  }catch (e) {
+    $.logErr(e);
+  }
+}
+// 签到 邀请奖励
+async function sign(){
+  try{
     // 签到
     await $.wait(2000)
     $.Aggrtask = await taskGet(`story/GetTakeAggrPage`, '_cfd_t,bizCode,dwEnv,ptag,source,strZone', '&ptag=')
     if($.Aggrtask && $.Aggrtask.Data && $.Aggrtask.Data.Sign){
-      console.log('\n签到')
       if($.Aggrtask.Data.Sign.dwTodayStatus == 0) {
+        console.log('\n签到')
         let flag = false
         let ddwCoin = 0
         let ddwMoney = 0
@@ -289,45 +342,93 @@ async function run() {
           let additional = `&ptag=&ddwCoin=${ddwCoin}&ddwMoney=${ddwMoney}&dwPrizeType=${dwPrizeType}&strPrizePool${strPrizePool && '='+strPrizePool ||''}&dwPrizeLv=${dwPrizeLv}`
           let stk= `_cfd_t,bizCode,ddwCoin,ddwMoney,dwEnv,dwPrizeLv,dwPrizeType,ptag,source,strPrizePool,strZone`
           let res = await taskGet(`story/RewardSign`, stk, additional)
-          if(res && res.iRet == 0){
-            console.log(JSON.stringify(res))
-            console.log(`签到成功获得 金币:${res.Data && res.Data.ddwCoin || 0} ${res.Data && res.Data.ddwMoney && '红包(可能是):' + res.Data.ddwMoney || ''}`)
-          }
+          await printRes(res, '签到')
         }
       }
     }
     
     if($.Aggrtask && $.Aggrtask.Data && $.Aggrtask.Data.Employee && $.Aggrtask.Data.Employee.EmployeeList){
-      console.log(`\n领取邀请奖励`)
-      for(let i of $.Aggrtask.Data.Employee.EmployeeList){
-        if(i.dwStatus == 0){
-          let res = await taskGet(`story/helpdraw`, '_cfd_t,bizCode,dwEnv,dwUserId,ptag,source,strZone', `&ptag=&dwUserId=${i.dwId}`)
-          if(res && res.iRet ==0){
-            console.log(`领取邀请奖励:${res.Data && res.Data.ddwCoin || 0}金币`)
-          }else{
-            conso.log(`领取失败:${JSON.stringify(res)}`)
+        if($.Aggrtask.Data && $.Aggrtask.Data.Employee && !$.Aggrtask.Data.Employee.EmployeeList){
+        console.log(`\n领取邀请奖励`)
+        for(let i of $.Aggrtask.Data.Employee.EmployeeList){
+          if(i.dwStatus == 0){
+            let res = await taskGet(`story/helpdraw`, '_cfd_t,bizCode,dwEnv,dwUserId,ptag,source,strZone', `&ptag=&dwUserId=${i.dwId}`)
+            await printRes(res, '邀请奖励')
           }
         }
       }
     }
-    // 捡垃圾
-    await pickshell(1)
-    if(false){
-      // 倒垃圾
-      await $.wait(2000)
-      console.log(`\n倒垃圾`)
-      $.QueryRubbishInfo = await taskGet(`story/QueryRubbishInfo`, '_cfd_t,bizCode,dwEnv,ptag,source,strZone', '&ptag=')
-      // console.log($.QueryRubbishInfo)
-      for(let i of $.QueryRubbishInfo && $.QueryRubbishInfo.Data && $.QueryRubbishInfo.Data.StoryInfo.StoryList || []){
-        $.RubbishOper = await taskGet(`story/RubbishOper`, '_cfd_t,bizCode,dwEnv,dwRewardType,dwType,ptag,source,strZone', '&ptag=&dwType=1&dwRewardType=0')
-        for(let j of $.RubbishOper.Data.ThrowRubbish.Game.RubbishList || []){
-          let res = await taskGet(`story/RubbishOper`, '_cfd_t,bizCode,dwEnv,dwRewardType,dwRubbishId,dwType,ptag,source,strZone', `&ptag=&dwType=2&dwRewardType=0&dwRubbishId=${j.dwId}`)
-          console.log(JSON.stringify(res))
-          await $.wait(2000)
+  }catch (e) {
+    $.logErr(e);
+  }
+}
+// 捡垃圾
+async function pickshell(num = 1){
+  return new Promise(async (resolve) => {
+    try{
+      console.log(`\n捡垃圾`)
+      // pickshell dwType 1珍珠 2海螺 3大海螺  4海星
+      for(i=1;num--;i++){
+        await $.wait(2000)
+        $.queryshell = await taskGet(`story/queryshell`, '_cfd_t,bizCode,dwEnv,ptag,source,strZone', `&ptag=`)
+        let c = 4
+        for(i=1;c--;i++){
+          let o = 1
+          let name = '珍珠'
+          if(i == 2) name = '海螺'
+          if(i == 3) name = '大海螺'
+          if(i == 4) name = '海星'
+          do{
+            console.log(`去捡${name}第${o}次`)
+            o++;
+            let res = await taskGet(`story/pickshell`, '_cfd_t,bizCode,dwEnv,dwType,ptag,source,strZone', `&ptag=&dwType=${i}`)
+            await $.wait(200)
+            if(res.iRet != 0){
+              break
+            }
+          }while (o < 20)
+        }
+      }
+    }catch (e) {
+      $.logErr(e);
+    }
+    finally {
+      resolve();
+    }
+  })
+}
+// 倒垃圾
+async function RubbishOper(){
+  try{
+    // 倒垃圾
+    await $.wait(2000)
+    $.QueryRubbishInfo = await taskGet(`story/QueryRubbishInfo`, '_cfd_t,bizCode,dwEnv,ptag,source,strZone', '&ptag=')
+    if($.QueryRubbishInfo && $.QueryRubbishInfo.Data && $.QueryRubbishInfo.Data.StoryInfo.StoryList){
+      for(let i of $.QueryRubbishInfo.Data.StoryInfo.StoryList){
+        let res = ''
+        if(i.strStoryId == 3){
+          console.log(`\n倒垃圾`)
+          $.RubbishOper = await taskGet(`story/RubbishOper`, '_cfd_t,bizCode,dwEnv,dwRewardType,dwType,ptag,source,strZone', '&ptag=&dwType=1&dwRewardType=0')
+          for(let j of $.RubbishOper.Data.ThrowRubbish.Game.RubbishList){
+            console.log(`放置[${j.strName}]等待任务完成`)
+            res = await taskGet(`story/RubbishOper`, '_cfd_t,bizCode,dwEnv,dwRewardType,dwRubbishId,dwType,ptag,source,strZone', `&ptag=&dwType=2&dwRewardType=0&dwRubbishId=${j.dwId}`)
+            await $.wait(2000)
+          }
+          if(res.Data && res.Data.RubbishGame && res.Data.RubbishGame.AllRubbish && res.Data.RubbishGame.AllRubbish.dwIsGameOver && res.Data.RubbishGame.AllRubbish.dwIsGameOver == 1){
+            console.log(`任务完成获得:${res.Data.RubbishGame.AllRubbish.ddwCoin && res.Data.RubbishGame.AllRubbish.ddwCoin+'金币' || ''}`)
+          }else{
+            console.log(JSON.stringify(res))
+          }
         }
       }
     }
-    // 导游
+  }catch (e) {
+    $.logErr(e);
+  }
+}
+// 雇佣导游
+async function Guide(){
+  try{
     await $.wait(2000)
     $.Employtask = await taskGet(`user/EmployTourGuideInfo`, '_cfd_t,bizCode,dwEnv,ptag,source,strZone', '&ptag=')
     if($.Employtask && $.Employtask.TourGuideList){
@@ -366,8 +467,14 @@ async function run() {
       }
     }
     
+  }catch (e) {
+    $.logErr(e);
+  }
+}
+// 撸珍珠
+async function Pearl(){
+  try{
     await $.wait(2000)
-    // 撸珍珠
     $.ComposeGameState = await taskGet(`user/ComposeGameState`, '', '')
     console.log(`\n当前有${$.ComposeGameState.dwCurProgress}颗珍珠`)
     if ($.ComposeGameState.dwCurProgress < 8 && $.ComposeGameState.strDT) {
@@ -384,22 +491,32 @@ async function run() {
         }
         console.log("合成珍珠")
         let res = await taskGet(`user/ComposeGameAddProcess`, '__t,strBT,strZone', `&strBT=${$.ComposeGameState.strDT}`)
-        console.log(JSON.stringify(res))
+        if(res && res.iRet == 0){
+          console.log(`合成成功:当前有${res.dwCurProgress}颗`)
+        }else{
+          console.log(JSON.stringify(res))
+        }
         $.ComposeGameState = await taskGet(`user/ComposeGameState`, '', '')
       }
     }
     for (let i of $.ComposeGameState.stagelist) {
       if (i.dwIsAward == 0 && $.ComposeGameState.dwCurProgress >= i.dwCurStageEndCnt) {
         await $.wait(2000)
-        console.log("珍珠领奖")
         let res = await taskGet(`user/ComposeGameAward`, '__t,dwCurStageEndCnt,strZone', `&dwCurStageEndCnt=${i.dwCurStageEndCnt}`)
-        console.log(JSON.stringify(res))
+        await printRes(res,'珍珠领奖')
       }
     }
-
+  }catch (e) {
+    $.logErr(e);
+  }
+}
+// 牛牛任务
+async function ActTask(){
+  try{
+    let res = ''
     await $.wait(2000)
     $.Biztask = await taskGet(`story/GetActTask`, '_cfd_t,bizCode,dwEnv,ptag,source,strZone', '&ptag=')
-    if($.Biztask && $.Biztask.Data){
+    if($.Biztask && $.Biztask.Data && $.Biztask.Data.dwStatus != 4){
       console.log(`\n牛牛任务`)
       if($.Biztask.Data.dwStatus == 3 && $.Biztask.Data.dwTotalTaskNum && $.Biztask.Data.dwCompleteTaskNum && $.Biztask.Data.dwTotalTaskNum == $.Biztask.Data.dwCompleteTaskNum){
         res = await taskGet(`story/ActTaskAward`, '_cfd_t,bizCode,dwEnv,ptag,source,strZone', `&ptag=`)
@@ -416,10 +533,13 @@ async function run() {
         if (item.dwAwardStatus == 2 && item.dwCompleteNum === item.dwTargetNum) {
           res = await taskGet(`Award1`, '_cfd_t,bizCode,dwEnv,ptag,source,strZone,taskId', `&ptag=&taskId=${item.ddwTaskId}`)
           if(res.ret == 0){
+            if(res.data.prizeInfo){
+              res.data.prizeInfo = $.toObj(res.data.prizeInfo)
+            }
             if(res.data.prizeInfo.ddwCoin || res.data.prizeInfo.ddwMoney){
-              console.log(`${item.strTaskName} 领取奖励:${res.data.prizeInfo.ddwCoin && res.data.prizeInfo.ddwCoin+'金币' || ''} ${res.data.prizeInfo.ddwMoney && res.data.prizeInfo.ddwMoney+'财富' || ''}`)
+              console.log(`${item.taskName} 领取奖励:${res.data.prizeInfo.ddwCoin && res.data.prizeInfo.ddwCoin+'金币' || ''} ${res.data.prizeInfo.ddwMoney && res.data.prizeInfo.ddwMoney+'财富' || ''}`)
             }else{
-              console.log(`${item.strTaskName} 领取奖励 :`, res.data.prizeInfo)
+              console.log(`${item.taskName} 领取奖励:`, JSON.stringify(res))
             }
           }else{
             console.log(`${item.strTaskName} 领取奖励失败:`, JSON.stringify(res))
@@ -443,10 +563,13 @@ async function run() {
             }
             res = await taskGet(`Award1`, '_cfd_t,bizCode,dwEnv,ptag,source,strZone,taskId', `&ptag=&taskId=${item.ddwTaskId}`)
             if(res.ret == 0){
+              if(res.data.prizeInfo){
+                res.data.prizeInfo = $.toObj(res.data.prizeInfo)
+              }
               if(res.data.prizeInfo.ddwCoin || res.data.prizeInfo.ddwMoney){
-                console.log(`${item.strTaskName} 领取奖励:${res.data.prizeInfo.ddwCoin && res.data.prizeInfo.ddwCoin+'金币' || ''} ${res.data.prizeInfo.ddwMoney && res.data.prizeInfo.ddwMoney+'财富' || ''}`)
+                console.log(`${item.taskName} 领取奖励:${res.data.prizeInfo.ddwCoin && res.data.prizeInfo.ddwCoin+'金币' || ''} ${res.data.prizeInfo.ddwMoney && res.data.prizeInfo.ddwMoney+'财富' || ''}`)
               }else{
-                console.log(`${item.strTaskName} 领取奖励 :`, res.data.prizeInfo)
+                console.log(`${item.taskName} 领取奖励:`, JSON.stringify(res))
               }
             }else{
               console.log(`${item.strTaskName} 领取奖励失败:`, JSON.stringify(res))
@@ -457,7 +580,15 @@ async function run() {
       }
     }
 
+  }catch (e) {
+    $.logErr(e);
+  }
+}
+// 日常任务、成就任务
+async function UserTask(){
+  try{
     await $.wait(2000)
+    let res = ''
     $.task = await taskGet(`GetUserTaskStatusList`, '_cfd_t,bizCode,dwEnv,ptag,source,strZone,taskId', '&ptag=&taskId=0')
     if($.task && $.task.data && $.task.data.userTaskStatusList){
         console.log(`\n日常任务、成就任务`)
@@ -467,11 +598,15 @@ async function run() {
         console.log(`任务 ${item.taskName} (${item.completedTimes}/${item.targetTimes})`)
         if (item.awardStatus == 2 && item.completedTimes === item.targetTimes) {
           res = await taskGet(`Award`, '_cfd_t,bizCode,dwEnv,ptag,source,strZone,taskId', `&ptag=&taskId=${item.taskId}`)
+          console.log(JSON.stringify(res))
           if(res.ret == 0){
+            if(res.data.prizeInfo){
+              res.data.prizeInfo = $.toObj(res.data.prizeInfo)
+            }
             if(res.data.prizeInfo.ddwCoin || res.data.prizeInfo.ddwMoney){
               console.log(`${item.taskName} 领取奖励:${res.data.prizeInfo.ddwCoin && res.data.prizeInfo.ddwCoin+'金币' || ''} ${res.data.prizeInfo.ddwMoney && res.data.prizeInfo.ddwMoney+'财富' || ''}`)
             }else{
-              console.log(`${item.taskName} 领取奖励 :`, res.data.prizeInfo)
+              console.log(`${item.taskName} 领取奖励:`, JSON.stringify(res))
             }
           }else{
             console.log(`${item.taskName} 领取奖励失败:`, JSON.stringify(res))
@@ -484,15 +619,18 @@ async function run() {
             let b = (item.targetTimes-item.completedTimes)
             for(i=1;b--;i++){
               console.log(`第${i}次`)
-              let res = await taskGet('DoTask', '_cfd_t,bizCode,configExtra,dwEnv,ptag,source,strZone,taskId', `&ptag=&taskId=${item.taskId}&configExtra=`)
+              res = await taskGet('DoTask', '_cfd_t,bizCode,configExtra,dwEnv,ptag,source,strZone,taskId', `&ptag=&taskId=${item.taskId}&configExtra=`)
               await $.wait(5000)
             }
             res = await taskGet(`Award`, '_cfd_t,bizCode,dwEnv,ptag,source,strZone,taskId', `&ptag=&taskId=${item.taskId}`)
             if(res.ret == 0){
+              if(res.data.prizeInfo){
+                res.data.prizeInfo = $.toObj(res.data.prizeInfo)
+              }
               if(res.data.prizeInfo.ddwCoin || res.data.prizeInfo.ddwMoney){
                 console.log(`${item.taskName} 领取奖励:${res.data.prizeInfo.ddwCoin && res.data.prizeInfo.ddwCoin+'金币' || ''} ${res.data.prizeInfo.ddwMoney && res.data.prizeInfo.ddwMoney+'财富' || ''}`)
               }else{
-                console.log(`${item.taskName} 领取奖励 :`, res.data.prizeInfo)
+                console.log(`${item.taskName} 领取奖励:`, JSON.stringify(res))
               }
             }else{
               console.log(`${item.taskName} 领取奖励失败:`, JSON.stringify(res))
@@ -507,75 +645,31 @@ async function run() {
       }
     }
 
-  }
-  catch (e) {
-    console.log(e);
-  }
-}
-async function GetHomePageInfo() {
-  let additional= `&ddwTaskId&strShareId&strMarkList=guider_step%2Ccollect_coin_auth%2Cguider_medal%2Cguider_over_flag%2Cbuild_food_full%2Cbuild_sea_full%2Cbuild_shop_full%2Cbuild_fun_full%2Cmedal_guider_show%2Cguide_guider_show%2Cguide_receive_vistor`
-  let stk= `_cfd_t,bizCode,ddwTaskId,dwEnv,ptag,source,strMarkList,strShareId,strZone`
-  $.HomeInfo = await taskGet(`user/QueryUserInfo`, stk, additional)
-  if($.HomeInfo){
-    $.Fund = $.HomeInfo.Fund || ''
-    $.LeadInfo = $.HomeInfo.LeadInfo || ''
-    $.buildInfo = $.HomeInfo.buildInfo || ''
-    if($.buildInfo.buildList){
-      $.buildList = $.buildInfo.buildList || ''
-    }
+  }catch (e) {
+    $.logErr(e);
   }
 }
-async function pickshell(num = 1){
-  return new Promise(async (resolve) => {
-    try{
-      console.log(`\n捡垃圾`)
-      // pickshell dwType 1珍珠 2海螺 3大海螺  4海星
-      for(i=1;num--;i++){
-        await $.wait(2000)
-        $.queryshell = await taskGet(`story/queryshell`, '_cfd_t,bizCode,dwEnv,ptag,source,strZone', `&ptag=`)
-        let c = 4
-        for(i=1;c--;i++){
-          let o = 1
-          let name = '珍珠'
-          if(i == 2) name = '海螺'
-          if(i == 3) name = '大海螺'
-          if(i == 4) name = '海星'
-          do{
-            console.log(`去捡${name}第${o}次`)
-            o++;
-            let res = await taskGet(`story/pickshell`, '_cfd_t,bizCode,dwEnv,dwType,ptag,source,strZone', `&ptag=&dwType=${i}`)
-            await $.wait(200)
-            if(res.iRet != 0){
-              break
-            }
-          }while (o < 20)
-        }
-      }
-    }catch (e) {
-      $.logErr(e);
+
+function printRes(res, msg=''){
+  if(res.iRet == 0 && (res.Data || res.ddwCoin || res.ddwMoney || res.strPrizeName)){
+    let result = res
+    if(res.Data){
+      result = res.Data
     }
-    finally {
-      resolve();
-    }
-  })
-}
-async function StoryInfo(){
-  
-}
-function printRes(res){
-  if(res.iRet == 0 && res.Data){
-    if(res.Data.ddwCoin || res.Data.ddwMoney){
-      console.log(`获得: ${res.Data.ddwCoin && res.Data.ddwCoin+'金币' || ''} ${res.Data.ddwMoney && res.Data.ddwMoney+'财富' || ''}`)
-    }else if(res.Data.Prize){
-      console.log(`获得: ${res.Data.Prize.strPrizeName && '优惠券 '+res.Data.Prize.strPrizeName || ''}`)
+    if(result.ddwCoin || result.ddwMoney || result.strPrizeName){
+      console.log(`${msg}获得:${result.ddwCoin && ' '+result.ddwCoin+'金币' || ''}${result.ddwMoney && ' '+result.ddwMoney+'财富' || ''}${result.strPrizeName && ' '+result.strPrizeName+'红包' || ''}`)
+    }else if(result.Prize){
+      console.log(`${msg}获得: ${result.Prize.strPrizeName && '优惠券 '+result.Prize.strPrizeName || ''}`)
+    }else if(res && res.sErrMsg){
+      console.log(res.sErrMsg)
     }else{
-      console.log(`完成`, JSON.stringify(res))
+      console.log(`${msg}完成`, JSON.stringify(res))
       // console.log(`完成`)
     }
   }else if(res && res.sErrMsg){
-    console.log(res.sErrMsg)
+    console.log(`${msg}失败:${res.sErrMsg}`)
   }else{
-    console.log(JSON.stringify(res))
+    console.log(`${msg}失败:${JSON.stringify(res)}`)
   }
 }
 async function noviceTask(){
