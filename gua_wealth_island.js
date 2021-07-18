@@ -28,7 +28,7 @@ if ($.isNode()) {
   })
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => { };
 } else {
-  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
+  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...$.toObj($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
 }
 
 $.appId = 10032;
@@ -45,10 +45,10 @@ $.appId = 10032;
   if ($.isNode()) {
     $.CryptoJS = require('crypto-js')
   } else {
-    let cryptojsFile = await downloadUrl('https://raw.githubusercontent.com/thy486/scripts/master/CryptoJS.js');
+    let cryptojsFile = await downloadUrl('https://raw.githubusercontent.com/smiek2221/scripts/master/CryptoJS.js');
     if (!cryptojsFile) {
-      await downloadUrl('https://purge.jsdelivr.net/gh/thy486/scripts@master/CryptoJS.js')
-      cryptojsFile = await downloadUrl('https://cdn.jsdelivr.net/gh/thy486/scripts@master/CryptoJS.js')
+      await downloadUrl('https://purge.jsdelivr.net/gh/smiek2221/scripts@master/CryptoJS.js')
+      cryptojsFile = await downloadUrl('https://cdn.jsdelivr.net/gh/smiek2221/scripts@master/CryptoJS.js')
     }
     eval(cryptojsFile)
     $.CryptoJS = CryptoJS
