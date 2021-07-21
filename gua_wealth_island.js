@@ -599,9 +599,9 @@ async function ActTask(){
                 res.data.prizeInfo = $.toObj(res.data.prizeInfo)
               }
               if(res.data.prizeInfo.ddwCoin || res.data.prizeInfo.ddwMoney){
-                console.log(`${item.taskName} 领取奖励:${res.data.prizeInfo.ddwCoin && res.data.prizeInfo.ddwCoin+'金币' || ''} ${res.data.prizeInfo.ddwMoney && res.data.prizeInfo.ddwMoney+'财富' || ''}`)
+                console.log(`${item.strTaskName} 领取奖励:${res.data.prizeInfo.ddwCoin && res.data.prizeInfo.ddwCoin+'金币' || ''} ${res.data.prizeInfo.ddwMoney && res.data.prizeInfo.ddwMoney+'财富' || ''}`)
               }else{
-                console.log(`${item.taskName} 领取奖励:`, JSON.stringify(res))
+                console.log(`${item.strTaskName} 领取奖励:`, JSON.stringify(res))
               }
             }else{
               console.log(`${item.strTaskName} 领取奖励失败:`, JSON.stringify(res))
@@ -747,7 +747,7 @@ function taskGet(type, stk, additional){
           // 1771|1771|5001|0|0,1771|75|1023|0|请刷新页面重试
           // console.log(_data)
         }
-        contents = `1771|${opId(type)}|${data.iRet || 0}|0|${data.sErrMsg || 0}`
+        contents = `1771|${opId(type)}|${data && data.iRet || 0}|0|${data && data.sErrMsg || 0}`
         await biz(contents)
       }
       catch (e) {
