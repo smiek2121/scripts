@@ -422,8 +422,8 @@ async function service(num = 1){
         let res = await taskGet(`user/SpeedUp`, '_cfd_t,bizCode,dwEnv,ptag,source,strBuildIndex,strZone', `&ptag=&strBuildIndex=${strBuildIndex}`)
         if(res && res.iRet == 0){
           console.log(`当前气球次数:${res.dwTodaySpeedPeople} 金币速度:${res.ddwSpeedCoin}`)
-          additional= `&strToken=${res.story.strToken}&ddwTriTime=${res.story.ddwTriTime}`
-          stk = `_cfd_t,bizCode,dwEnv,ptag,source,strBuildIndex,strZone`
+          // additional= `&strToken=${res.story.strToken}&ddwTriTime=${res.story.ddwTriTime}`
+          // stk = `_cfd_t,bizCode,dwEnv,ptag,source,strBuildIndex,strZone`
           // await taskGet(`story/QueryUserStory`, stk, additional)
           await $.wait(1000)
         }
@@ -736,7 +736,7 @@ function taskGet(type, stk, additional){
   return new Promise(async (resolve) => {
     let myRequest = getGetRequest(type, stk, additional)
     $.get(myRequest, async (err, resp, _data) => {
-      let data
+      let data = ''
       try {
         let contents = ''
         // console.log(_data)
@@ -747,7 +747,7 @@ function taskGet(type, stk, additional){
           // 1771|1771|5001|0|0,1771|75|1023|0|请刷新页面重试
           // console.log(_data)
         }
-        contents = `1771|${opId(type)}|${data.iRet}|0|${data.sErrMsg || 0}`
+        contents = `1771|${opId(type)}|${data.iRet || 0}|0|${data.sErrMsg || 0}`
         await biz(contents)
       }
       catch (e) {
