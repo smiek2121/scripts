@@ -104,6 +104,10 @@ async function task() {
         await takePostRequest('beanDoTask');
         await $.wait(getRndInteger(2000, 2500))
       }
+    }else if ($.oneTask.status === 2){
+      console.log(`任务:${$.oneTask.taskName};已完成`);
+    }else{
+      console.log(`任务:${$.oneTask.taskName};未能完成\n${JSON.stringify($.oneTask)}`);
     }
   }
 }
