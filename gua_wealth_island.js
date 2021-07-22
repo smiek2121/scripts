@@ -396,7 +396,7 @@ async function pickshell(num = 1){
             o++;
             let res = await taskGet(`story/pickshell`, '_cfd_t,bizCode,dwEnv,dwType,ptag,source,strZone', `&ptag=&dwType=${i}`)
             await $.wait(200)
-            if(res.iRet != 0){
+            if(!res || res.iRet != 0){
               break
             }
           }while (o < 20)
