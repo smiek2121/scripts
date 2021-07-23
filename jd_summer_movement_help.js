@@ -37,8 +37,8 @@ if ($.isNode()) {
 }
 
 $.appid = 'o2_act';
-const UA = `jdapp;android;10.0.2;9;${randomString(28)}-73D2164353034363465693662666;network/wifi;model/MI 8;addressid/138087843;aid/0a4fc8ec9548a7f9;oaid/3ac46dd4d42fa41c;osVer/28;appBuild/88569;partner/jingdong;eufv/1;jdSupportDarkMode/0;Mozilla/5.0 (Linux; Android 9; MI 8 Build/PKQ1.180729.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/77.0.3865.120 MQQBrowser/6.2 TBS/045715 Mobile Safari/537.36;`
-const UUID = UA.split(';') && UA.split(';')[4] || ''
+let UA = `jdapp;android;10.0.2;9;${randomString(28)}-73D2164353034363465693662666;network/wifi;model/MI 8;addressid/138087843;aid/0a4fc8ec9548a7f9;oaid/3ac46dd4d42fa41c;osVer/28;appBuild/88569;partner/jingdong;eufv/1;jdSupportDarkMode/0;Mozilla/5.0 (Linux; Android 9; MI 8 Build/PKQ1.180729.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/77.0.3865.120 MQQBrowser/6.2 TBS/045715 Mobile Safari/537.36;`
+let UUID = UA.split(';') && UA.split(';')[4] || ''
 function randomString(e) {
   e = e || 32;
   let t = "1234567890",
@@ -79,6 +79,8 @@ function randomString(e) {
       $.isLogin = true;
       $.nickName = $.UserName;
       $.hotFlag = false; //是否火爆
+      UA = `jdapp;android;10.0.2;9;${randomString(28)}-73D2164353034363465693662666;network/wifi;model/MI 8;addressid/138087843;aid/0a4fc8ec9548a7f9;oaid/3ac46dd4d42fa41c;osVer/28;appBuild/88569;partner/jingdong;eufv/1;jdSupportDarkMode/0;Mozilla/5.0 (Linux; Android 9; MI 8 Build/PKQ1.180729.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/77.0.3865.120 MQQBrowser/6.2 TBS/045715 Mobile Safari/537.36;`
+      UUID = UA.split(';') && UA.split(';')[4] || ''
       $.joyytoken = ''
       joyytoken_count = 1
       console.log(`\n*****开始【京东账号${$.index}】${$.nickName || $.UserName}*****\n`);
