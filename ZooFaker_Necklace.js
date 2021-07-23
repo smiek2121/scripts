@@ -1,6 +1,3 @@
-let joyytoken; // = "MDFLbmZBbzAxMQ==.elhUd1Z8XlN5XXtbUz9ceyIicQZyPFQ0EXpCUG1aZ1wYcxF6EAB1IHw6BXMFCSUhCV4tGiMgJBE7ExIudlMY.6d560ccc";
-let joyytoken_count = 1;
-
 function encrypt_3(e) {
     return function (e) {
         if (Array.isArray(e)) return encrypt_3_3(e)
@@ -221,26 +218,14 @@ function sha256_encode_hex() {
     }
     return output;
 }
+
+/* Main function: returns a hex string representing the SHA256 value of the 
+given data */
+
 let utils = {
-    getDefaultVal: function (e) {
-        try {
-            return {
-                undefined: "u",
-                false: "f",
-                true: "t"
-            } [e] || e
-        } catch (t) {
-            return e
-        }
-    },
     requestUrl: {
         gettoken: "".concat("https://", "bh.m.jd.com/gettoken"),
         bypass: "".concat("https://blackhole", ".m.jd.com/bypass")
-    },
-    getTouchSession: function () {
-        var e = (new Date).getTime(),
-            t = this.getRandomInt(1e3, 9999);
-        return String(e) + String(t)
     },
     sha256: function (data) {
         sha256_init();
@@ -369,10 +354,8 @@ let utils = {
     },
     getCrcCode: function (e) {
         var t = "0000000",
-            n = "";
-        try {
-            n = this.Crc32(e).toString(36), t = this.addZeroToSeven(n)
-        } catch (e) {}
+            n = this.Crc32(e).toString(36),
+            t = this.addZeroToSeven(n)
         return t
     },
     addZeroToSeven: function (e) {
@@ -549,8 +532,7 @@ let utils = {
                     "Content-Type": "text/plain;charset=UTF-8",
                     "Host": "bh.m.jd.com",
                     "Origin": "https://h5.m.jd.com",
-                    "X-Requested-With": "com.jingdong.app.mall",
-                    "Referer": "https://h5.m.jd.com/babelDiy/Zeus/41Lkp7DumXYCFmPYtU3LTcnTTXTX/index.html",
+                    "Referer": "https://h5.m.jd.com",
                     "User-Agent": `jdapp;android;10.0.2;9;8363237353630343334383837333-73D2164353034363465693662666;network/wifi;model/MI 8;addressid/138087843;aid/0a4fc8ec9548a7f9;oaid/3ac46dd4d42fa41c;osVer/28;appBuild/88569;partner/jingdong;eufv/1;jdSupportDarkMode/0;Mozilla/5.0 (Linux; Android 9; MI 8 Build/PKQ1.180729.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/77.0.3865.120 MQQBrowser/6.2 TBS/045715 Mobile Safari/537.36`,
                 }
             }
@@ -566,50 +548,23 @@ let utils = {
             req.end();
         });
     },
-    get_risk_result: async function ($) {
-        var appid = "50082";
-        var TouchSession = this.getTouchSession();
-        if (!joyytoken || joyytoken_count > 18) {
-            joyytoken = JSON.parse(await this.gettoken(`content={"appname":"${appid}","whwswswws":"","jdkey":"-a45046de9fbf-0a4fc8ec9548a7f9","body":{"platform":"1"}}`))["joyytoken"];
-            //console.log("第一次请求joyytoken");
-            joyytoken_count = 0;
-        }
-        joyytoken_count++;
-        let riskData;
-        switch ($.action) {
-            case 'startTask':
-                riskData = {
-                    taskId: $.id
-                };
-                break;
-            case 'chargeScores':
-                riskData = {
-                    bubleId: $.id
-                };
-                break;
-            case 'sign':
-                riskData = {};
-            default:
-                break;
-        }
-
-        var random = Math.floor(1e+6 * Math.random()).toString().padEnd(6, '8');
-        var senddata = this.objToString2(this.RecursiveSorting({
-            pin: $.UserName,
-            random,
-            ...riskData
-        }));
+    getTouchSession: function () {
+        var e = (new Date).getTime(),
+            t = this.getRandomInt(1e3, 9999);
+        return String(e) + String(t)
+    },
+    get_risk_result: function (e, appid, token) {
+        if (token.substr(0, appid.length) === appid) token = token.substr(appid.length);
+        var senddata = this.objToString2(this.RecursiveSorting(e.data));
         var time = this.getCurrentTime();
-        // time = 1626970587918;
-        var encrypt_id = this.decipherJoyToken(appid + joyytoken, appid)["encrypt_id"].split(",");
+        var encrypt_id = this.decipherJoyToken(appid + token, appid)["encrypt_id"].split(",");
         var nonce_str = this.getRandomWord(10);
-        // nonce_str="iY8uFBbYX7";
         var key = this.getKey(encrypt_id[2], nonce_str, time);
 
-        var str1 = `${senddata}&token=${joyytoken}&time=${time}&nonce_str=${nonce_str}&key=${key}&is_trust=1`;
-        //console.log(str1);
+        var str1 = `${senddata}&token=${token}&time=${time}&nonce_str=${nonce_str}&key=${key}&is_trust=1`;
+        console.log(str1);
         str1 = this.sha1(str1);
-        var outstr = [time, "1" + nonce_str + joyytoken, encrypt_id[2] + "," + encrypt_id[3]];
+        var outstr = [time, "1" + nonce_str + token, encrypt_id[2] + "," + encrypt_id[3]];
         outstr.push(str1);
         outstr.push(this.getCrcCode(str1));
         outstr.push("C");
@@ -633,13 +588,14 @@ let utils = {
             pdn: [],
             ro: ["f", "f", "f", "f", "f", "f", "f"],
             scr: [818, 393],
-            ss: TouchSession,
+            ss: "a",
             t: time,
             tm: [],
             tnm: [],
             wea: "ffttttua",
             wed: "ttttt",
         };
+
         //console.log(data);
         //console.log(JSON.stringify(data));
         data = new Buffer.from(this.xorEncrypt(JSON.stringify(data), key)).toString('base64');
@@ -647,17 +603,12 @@ let utils = {
         outstr.push(data);
         outstr.push(this.getCrcCode(data));
         //console.log(outstr.join("~"));
-        $.joyytoken = `joyytoken=${appid + joyytoken};`;
         return {
-            extraData: {
-                log: outstr.join("~"),
-                sceneid: "DDhomePageh5"
-            },
-            ...riskData,
-            random,
+            log: outstr.join("~")
         };
     }
 };
+
 module.exports = {
     utils
-}
+};
