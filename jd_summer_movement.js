@@ -220,8 +220,8 @@ async function movement() {
     }
     
     if(!$.hotFlag) await takePostRequest('olympicgames_getTaskDetail');
-    console.log(`\n做任务\n`);
     if(`${summer_movement_HelpHelpHelpFlag}` === "true") return
+    console.log(`\n做任务\n`);
     await $.wait(1000);
     //做任务
     for (let i = 0; i < $.taskList.length && !$.hotFlag; i++) {
