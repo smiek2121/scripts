@@ -118,15 +118,28 @@ getUA()
     $.ShInviteLists.push(...$.ShInviteList);
   }
   for (let i = 0; i < cookiesArr.length; i++) {
-    $.cookie = cookiesArr[i];
-    $.canHelp = true;
-    $.hotFlag = false;
-    $.UserName = decodeURIComponent($.cookie.match(/pt_pin=([^; ]+)(?=;?)/) && $.cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
     if (!$.secretpInfo[$.UserName]) {
       continue;
     }
-    // $.secretp = $.secretpInfo[$.UserName];
     $.index = i + 1;
+    let out = false
+    for(let c of outuserIdArr){
+        if(c == $.index) {
+            out = true
+            break
+        }
+    }
+    if(out) continue
+    $.canHelp = true;
+    $.hotFlag = false;
+    $.cookie = cookiesArr[i] + "pwdt_id:" + encodeURIComponent($.UserName) + ";";
+    $.UserName = decodeURIComponent($.cookie.match(/pt_pin=([^; ]+)(?=;?)/) && $.cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
+    $.cookie = $.cookie + "pwdt_id:" + encodeURIComponent($.UserName) + ";";
+    $.nickName = $.UserName;
+    $.joyytoken = ''
+    joyytoken_count = 1
+    getUA()
+    // $.secretp = $.secretpInfo[$.UserName];
     if (new Date().getUTCHours() + 8 >= 8) {
       if(Number(summer_movement_ShHelpFlag) === 1){
         if ($.ShInviteLists && $.ShInviteLists.length) console.log(`\n******开始内部京东账号【百元守卫战SH】助力*********\n`);
