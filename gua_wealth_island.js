@@ -542,7 +542,7 @@ async function ActTask(){
       for(let i in $.Biztask.Data.TaskList){
         let item = $.Biztask.Data.TaskList[i]
         if(item.dwAwardStatus != 2 && item.dwCompleteNum === item.dwTargetNum) continue
-        console.log(`去做任务 ${item.strTaskName},${item.dwAwardStatus},${item.dwOrderId},${item.dwCompleteNum},${item.dwTargetNum}`)
+        console.log(`任务 ${item.strTaskName} ${item.dwCompleteNum}/${item.dwTargetNum}`)
         if (item.dwAwardStatus == 2 && item.dwCompleteNum === item.dwTargetNum) {
           res = await taskGet(`Award1`, '_cfd_t,bizCode,dwEnv,ptag,source,strZone,taskId', `&ptag=&taskId=${item.ddwTaskId}`)
           if(res.ret == 0){
@@ -559,27 +559,34 @@ async function ActTask(){
           }
           await $.wait(1000)
         }
-        if(item.dwAwardStatus == 2 && item.dwCompleteNum < item.dwTargetNum && [2].includes(item.dwOrderId)){
+        if(item.dwAwardStatus == 2 && item.dwCompleteNum < item.dwTargetNum && [1,2].includes(item.dwOrderId)){
+          await $.wait(1000)
           if(item.dwOrderId == 2){
-            let b = (item.dwTargetNum-item.dwCompleteNum)
-            // 热气球接客
-            await service(b)
-            await $.wait(1000)
-            res = await taskGet(`Award1`, '_cfd_t,bizCode,dwEnv,ptag,source,strZone,taskId', `&ptag=&taskId=${item.ddwTaskId}`)
-            if(res.ret == 0){
-              if(res.data.prizeInfo){
-                res.data.prizeInfo = $.toObj(res.data.prizeInfo)
-              }
-              if(res.data.prizeInfo.ddwCoin || res.data.prizeInfo.ddwMoney){
-                console.log(`${item.strTaskName} 领取奖励:${res.data.prizeInfo.ddwCoin && res.data.prizeInfo.ddwCoin+'金币' || ''} ${res.data.prizeInfo.ddwMoney && res.data.prizeInfo.ddwMoney+'财富' || ''}`)
-              }else{
-                console.log(`${item.strTaskName} 领取奖励:`, JSON.stringify(res))
-              }
-            }else{
-              console.log(`${item.strTaskName} 领取奖励失败:`, JSON.stringify(res))
+            if(item.strTaskName.indexOf('热气球接待') > -1){
+              let b = (item.dwTargetNum-item.dwCompleteNum)
+              // 热气球接客
+              await service(b)
+              await $.wait((Number(item.dwLookTime) * 1000) || 1000)
             }
-            await $.wait(1000)
+          }else if(item.dwOrderId == 1){
+            await $.wait((Number(item.dwLookTime) * 1000) || 1000)
+            res = await taskGet('DoTask1', '_cfd_t,bizCode,configExtra,dwEnv,ptag,source,strZone,taskId', `&ptag=&taskId=${item.ddwTaskId}&configExtra=`)
           }
+          await $.wait(1000)
+          res = await taskGet(`Award1`, '_cfd_t,bizCode,dwEnv,ptag,source,strZone,taskId', `&ptag=&taskId=${item.ddwTaskId}`)
+          if(res.ret == 0){
+            if(res.data.prizeInfo){
+              res.data.prizeInfo = $.toObj(res.data.prizeInfo)
+            }
+            if(res.data.prizeInfo.ddwCoin || res.data.prizeInfo.ddwMoney){
+              console.log(`${item.strTaskName} 领取奖励:${res.data.prizeInfo.ddwCoin && res.data.prizeInfo.ddwCoin+'金币' || ''} ${res.data.prizeInfo.ddwMoney && res.data.prizeInfo.ddwMoney+'财富' || ''}`)
+            }else{
+              console.log(`${item.strTaskName} 领取奖励:`, JSON.stringify(res))
+            }
+          }else{
+            console.log(`${item.strTaskName} 领取奖励失败:`, JSON.stringify(res))
+          }
+          await $.wait(1000)
         }
       }
     }
@@ -740,11 +747,14 @@ function getGetRequest(type, stk='', additional='') {
   }else{
     let stks = ''
     if(stk) stks = `&_stk=${stk}`
-    if(type == 'GetUserTaskStatusList' || type == 'Award' || type == 'Award1' || type == 'DoTask'){
+    if(type == 'GetUserTaskStatusList' || type == 'Award' || type == 'Award1' || type == 'DoTask' || type == 'DoTask1'){
       let bizCode = 'jxbfd'
       if(type == 'Award1'){
         bizCode = 'jxbfddch'
         type = 'Award'
+      }else if(type == 'DoTask1'){
+        bizCode = 'jxbfddch'
+        type = 'DoTask'
       }
       url = `https://m.jingxi.com/newtasksys/newtasksys_front/${type}?strZone=jxbfd&bizCode=${bizCode}&source=jxbfd&dwEnv=3&_cfd_t=${Date.now()}${additional}${stks}&_ste=1&_=${Date.now()}&sceneval=2&g_login_type=1`
     }else if(type == 'user/ComposeGameAddProcess' || type == 'user/ComposeGameAward'){
