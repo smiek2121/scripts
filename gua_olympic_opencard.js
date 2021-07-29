@@ -48,6 +48,12 @@ message = ""
     });
     return;
   }
+  if ($.isNode()) {
+    if (process.env.guaolympicopencard !== 'true') {
+      console.log('如需执行脚本请设置环境变量[guaolympicopencard]为"true"')
+      return
+    }
+  }
   $.shareUuid = '58d4dd7248884e2b8ce01393e81b74d0'
   for (let i = 0; i < cookiesArr.length; i++) {
     cookie = cookiesArr[i];
