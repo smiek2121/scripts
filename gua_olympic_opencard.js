@@ -49,7 +49,7 @@ message = ""
     return;
   }
   if ($.isNode()) {
-    if (process.env.guaolympicopencard == 'true') {
+    if (!process.env.guaolympicopencard || process.env.guaolympicopencard == "false") {
       console.log('如需执行脚本请设置环境变量[guaolympicopencard]为"true"')
       return
     }
