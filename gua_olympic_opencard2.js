@@ -1,8 +1,8 @@
 /*
 第一个账号助力作者 其他依次助力CK1
-第一个CK失效会全都助力作者
+第一个CK失效会退出脚本
 
-邀请一人奖励30豆 先到先得
+邀请一人有几率奖励30豆 先到先得（不是邀请就都有豆的
 
 入口
 
@@ -64,6 +64,7 @@ message = ""
       $.isLogin = true;
       getUA()
       $.nickName = '';
+      $.actorUuid = '';
       console.log(`\n\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
       if (!$.isLogin) {
         $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {
@@ -117,8 +118,13 @@ message = ""
       await getActorUuid()
       // $.log($.actorUuid)
       $.log($.shareUuid)
-      if (i === 0 && $.actorUuid) {
-        $.shareUuid = $.actorUuid;
+      if (i === 0) {
+        if($.actorUuid){
+          $.shareUuid = $.actorUuid;
+        }else{
+          console.log('账号1获取不到[shareUuid]退出执行，请重新执行')
+          return
+        }
       }
     }
   }
