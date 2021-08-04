@@ -816,10 +816,8 @@ let utils = {
         var timestamp = this.getCurrentTime();
         var nonce_str = this.getRandomWord(10);
         var isDefaultKey = "B";
-        // timestamp = 1627139784174;
         refer = "com.miui.home";
         encrypeid = "x";
-        //nonce_str = "jNN40H0elF";
         var json = {
             r: refer,
             a: "",
@@ -831,8 +829,6 @@ let utils = {
         var key = encrypefun[encrypeid](timestamp.toString(), nonce_str);
         //console.log(key);
         var cipher = encrypefun["jiami"](JSON.stringify(json), key);
-        //sOf+"~1"+sa1+sb+"~"+sb1+"~~~"+str+"~"+sa+"~"+sa2;
-        //"1627139784174~1jNN40H0elF14e91ebb633928c23d5afbaa8f947952~x~~~B~TBJHGg0bVAlaF1oPTVwfXQtaVBdJFQcVChcaGxtURA0bVkQUF0cXXhUDG1AZXhUcF0wVAxVSBg4DREU=~0v3u0bq",
         return `${timestamp}~1${nonce_str+token}~${encrypeid}~~~${isDefaultKey}~${cipher}~${this.getCrcCode(cipher)}`;
     },
     get_risk_result: async function ($) {
@@ -840,7 +836,6 @@ let utils = {
         var TouchSession = this.getTouchSession();
         if (!$.joyytoken || $.joyytoken_count > 18) {
             $.joyytoken = JSON.parse(await this.gettoken($.UA))["joyytoken"];
-            //console.log("第一次请求joyytoken");
             $.joyytoken_count = 0;
         }
         $.joyytoken_count++;
@@ -869,14 +864,11 @@ let utils = {
             ...riskData
         }));
         var time = this.getCurrentTime();
-        // time = 1626970587918;
         var encrypt_id = this.decipherJoyToken(appid + $.joyytoken, appid)["encrypt_id"].split(",");
         var nonce_str = this.getRandomWord(10);
-        // nonce_str="iY8uFBbYX7";
         var key = this.getKey(encrypt_id[2], nonce_str, time.toString());
 
         var str1 = `${senddata}&token=${$.joyytoken}&time=${time}&nonce_str=${nonce_str}&key=${key}&is_trust=1`;
-        //console.log(str1);
         str1 = this.sha1(str1);
         var outstr = [time, "1" + nonce_str + $.joyytoken, encrypt_id[2] + "," + encrypt_id[3]];
         outstr.push(str1);
@@ -885,7 +877,7 @@ let utils = {
         var data = {}
         data = {
             tm: [],
-            tnm: [],
+            tnm: [ 'd5-9L,JU,8DB,a,t', 'd7-9L,JU,8HF,a,t', 'd1-9M,JV,8JH,u,t' ],
             grn: $.joyytoken_count,
             ss: TouchSession,
             wed: 'ttttt',
@@ -893,7 +885,6 @@ let utils = {
             pdn: [ 7, (Math.floor(Math.random() * 1e8) % 180) + 1, 6, 11, 1, 5 ],
             jj: 1,
             cs: hexMD5("Object.P.<computed>=&HTMLDocument.Ut.<computed>=https://storage.360buyimg.com/babel/00750963/1942873/production/dev/main.e5d1c436.js"),
-            // cs:"4d8853ea4e4f10d8bde7071dd7fb0ed4",
             np: 'iPhone',
             t: time,
             jk: `${$.UUID}`,
@@ -905,7 +896,7 @@ let utils = {
               'iPhone12,1',
               'iOS',
               '14.3',
-              '10.0.8',
+              '10.0.10',
               '167741',
               `${$.UUID}`,
               'a'
@@ -919,13 +910,9 @@ let utils = {
             blog: "a",
             msg: ''
         }
-        // console.log(data);
-        //console.log(JSON.stringify(data));
         data = new Buffer.from(this.xorEncrypt(JSON.stringify(data), key)).toString('base64');
-        //console.log(data);
         outstr.push(data);
         outstr.push(this.getCrcCode(data));
-        //console.log(outstr.join("~"));
         return {
             extraData: {
                 log: outstr.join("~"),
