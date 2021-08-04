@@ -782,7 +782,7 @@ function taskGet(type, stk, additional){
 }
 function getGetRequest(type, stk='', additional='') {
   let url = ``;
-  let dwEnv = 3;
+  let dwEnv = 7;
   if(type == 'user/ComposeGameState'){
     url = `https://m.jingxi.com/jxbfd/${type}?__t=${Date.now()}&strZone=jxbfd&dwFirst=1&_=${Date.now()}&sceneval=2`
   }else if(type == 'user/RealTmReport'){
