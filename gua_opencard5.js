@@ -16,7 +16,7 @@
 guaopencard5="true"
 
 入口
-https://lzdz1-isv.isvjcloud.com/dingzhi/dz/openCard/activity/2611148?activityId=5a1b7bc1f22e4bc5b5686bb54749de2e&shareUuid=e3b48e5703544ec094b727e3e65b6672
+8.5-8.12 冰爽夏日 钜惠送好礼 (https://lzdz1-isv.isvjcloud.com/dingzhi/dz/openCard/activity/2611148?activityId=5a1b7bc1f22e4bc5b5686bb54749de2e&shareUuid=e3b48e5703544ec094b727e3e65b6672)
 
 ============Quantumultx===============
 [task_local]
