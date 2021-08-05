@@ -14,7 +14,10 @@
 默认脚本不执行
 如需执行脚本请设置环境变量
 guaopencard5="true"
-
+————————————————
+若是手机用户(不是nodejs环境) 是默认直接执行脚本的
+没有适配加购变量 所有是不加购
+————————————————
 入口
 8.5-8.12 冰爽夏日 钜惠送好礼 (https://lzdz1-isv.isvjcloud.com/dingzhi/dz/openCard/activity/2611148?activityId=5a1b7bc1f22e4bc5b5686bb54749de2e&shareUuid=e3b48e5703544ec094b727e3e65b6672)
 
