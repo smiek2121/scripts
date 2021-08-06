@@ -80,6 +80,7 @@ $.inviter = []
         for(let n in $.inviter){
           if($.inviter[n]){
             $.inviterFlag = 0
+            $.inviteCeil = 0
             console.log(`${$.UserName}助力${$.inviter[n]}`)
             await taskPost(`invite?inviter_id=${$.inviter[n]}&from_type=1`)
             if($.inviteCeil == 1) break
