@@ -294,7 +294,12 @@ function taskPost(type) {
             console.log(data)
           }
         }else{
-          console.log(data)
+          if (err) {
+            console.log(`${$.toStr(err)}`)
+            console.log(`${$.name} userInfo API请求失败，请检查网路重试`)
+          }else{
+            console.log(data)
+          }
         }
         
       } catch (e) {
@@ -345,7 +350,12 @@ function task(type) {
             console.log(data)
           }
         }else{
-          console.log(data)
+          if (err) {
+            console.log(`${$.toStr(err)}`)
+            console.log(`${$.name} userInfo API请求失败，请检查网路重试`)
+          }else{
+            console.log(data)
+          }
         }
       } catch (e) {
         $.logErr(e, resp)
@@ -373,16 +383,23 @@ function userInfo() {
       }
     }, async (err, resp, data) => {
       try {
-        if (err) {
-          console.log(`${$.toStr(err)}`)
-          console.log(`${$.name} userInfo API请求失败，请检查网路重试`)
-        } else {
-          res = $.toObj(data)
-          if(typeof res == 'object'){
+        res = $.toObj(data)
+        if(typeof res == 'object'){
+          if(res.status_code){
+            console.log(res.message + "|" +res.status_code)
+          }else{
             if(res.access_token) $.access_token = res.access_token
             if(res.token_type) $.token_type = res.token_type
           }
+        }else{
+          if (err) {
+            console.log(`${$.toStr(err)}`)
+            console.log(`${$.name} userInfo API请求失败，请检查网路重试`)
+          }else{
+            console.log(data)
+          }
         }
+        
       } catch (e) {
         $.logErr(e, resp)
       } finally {
@@ -391,6 +408,7 @@ function userInfo() {
     })
   })
 }
+
 function isvObfuscator() {
   return new Promise(resolve => {
     $.post({
