@@ -161,9 +161,13 @@ async function run() {
           for (let i = 0; i < $.shopList.data.length; i++) {
             $.oneTask = $.shopList.data[i];
             if($.oneTask.is_follow != 0 && $.oneTask.is_task != 0) continue;
-            console.log(`关注店铺 ${$.oneTask.name}`)
+            console.log(`关注店铺 ${$.oneTask.name} ${$.oneTask.is_follow} ${$.oneTask.is_task}`)
             $.resTask = ''
-            await taskPost(`follow_shop?id=${$.oneTask.id}`)
+            if($.oneTask.is_follow == 0){
+              await taskPost(`follow_shop?id=${$.oneTask.id}`)
+            }else if($.oneTask.is_task == 0){
+              await taskPost(`view_shop?id=${$.oneTask.id}`)
+            }
           }
         }
       }
@@ -177,7 +181,11 @@ async function run() {
             if($.oneTask.is_add != 0 && $.oneTask.is_task != 0) continue;
             console.log(`加购商品 ${$.oneTask.name}`)
             $.resTask = ''
-            await taskPost(`add_product?id=${$.oneTask.id}`)
+            if($.oneTask.is_add == 0){
+              await taskPost(`add_product?id=${$.oneTask.id}`)
+            }else if($.oneTask.is_task == 0){
+              await taskPost(`view_product?id=${$.oneTask.id}`)
+            }
           }
         }
       }
@@ -264,7 +272,9 @@ function taskPost(type) {
               $.inviteCeil = 2
             }
           }else if(type.indexOf('follow_shop?id') == 0 ||
+              type.indexOf('view_shop?id') == 0 ||
               type.indexOf('add_product?id') == 0 ||
+              type.indexOf('view_product?id') == 0 ||
               type.indexOf('meeting_view?id') == 0 ||
               type.indexOf('chat') == 0 ||
               type.indexOf('map_light') == 0 ||
