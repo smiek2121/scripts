@@ -306,7 +306,6 @@ function join(venderId) {
     await getshopactivityId(venderId)
     $.get(ruhui(`${venderId}`), async (err, resp, data) => {
       try {
-        // console.log(data)
         data = JSON.parse(data);
         if(data.success == true){
           $.log(data.message)
