@@ -507,7 +507,6 @@ function adLog() {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          //  data = JSON.parse(data);
           let setcookie = resp['headers']['set-cookie'] || resp['headers']['Set-Cookie'] || ''
           if(setcookie){
             let LZ_TOKEN_KEY = setcookie.filter(row => row.indexOf("LZ_TOKEN_KEY") !== -1)[0]
