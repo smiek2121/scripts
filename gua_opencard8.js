@@ -351,7 +351,6 @@ function startDraw(type) {
         if (err) {
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          // $.log($.toStr(data))
           data = $.toObj(data);
           if(data.errorMessage || data.data.errorMessage) console.log(`抽奖：${data.errorMessage || data.data.errorMessage || ''}`)
           if(data.count == 0 && data.result == true){
