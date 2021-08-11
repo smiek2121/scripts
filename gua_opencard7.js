@@ -64,10 +64,10 @@ message = ""
       console.log('如需执行脚本请设置环境变量[guaopencard7]为"true"')
       return
     }
-  }
-  guaopencard_addSku = process.env.guaopencard_addSku7
-  if (!process.env.guaopencard_addSku7 || process.env.guaopencard_addSku7 == "false") {
-    console.log('如需加购请设置环境变量[guaopencard_addSku7]为"true"')
+    guaopencard_addSku = process.env.guaopencard_addSku7
+    if (!process.env.guaopencard_addSku7 || process.env.guaopencard_addSku7 == "false") {
+      console.log('如需加购请设置环境变量[guaopencard_addSku7]为"true"')
+    }
   }
   $.shareUuid = '976abef915bf40ae9e6adc93c1693d9a'
   $.activityId = 'dz2108100001616201'
@@ -514,8 +514,12 @@ function adLog() {
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
           //  data = JSON.parse(data);
-          let setcookie = resp['headers']['set-cookie'] || resp['headers']['Set-Cookie'] || ''
-          if(setcookie){
+          let setcookies = resp['headers']['set-cookie'] || resp['headers']['Set-Cookie'] || ''
+          let setcookie = ''
+          if(setcookies){
+            if(typeof setcookies != 'object'){
+              setcookie = setcookies.split(',')
+            }else setcookie = setcookies
             let LZ_TOKEN_KEY = setcookie.filter(row => row.indexOf("LZ_TOKEN_KEY") !== -1)[0]
             if(LZ_TOKEN_KEY && LZ_TOKEN_KEY.indexOf("LZ_TOKEN_KEY=") > -1){
               $.LZ_TOKEN_KEY = LZ_TOKEN_KEY.split(';') && (LZ_TOKEN_KEY.split(';')[0]) || ''
@@ -580,8 +584,12 @@ function getMyPing() {
           console.log(`${$.name} getMyPing API请求失败，请检查网路重试`)
         } else {
           res = $.toObj(data);
-          let setcookie = resp['headers']['set-cookie'] || resp['headers']['Set-Cookie'] || ''
-          if(setcookie){
+          let setcookies = resp['headers']['set-cookie'] || resp['headers']['Set-Cookie'] || ''
+          let setcookie = ''
+          if(setcookies){
+            if(typeof setcookies != 'object'){
+              setcookie = setcookies.split(',')
+            }else setcookie = setcookies
             let lz_jdpin_token = setcookie.filter(row => row.indexOf("lz_jdpin_token") !== -1)[0]
             $.lz_jdpin_token = ''
             if(lz_jdpin_token && lz_jdpin_token.indexOf("lz_jdpin_token=") > -1){
