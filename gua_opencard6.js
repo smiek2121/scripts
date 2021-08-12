@@ -131,6 +131,7 @@ async function run() {
           }else if($.task.showOrder == 2){
             $.cacheNum = 0
             $.doTask = false
+            $.outActivity = false
             let name = `${1 == $.oneTask.groupType ? "关注并浏览店铺" : 2 == $.oneTask.groupType ? "加购并浏览商品" : 3 == $.oneTask.groupType ? "关注并浏览频道" : 6 == $.oneTask.groupType ? "浏览会场" : "未知"}`
             let msg = `(${$.oneTask.finishCount}/${$.oneTask.taskCount})`
             let status = `${$.oneTask.finishCount >= $.oneTask.taskCount && '已完成' || "去" + (1 == $.oneTask.groupType ? "关注" : 2 == $.oneTask.groupType ? "加购" : 3 == $.oneTask.groupType ? "关注" : 6 == $.oneTask.groupType ? "浏览" : "做任务")}`
@@ -140,7 +141,8 @@ async function run() {
             if($.oneTask.finishCount < $.oneTask.taskCount){
               await doTask(`{"configCode":"${item.configCode}","groupType":${$.oneTask.groupType},"itemId":"${$.oneTask.item.itemId}","eid":"${$.eid}","fp":"${$.fp}"}`)
               let c = $.oneTask.taskCount - $.oneTask.finishCount - 1
-              for(n=2;c--;n++){
+              for(n=2;c-- && !$.outActivity;n++){
+                if($.outActivity) break
                 console.log(`第${n}次`)
                 await getActivity(item.configCode,item.configName,$.oneTask.groupType)
                 $.oneTasks = ''
@@ -273,8 +275,11 @@ function doTask(body) {
           if(typeof res == 'object'){
             if(res.success == true){
               console.log(`领奖成功:${$.oneTask.rewardQuantity}京豆`)
-            }else{
+            }else if(res.errorMessage){
+              if(res.errorMessage.indexOf('活动已结束') > -1) $.outActivity = true
               console.log(`${res.errorMessage}`)
+            }else{
+              console.log(data)
             }
           }
           
