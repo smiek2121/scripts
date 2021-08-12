@@ -97,11 +97,11 @@ async function run() {
 
       {configCode:'d9de88cd314b4455859027978a7abb68',configName:'七夕联合开卡第一组'},
       {configCode:'ec46a109054a463395c5666694908d5a',configName:'七夕联合开卡第2组 新'},
-      {configCode:'c8240993509a49da9b53645084a69e12',configName:'七夕任务组件1-2组'},
+      // {configCode:'c8240993509a49da9b53645084a69e12',configName:'七夕任务组件1-2组'},
       {configCode:'9af170296a9f4bce8268eb5c813bb359',configName:'七夕联合开卡第三组'},
       {configCode:'4f6dac3a61084e23bf9bcad9360987d8',configName:'七夕联合开卡第4组'},
       {configCode:'af1ac7eba89c4b089c1d6976988e1013',configName:'七夕联合开卡第5组 新'},
-      {configCode:'abe6bafe2f6b4efca6ba5b429daf5f26',configName:'七夕任务组件3-5组'}
+      // {configCode:'abe6bafe2f6b4efca6ba5b429daf5f26',configName:'七夕任务组件3-5组'}
     ]
     for(let i in config){
       $.hotFlag = false
