@@ -289,7 +289,7 @@ async function lottery() {
         if (result.userAwardsCacheDto.type == 0)
           console.log('抽个寂寞')
         else if (result.userAwardsCacheDto.type == 2) {
-          $.beans += result.userAwardsCacheDto.jBeanAwardVo.quantity || 0
+          $.beans += Number(result.userAwardsCacheDto.jBeanAwardVo.quantity) || 0
           console.log(result.userAwardsCacheDto.jBeanAwardVo)
         } else
           console.log('没用的优惠券' + JSON.stringify(result))
