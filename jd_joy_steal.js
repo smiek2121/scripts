@@ -45,6 +45,7 @@ let jdNotify = false;//是否开启静默运行，false关闭静默运行(即通
 let jdJoyHelpFeed = true;//是否给好友喂食，false为不给喂食，true为给好友喂食，默认给好友喂食
 let jdJoyStealCoin = true;//是否偷好友积分与狗粮，false为否，true为是，默认是偷
 let JD_API_HOST = 'https://jdjoy.jd.com'
+$.invokeKey = 'ztmFUCxcPMNyUq0P'
 if(process.env.JOY_HOST){
   JD_API_HOST = process.env.JOY_HOST
 }
@@ -286,7 +287,7 @@ async function helpFriendsFeed() {
 }
 function getFriends(currentPage = '1') {
   return new Promise(resolve => {
-    const url = `${JD_API_HOST}/common/pet/h5/getFriends?itemsPerPage=20&currentPage=${currentPage * 1}&reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F`
+    const url = `${JD_API_HOST}/common/pet/h5/getFriends?itemsPerPage=20&currentPage=${currentPage * 1}&reqSource=h5&invokeKey=${$.invokeKey}`
     const options = {
       url,
       headers: {
@@ -465,7 +466,7 @@ function getRandomFood(friendPin) {
 }
 function getCoinChanges() {
   return new Promise(resolve => {
-    const url = `${JD_API_HOST}/common/pet/getCoinChanges?changeDate=${Date.now()}&reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F`
+    const url = `${JD_API_HOST}/common/pet/getCoinChanges?changeDate=${Date.now()}&reqSource=h5&invokeKey=${$.invokeKey}`
     const options = {
       url,
       headers: {
@@ -583,7 +584,7 @@ function TotalBean() {
   })
 }
 function taskUrl(functionId, friendPin) {
-  const url = `${JD_API_HOST}/common/pet/${functionId}?reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F${friendPin && "&friendPin=" + encodeURI(friendPin)}`
+  const url = `${JD_API_HOST}/common/pet/${functionId}?reqSource=h5&invokeKey=${$.invokeKey}${friendPin && "&friendPin=" + encodeURI(friendPin)}`
   return {
     url,
     headers: {

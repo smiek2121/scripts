@@ -49,6 +49,7 @@ let joyRunFlag = true;
 let jdNotify = true;//是否开启静默运行，默认true开启
 let joyRunNotify = true;//宠汪汪赛跑获胜后是否推送通知，true推送，false不推送通知
 let JD_API_HOST = 'https://jdjoy.jd.com'
+$.invokeKey = 'ztmFUCxcPMNyUq0P'
 if(process.env.JOY_HOST){
   JD_API_HOST = process.env.JOY_HOST
 }
@@ -412,10 +413,9 @@ async function appPetTask() {
 }
 function getDeskGoodDetails() {
   return new Promise(resolve => {
-    // const url = `${JD_API_HOST}/getDeskGoodDetails`;
     const host = `jdjoy.jd.com`;
     const reqSource = 'h5';
-    const url = `${JD_API_HOST}/common/pet/getDeskGoodDetails?reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F`
+    const url = `${JD_API_HOST}/common/pet/getDeskGoodDetails?reqSource=h5&invokeKey=${$.invokeKey}`
     $.get(taskUrl(url, host, reqSource), (err, resp, data) => {
       try {
         if (err) {
@@ -434,7 +434,6 @@ function getDeskGoodDetails() {
 }
 function followScan(sku) {
   return new Promise(resolve => {
-    // const url = `${JD_API_HOST}/scan`;
     const host = `jdjoy.jd.com`;
     const reqSource = 'h5';
     const body = {
@@ -442,7 +441,7 @@ function followScan(sku) {
       "reqSource": "h5",
       sku
     }
-    const url = `${JD_API_HOST}/common/pet/scan?reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F`
+    const url = `${JD_API_HOST}/common/pet/scan?reqSource=h5&invokeKey=${$.invokeKey}`
     $.post(taskPostUrl(url, JSON.stringify(body), reqSource, host, 'application/json'), (err, resp, data) => {
       try {
         if (err) {
@@ -461,10 +460,9 @@ function followScan(sku) {
 //小程序逛会场，浏览频道，关注商品API
 function scanMarket(type, body, cType = 'application/json') {
   return new Promise(resolve => {
-    // const url = `${weAppUrl}/${type}`;
     const host = `jdjoy.jd.com`;
     const reqSource = 'weapp';
-    const url = `${JD_API_HOST}/common/pet/${type}?reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F`
+    const url = `${JD_API_HOST}/common/pet/${type}?reqSource=h5&invokeKey=${$.invokeKey}`
     if (cType === 'application/json') {
       body = JSON.stringify(body)
     }
@@ -486,10 +484,9 @@ function scanMarket(type, body, cType = 'application/json') {
 //app逛会场
 function appScanMarket(type, body) {
   return new Promise(resolve => {
-    // const url = `${JD_API_HOST}/${type}`;
     const host = `jdjoy.jd.com`;
     const reqSource = 'h5';
-    const url = `${JD_API_HOST}/common/pet/${type}?reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F`
+    const url = `${JD_API_HOST}/common/pet/${type}?reqSource=h5&invokeKey=${$.invokeKey}`
     $.post(taskPostUrl(url, JSON.stringify(body), reqSource, host, 'application/json'), (err, resp, data) => {
       try {
         if (err) {
@@ -510,10 +507,9 @@ function appScanMarket(type, body) {
 //签到
 function sign() {
   return new Promise(resolve => {
-    // const url = `${weAppUrl}/getFood?reqSource=weapp&taskType=${type}`;
     const host = `jdjoy.jd.com`;
     const reqSource = 'h5';
-    const url = `${JD_API_HOST}/common/pet/sign?reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F&taskType=SignEveryDay`
+    const url = `${JD_API_HOST}/common/pet/sign?reqSource=h5&invokeKey=${$.invokeKey}&taskType=SignEveryDay`
     $.get(taskUrl(url, host, reqSource), (err, resp, data) => {
       try {
         if (err) {
@@ -533,10 +529,9 @@ function sign() {
 //领取狗粮API
 function getFood(type) {
   return new Promise(resolve => {
-    // const url = `${weAppUrl}/getFood?reqSource=weapp&taskType=${type}`;
     const host = `jdjoy.jd.com`;
     const reqSource = 'weapp';
-    const url = `${JD_API_HOST}/common/pet/getFood?reqSource=weapp&taskType=${type}&reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F`
+    const url = `${JD_API_HOST}/common/pet/getFood?reqSource=weapp&taskType=${type}&reqSource=h5&invokeKey=${$.invokeKey}`
     $.get(taskUrl(url, host, reqSource), (err, resp, data) => {
       try {
         if (err) {
@@ -556,12 +551,9 @@ function getFood(type) {
 //领取狗粮API
 function iconClick(type, id) {
   return new Promise(resolve => {
-    // const url = `${weAppUrl}/getFood?reqSource=weapp&taskType=${type}`;
     const host = `jdjoy.jd.com`;
     const reqSource = 'weapp';
-    // ${JD_API_HOST}/common/pet/icon/click?iconCode=follow_channel&linkAddr=363&reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F
-    // console.log(type, id)
-    const url = `${JD_API_HOST}/common/pet/icon/click?iconCode=${type}&linkAddr=${id}&reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F`
+    const url = `${JD_API_HOST}/common/pet/icon/click?iconCode=${type}&linkAddr=${id}&reqSource=h5&invokeKey=${$.invokeKey}`
     $.get(taskUrl(url, host, reqSource), (err, resp, data) => {
       try {
         if (err) {
@@ -580,12 +572,10 @@ function iconClick(type, id) {
 //关注店铺api
 function followShop(shopId) {
   return new Promise(resolve => {
-    // const url = `${weAppUrl}/followShop`;
     const body = `shopId=${shopId}`;
     const reqSource = 'weapp';
     const host = 'jdjoy.jd.com';
-    // ${JD_API_HOST}/common/pet/followShop?validate=59d15039c5ad4d24af48fcec798962bf&reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F
-    const url = `${JD_API_HOST}/common/pet/followShop?reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F`
+    const url = `${JD_API_HOST}/common/pet/followShop?reqSource=h5&invokeKey=${$.invokeKey}`
     $.post(taskPostUrl(url, body, reqSource, host,'application/x-www-form-urlencoded'), (err, resp, data) => {
       try {
         if (err) {
@@ -603,10 +593,9 @@ function followShop(shopId) {
 }
 function enterRoom() {
   return new Promise(resolve => {
-    // const url = `${weAppUrl}/enterRoom/h5?reqSource=weapp&invitePin=&openId=`;
     const host = `jdjoy.jd.com`;
     const reqSource = 'weapp';
-    const url = `${JD_API_HOST}/common/pet/enterRoom/h5?reqSource=h5&invitePin=&openId=&invokeKey=qRKHmL4sna8ZOP9F`
+    const url = `${JD_API_HOST}/common/pet/enterRoom/h5?reqSource=h5&invitePin=&openId=&invokeKey=${$.invokeKey}`
     $.post({...taskUrl(url, host, reqSource),body:'{}'}, (err, resp, data) => {
       try {
         if (err) {
@@ -631,10 +620,9 @@ function enterRoom() {
 }
 function appGetPetTaskConfig() {
   return new Promise(resolve => {
-    // const url = `${JD_API_HOST}/getPetTaskConfig?reqSource=h5`;
     const host = `jdjoy.jd.com`;
     const reqSource = 'h5';
-    const url = `${JD_API_HOST}/common/pet/getPetTaskConfig?reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F`
+    const url = `${JD_API_HOST}/common/pet/getPetTaskConfig?reqSource=h5&invokeKey=${$.invokeKey}`
     $.get(taskUrl(url, host, reqSource), (err, resp, data) => {
       try {
         if (err) {
@@ -657,10 +645,9 @@ function feedPets(feedNum) {
     console.log(`您设置的喂食数量:${FEED_NUM}g\n`);
     if (FEED_NUM === 0) { console.log(`跳出喂食`);resolve();return }
     console.log(`实际的喂食数量:${feedNum}g\n`);
-    // const url = `${weAppUrl}/feed?feedCount=${feedNum}&reqSource=weapp`;
     const host = `jdjoy.jd.com`;
     const reqSource = 'weapp';
-    const url = `${JD_API_HOST}/common/pet/feed?feedCount=${feedNum}&reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F`
+    const url = `${JD_API_HOST}/common/pet/feed?feedCount=${feedNum}&reqSource=h5&invokeKey=${$.invokeKey}`
     $.get(taskUrl(url, host, reqSource), async (err, resp, data) => {
       try {
         if (err) {
@@ -707,12 +694,9 @@ function feedPets(feedNum) {
 }
 function getPetTaskConfig() {
   return new Promise(resolve => {
-    // const url = `${weAppUrl}/getPetTaskConfig?reqSource=weapp`;
-    // const host = `jdjoy.jd.com`;
-    // const reqSource = 'h5';
     const host = `jdjoy.jd.com`;
     const reqSource = 'h5';
-    const url = `${JD_API_HOST}//common/pet/getPetTaskConfig?reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F`
+    const url = `${JD_API_HOST}//common/pet/getPetTaskConfig?reqSource=h5&invokeKey=${$.invokeKey}`
     $.get(taskUrl(url, host, reqSource), (err, resp, data) => {
       try {
         if (err) {
@@ -732,10 +716,9 @@ function getPetTaskConfig() {
 //查询赛跑信息API
 function getPetRace() {
   return new Promise(resolve => {
-    // const url = `${JD_API_HOST}/combat/detail/v2?help=false`;
     const host = `jdjoy.jd.com`;
     const reqSource = 'h5';
-    const url = `${JD_API_HOST}/common/pet/combat/detail/v2?help=false&reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F`
+    const url = `${JD_API_HOST}/common/pet/combat/detail/v2?help=false&reqSource=h5&invokeKey=${$.invokeKey}`
     $.get(taskUrl(url, host, reqSource), (err, resp, data) => {
       try {
         if (err) {
@@ -756,9 +739,8 @@ function getPetRace() {
 //查询赛跑排行榜
 function getRankList() {
   return new Promise(resolve => {
-    // const url = `${JD_API_HOST}/combat/getRankList`;
     $.raceUsers = [];
-    const url = `${JD_API_HOST}/common/pet/combat/getRankList?reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F`
+    const url = `${JD_API_HOST}/common/pet/combat/getRankList?reqSource=h5&invokeKey=${$.invokeKey}`
     $.get(taskUrl(url, `jdjoy.jd.com`, 'h5'), (err, resp, data) => {
       try {
         if (err) {
@@ -784,10 +766,9 @@ function runMatch(teamLevel, timeout = 10000) {
   console.log(`正在参赛中，请稍等${timeout / 1000}秒，以防多个账号匹配到统一赛场\n`)
   return new Promise(async resolve => {
     await $.wait(timeout);
-    // const url = `${JD_API_HOST}/combat/match?teamLevel=${teamLevel}`;
     const host = `jdjoy.jd.com`;
     const reqSource = 'h5';
-    const url = `${JD_API_HOST}/common/pet/combat/match?teamLevel=${teamLevel}&reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F`
+    const url = `${JD_API_HOST}/common/pet/combat/match?teamLevel=${teamLevel}&reqSource=h5&invokeKey=${$.invokeKey}`
     $.get(taskUrl(url, host, reqSource), (err, resp, data) => {
       try {
         if (err) {
@@ -808,10 +789,9 @@ function runMatch(teamLevel, timeout = 10000) {
 //查询应援团信息API
 function getBackupInfo() {
   return new Promise(resolve => {
-    // const url = `${JD_API_HOST}/combat/getBackupInfo`;
     const host = `jdjoy.jd.com`;
     const reqSource = 'h5';
-    const url = `${JD_API_HOST}/common/pet/combat/getBackupInfo?reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F`
+    const url = `${JD_API_HOST}/common/pet/combat/getBackupInfo?reqSource=h5&invokeKey=${$.invokeKey}`
     $.get(taskUrl(url, host, reqSource), (err, resp, data) => {
       try {
         if (err) {
@@ -832,8 +812,7 @@ function getBackupInfo() {
 //查询赛跑获得多少积分
 function getWinCoin() {
   return new Promise(resolve => {
-    // const url = `${weAppUrl}/combat/detail/v2?help=false&reqSource=weapp`;
-    const url = `${JD_API_HOST}/common/pet/combat/detail/v2?help=false&reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F`
+    const url = `${JD_API_HOST}/common/pet/combat/detail/v2?help=false&reqSource=h5&invokeKey=${$.invokeKey}`
     $.get(taskUrl(url, 'jdjoy.jd.com', `h5`), (err, resp, data) => {
       try {
         if (err) {
@@ -856,10 +835,9 @@ function getWinCoin() {
 //领取赛跑奖励API
 function receiveJoyRunAward() {
   return new Promise(resolve => {
-    // const url = `${JD_API_HOST}/combat/receive`;
     const host = `jdjoy.jd.com`;
     const reqSource = 'h5';
-    const url = `${JD_API_HOST}/common/pet/combat/receive?reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F`
+    const url = `${JD_API_HOST}/common/pet/combat/receive?reqSource=h5&invokeKey=${$.invokeKey}`
     $.get(taskUrl(url, host, reqSource), (err, resp, data) => {
       try {
         if (err) {
@@ -901,8 +879,7 @@ async function energySupplyStation(showOrder) {
 }
 function getSupplyInfo(showOrder) {
   return new Promise(resolve => {
-    // const url = `${weAppUrl}/combat/getSupplyInfo?showOrder=${showOrder}`;
-    const url = `${JD_API_HOST}/common/pet/combat/getSupplyInfo?showOrder=${showOrder}&reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F`
+    const url = `${JD_API_HOST}/common/pet/combat/getSupplyInfo?showOrder=${showOrder}&reqSource=h5&invokeKey=${$.invokeKey}`
     $.get(taskUrl(url, 'jdjoy.jd.com', `weapp`), (err, resp, data) => {
       try {
         if (err) {
