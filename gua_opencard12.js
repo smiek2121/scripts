@@ -1,5 +1,5 @@
 /*
-8.18-8.25 全民818 一“促”即发" [gua_opencard12.js]
+8.18-8.25 全民818 一“促”即发 [gua_opencard12.js]
 新增开卡脚本
 一次性脚本
 
@@ -15,23 +15,23 @@
 如需执行脚本请设置环境变量
 guaopencard12="true"
 ————————————————
-入口：[8.18-8.25 全民818 一“促”即发" (https://lzdz1-isv.isvjcloud.com/dingzhi/dz/openCard/activity/7768835?activityId=02d54511202b4d1781088b66b9e07b9c&shareUuid=c0bcf5c57dcc4446aab0f0fe111f6497)]
+入口：[8.18-8.25 全民818 一“促”即发 (https://lzdz1-isv.isvjcloud.com/dingzhi/dz/openCard/activity/7768835?activityId=02d54511202b4d1781088b66b9e07b9c&shareUuid=c0bcf5c57dcc4446aab0f0fe111f6497)]
 ============Quantumultx===============
 [task_local]
-#8.18-8.25 全民818 一“促”即发"
-30 9,21 18-25 8 * https://raw.githubusercontent.com/smiek2221/scripts/master/gua_opencard12.js, tag=8.18-8.25 全民818 一“促”即发", enabled=true
+#8.18-8.25 全民818 一“促”即发
+30 9,21 18-25 8 * https://raw.githubusercontent.com/smiek2221/scripts/master/gua_opencard12.js, tag=8.18-8.25 全民818 一“促”即发, enabled=true
 
 ================Loon==============
 [Script]
-cron "30 9,21 18-25 8 *" script-path=https://raw.githubusercontent.com/smiek2221/scripts/master/gua_opencard12.js,tag=8.18-8.25 全民818 一“促”即发"
+cron "30 9,21 18-25 8 *" script-path=https://raw.githubusercontent.com/smiek2221/scripts/master/gua_opencard12.js,tag=8.18-8.25 全民818 一“促”即发
 
 ===============Surge=================
-8.18-8.25 全民818 一“促”即发" = type=cron,cronexp="30 9,21 18-25 8 *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/smiek2221/scripts/master/gua_opencard12.js
+8.18-8.25 全民818 一“促”即发 = type=cron,cronexp="30 9,21 18-25 8 *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/smiek2221/scripts/master/gua_opencard12.js
 
 ============小火箭=========
-8.18-8.25 全民818 一“促”即发" = type=cron,script-path=https://raw.githubusercontent.com/smiek2221/scripts/master/gua_opencard12.js, cronexpr="30 9,21 18-25 8 *", timeout=3600, enable=true
+8.18-8.25 全民818 一“促”即发 = type=cron,script-path=https://raw.githubusercontent.com/smiek2221/scripts/master/gua_opencard12.js, cronexpr="30 9,21 18-25 8 *", timeout=3600, enable=true
 */
-const $ = new Env('8.18-8.25 全民818 一“促”即发"');
+const $ = new Env('8.18-8.25 全民818 一“促”即发');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const notify = $.isNode() ? require('./sendNotify') : '';
 //IOS等用户直接用NobyDa的jd cookie
