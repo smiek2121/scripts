@@ -935,6 +935,8 @@ function taskPostUrl(url, body, reqSource, Host, ContentType) {
       'Host': Host,
       'origin': 'https://h5.m.jd.com',
       'referer': 'https://h5.m.jd.com/',
+      "lks": $.md5(""+$.invokeKey+lkt),
+      "lkt": lkt
     }
   }
 }
