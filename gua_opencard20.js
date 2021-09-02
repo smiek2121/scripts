@@ -277,6 +277,7 @@ function getShareRecord() {
           if(typeof res == 'object'){
             if(res.result === true && res.data){
               $.log(`=========== 你邀请了:${res.data.length}个`)
+              $.ShareCount = res.data.length
             }else if(typeof res == 'object' && res.errorMessage){
               console.log(`${res.errorMessage || ''}`)
             }else{
