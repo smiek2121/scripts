@@ -173,8 +173,10 @@ async function run(){
       console.log(`开始浏览商品`)
       await getproduct()
       for (let s of $.getproduct && $.getproduct || []) {
-        if(s.taskDone !== true) await saveTask('浏览商品', `scansku&param=${s.id}`);
-        if(s.taskDone !== true) await $.wait(parseInt(Math.random() * 1000 + 5000, 10))
+        if(s.taskDone !== true) {
+          await saveTask('浏览商品', `scansku&param=${s.id}`);
+          await $.wait(parseInt(Math.random() * 1000 + 5000, 10))
+        }
       }
     }
     await $.wait(parseInt(Math.random() * 1000 + 2000, 10))
@@ -216,6 +218,7 @@ async function run(){
         return
       }
     }
+    await $.wait(parseInt(Math.random() * 1000 + 6000, 10))
   }catch(e){
     console.log(e)
   }
