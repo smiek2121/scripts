@@ -196,7 +196,7 @@ async function run(){
         await draw(99)
         await $.wait(parseInt(Math.random() * 1000 + 4000, 10))
       }
-    }else console.log('如需抽奖请设置环境变量[guaopencard_draw22]为"true"');
+    }else console.log('如需抽奖请设置环境变量[guaopencard_draw22]为"3" 3为次数');
     if(gameFlag == 1){
       await $.wait(parseInt(Math.random() * 1000 + 2000, 10))
       await getActorUuid()
