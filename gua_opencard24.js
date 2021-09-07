@@ -221,6 +221,7 @@ function getActivity(code,name,flag) {
       try {
         if (err) {
           console.log(`${$.name} API请求失败，请检查网路重试`)
+          console.log(`${$.toStr(err,err)}`)
         } else {
           // console.log(data)
           res = $.toObj(data)
@@ -282,6 +283,7 @@ function doTask(body) {
       try {
         if (err) {
           console.log(`${$.name} API请求失败，请检查网路重试`)
+          console.log(`${$.toStr(err,err)}`)
         } else {
           await $.wait(parseInt(Math.random() * 1000 + 500, 10))
           // console.log(data)
@@ -300,7 +302,7 @@ function doTask(body) {
           
         }
       } catch (e) {
-        $.logErr(e, resp)
+        console.log(e)
       } finally {
         resolve(data);
       }
@@ -325,6 +327,7 @@ function getReward(body, flag = 0) {
       try {
         if (err) {
           console.log(`${$.name} API请求失败，请检查网路重试`)
+          console.log(`${$.toStr(err,err)}`)
         } else {
           // console.log(data)
           res = $.toObj(data)
@@ -339,7 +342,7 @@ function getReward(body, flag = 0) {
           
         }
       } catch (e) {
-        $.logErr(e, resp)
+        console.log(e)
       } finally {
         resolve(data);
       }
@@ -365,12 +368,13 @@ function statistic(body) {
       try {
         if (err) {
           console.log(`${$.name} API请求失败，请检查网路重试`)
+          console.log(`${$.toStr(err,err)}`)
         } else {
           // console.log(data)
           
         }
       } catch (e) {
-        $.logErr(e, resp)
+        console.log(e)
       } finally {
         resolve(data);
       }
@@ -397,7 +401,7 @@ function join(venderId) {
           $.log(data.message)
         }
       } catch (e) {
-        $.logErr(e, resp)
+        console.log(e)
       } finally {
         resolve(data);
       }
@@ -433,7 +437,7 @@ function getshopactivityId(venderId) {
           $.shopactivityId = data.result.interestsRuleList && data.result.interestsRuleList[0] && data.result.interestsRuleList[0].interestsInfo && data.result.interestsRuleList[0].interestsInfo.activityId || ''
         }
       } catch (e) {
-        $.logErr(e, resp)
+        console.log(e)
       } finally {
         resolve();
       }
@@ -469,12 +473,12 @@ function getHtml() {
     }, async (err, resp, data) => {
       try {
         if (err) {
-          console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
+          console.log(`${$.toStr(err,err)}`)
         } else {
         }
       } catch (e) {
-        $.logErr(e, resp)
+        console.log(e)
       } finally {
         resolve(data);
       }
@@ -495,8 +499,8 @@ function getEid(arr) {
     $.post(options, async (err, resp, data) => {
       try {
         if (err) {
-          console.log(`\n${turnTableId[i].name} 登录: API查询请求失败 ‼️‼️`)
-          throw new Error(err);
+          console.log(`\n登录: API查询请求失败 ‼️‼️`)
+          console.log(`${$.toStr(err,err)}`)
         } else {
           if (data.indexOf("*_*") > 0) {
             data = data.split("*_*", 2);
@@ -507,7 +511,7 @@ function getEid(arr) {
           }
         }
       } catch (e) {
-        $.logErr(e, resp);
+        console.log(e)
       } finally {
         resolve(data);
       }
