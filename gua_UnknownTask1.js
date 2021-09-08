@@ -49,7 +49,11 @@ $.hotFlag = false
       $.nickName = '';
       console.log(`\n\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
       await run();
-      if($.bean > 0 || message) allMessage += `【京东账号${$.index}】${$.nickName || $.UserName}\n${$.bean > 0 && "获得"+$.bean+"京豆\n" || ""}${message}\n`
+      if($.bean > 0 || message) {
+        let msg = `【京东账号${$.index}】${$.nickName || $.UserName}\n${$.bean > 0 && "获得"+$.bean+"京豆\n" || ""}${message}\n`
+        $.msg($.name, ``, msg);
+        allMessage += msg
+      }
     }
   }
   if(allMessage){
