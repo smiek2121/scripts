@@ -1,6 +1,6 @@
 /*
 
-https://prodev.m.jd.com/mall/active/2VyRHGE7jM1igBJcrjoB6ak1JJWV/index.htm
+https://prodev.m.jd.com/mall/active/2VyRHGE7jM1igBJcrjoB6ak1JJWV/index.html
 
 
 如需加购请设置环境变量[guaunknownTask_addSku1]为"true"
@@ -37,7 +37,7 @@ $.hotFlag = false
     return;
   }
   MD5()
-  console.log(`入口:\nhttps://prodev.m.jd.com/mall/active/2VyRHGE7jM1igBJcrjoB6ak1JJWV/index.htm`)
+  console.log(`入口:\nhttps://prodev.m.jd.com/mall/active/2VyRHGE7jM1igBJcrjoB6ak1JJWV/index.html`)
   for (let i = 0; i < cookiesArr.length; i++) {
     cookie = cookiesArr[i];
     if (cookie) {
