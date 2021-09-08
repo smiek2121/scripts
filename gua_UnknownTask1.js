@@ -5,6 +5,7 @@ https://prodev.m.jd.com/mall/active/2VyRHGE7jM1igBJcrjoB6ak1JJWV/index.htm
 
 如需加购请设置环境变量[guaunknownTask_addSku1]为"true"
 
+27 14 * 9 * https://raw.githubusercontent.com/smiek2221/scripts/master/gua_UnknownTask1.js
 */
 const $ = new Env('电脑配件');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
