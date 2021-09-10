@@ -8,6 +8,7 @@
 const $ = new Env('财富大陆');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 // const notify = $.isNode() ? require('./sendNotify') : '';
+CryptoScripts()
 $.CryptoJS = $.isNode() ? require('crypto-js') : CryptoJS;
 let UA = `jdpingou;iPhone;5.2.2;14.3;${randomString(40)};network/wifi;model/iPhone12,1;appBuild/100630;ADID/00000000-0000-0000-0000-000000000000;supportApplePay/1;hasUPPay/0;pushNoticeIsOpen/0;hasOCPay/0;supportBestPay/0;session/1;pap/JA2019_3111789;brand/apple;supportJDSHWK/1;Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148`
 function randomString(e) {
