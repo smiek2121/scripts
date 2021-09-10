@@ -95,6 +95,8 @@ async function run() {
       await GetHomePageInfo()
       await $.wait(1000)
     }
+    // 寻宝
+    await XBDetail()
     // 故事会
     await StoryInfo()
     // 建筑升级
@@ -132,9 +134,42 @@ async function GetHomePageInfo() {
     $.Fund = $.HomeInfo.Fund || ''
     $.LeadInfo = $.HomeInfo.LeadInfo || ''
     $.buildInfo = $.HomeInfo.buildInfo || ''
+    $.XbStatus = $.HomeInfo.XbStatus || []
     if($.buildInfo.buildList){
       $.buildList = $.buildInfo.buildList || ''
     }
+  }
+}
+// 寻宝
+async function XBDetail(){
+  try{
+    let XBDetail = $.XbStatus.XBDetail.filter((x) => x.dwRemainCnt !== 0 && x.ddwColdEndTm <= parseInt(Date.now()/1000,10))
+    if(XBDetail.length > 0){
+      console.log(`\n开始寻宝`)
+      for(let k of XBDetail || []){
+        if(k.ddwColdEndTm <= parseInt(Date.now()/1000,10)){
+          await $.wait(2000)
+          let res = await taskGet(`user/TreasureHunt`, '_cfd_t,bizCode,dwEnv,ptag,source,strIndex,strZone', `&strIndex=${k.strIndex}`)
+          if(res && res.iRet == 0){
+            if (res.AwardInfo.dwAwardType === 0) {
+              console.log(`${res.strAwardDesc}，获得 ${res.AwardInfo.ddwValue} 金币`)
+            } else if (res.AwardInfo.dwAwardType === 1) {
+              console.log(`${res.strAwardDesc}，获得 ${res.AwardInfo.ddwValue} 财富`)
+            } else {
+              console.log("寻宝失败\n"+$.toObj(res,res))
+            }
+          }else if(res && res.sErrMsg){
+            console.log(`寻宝失败 ${res.sErrMsg}`)
+          }else{
+            console.log("寻宝失败\n"+$.toObj(res,res))
+          }
+        }
+      }
+    }else{
+      console.log('\n暂无宝物')
+    }
+  }catch (e) {
+    $.logErr(e);
   }
 }
 // 故事会
@@ -564,6 +599,17 @@ async function Pearl(){
           console.log(`上报第${m}次`)
           await $.wait(5000)
           await taskGet(`user/RealTmReport`, '', `&dwIdentityType=0&strBussKey=composegame&strMyShareId=${$.ComposeGameState.strMyShareId}&ddwCount=10`)
+          let s = Math.floor((Math.random()*3))
+          let n = 0
+          if(s == 1) n = 1
+          if(n === 1){
+            let res = await taskGet(`user/ComposePearlAward`, '__t,size,strBT,strZone,type', `__t=${Date.now()}&type=4&size=1&strBT=${$.ComposeGameState.strDT}`)
+            if(res && res.iRet == 0){
+              console.log(`上报得红包:${res.ddwAwardHb && '获得'+res.ddwAwardHb/100+"红包" || ''}${res.ddwVirHb && ' 当前有'+res.ddwVirHb/100+"红包" || ''}`)
+            }else{
+              console.log($.toObj(res,res))
+            }
+          }
         }
         console.log("合成月饼")
         let strLT = ($.ComposeGameState.oPT || [])[$.ComposeGameState.ddwCurTime % ($.ComposeGameState.oPT || []).length]
@@ -686,7 +732,7 @@ async function UserTask(){
           await $.wait(1000)
         }
         if(item.dateType == 2){
-          if(item.completedTimes < item.targetTimes && [1,2,3,4].includes(item.orderId)){
+          if(item.completedTimes < item.targetTimes && ![3,6,7,8,9,10].includes(item.orderId)){
             if(item.taskName.indexOf('捡贝壳') >-1 || item.taskName.indexOf('赚京币任务') >-1) continue
             let b = (item.targetTimes-item.completedTimes)
             for(i=1;b--;i++){
