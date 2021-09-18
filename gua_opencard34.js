@@ -24,17 +24,17 @@ guaopencard35="true"
 ============Quantumultx===============
 [task_local]
 #9.18~9.28 月满金秋 佳节聚“惠”
-47 1,20 11-13 9 * https://raw.githubusercontent.com/smiek2221/scripts/master/gua_opencard35.js, tag=9.18~9.28 月满金秋 佳节聚“惠”, enabled=true
+47 9 18-28 9 * https://raw.githubusercontent.com/smiek2221/scripts/master/gua_opencard35.js, tag=9.18~9.28 月满金秋 佳节聚“惠”, enabled=true
 
 ================Loon==============
 [Script]
-cron "47 1,20 11-13 9 *" script-path=https://raw.githubusercontent.com/smiek2221/scripts/master/gua_opencard35.js,tag=9.18~9.28 月满金秋 佳节聚“惠”
+cron "47 9 18-28 9 *" script-path=https://raw.githubusercontent.com/smiek2221/scripts/master/gua_opencard35.js,tag=9.18~9.28 月满金秋 佳节聚“惠”
 
 ===============Surge=================
-9.18~9.28 月满金秋 佳节聚“惠” = type=cron,cronexp="47 1,20 11-13 9 *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/smiek2221/scripts/master/gua_opencard35.js
+9.18~9.28 月满金秋 佳节聚“惠” = type=cron,cronexp="47 9 18-28 9 *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/smiek2221/scripts/master/gua_opencard35.js
 
 ============小火箭=========
-9.18~9.28 月满金秋 佳节聚“惠” = type=cron,script-path=https://raw.githubusercontent.com/smiek2221/scripts/master/gua_opencard35.js, cronexpr="47 1,20 11-13 9 *", timeout=3600, enable=true
+9.18~9.28 月满金秋 佳节聚“惠” = type=cron,script-path=https://raw.githubusercontent.com/smiek2221/scripts/master/gua_opencard35.js, cronexpr="47 9 18-28 9 *", timeout=3600, enable=true
 */
 let guaopencard_addSku = "false"
 let guaopencard = "false"
