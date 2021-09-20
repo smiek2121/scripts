@@ -31,7 +31,7 @@ guaDDGametype="1,3" //指定玩某款游戏
 guaDDGametype="all" //空、不设置或者all 没有填指定内容不玩游戏 畅玩所以游戏
 
 
-17 12/4 * * * https://raw.githubusercontent.com/smiek2221/scripts/master/gua_ddgame.js
+17 12-23/4 * * * https://raw.githubusercontent.com/smiek2221/scripts/master/gua_ddgame.js
 
 */
 let guaDDGametype = "all"
