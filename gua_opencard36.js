@@ -493,8 +493,8 @@ function getEid(arr) {
     $.post(options, async (err, resp, data) => {
       try {
         if (err) {
-          console.log(`\n${turnTableId[i].name} 登录: API查询请求失败 ‼️‼️`)
-          throw new Error(err);
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
           if (data.indexOf("*_*") > 0) {
             data = data.split("*_*", 2);
