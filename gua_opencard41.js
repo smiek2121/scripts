@@ -33,13 +33,6 @@ All变量适用
 #10.8~10.14 超店会员福利社
 47 2 8-14 10 * https://raw.githubusercontent.com/smiek2221/scripts/master/gua_opencard41.js, tag=10.8~10.14 超店会员福利社, enabled=true
 
-================Loon==============
-[Script]
-cron "47 2 8-14 10 *" script-path=https://raw.githubusercontent.com/smiek2221/scripts/master/gua_opencard41.js,tag=10.8~10.14 超店会员福利社
-
-============小火箭=========
-10.8~10.14 超店会员福利社 = type=cron,script-path=https://raw.githubusercontent.com/smiek2221/scripts/master/gua_opencard41.js, cronexpr="47 2 8-14 10 *", timeout=3600, enable=true
-
 */
 let guaopencard_addSku = "false"
 let guaopencard = "false"
