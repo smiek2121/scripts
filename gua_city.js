@@ -201,6 +201,13 @@ function getInfo(inviteId, flag = false) {
                     await $.wait(2*1000)
                   }
                 }
+                for(let vo of data.data.result && data.data.result.mainInfos || []){
+                  if (vo && vo.remaingAssistNum === 0 && vo.status === "1") {
+                    console.log(vo.roundNum)
+                    await receiveCash(vo.roundNum)
+                    await $.wait(2*1000)
+                  }
+                }
                 if(flag){
                   // console.log(data.data.result.taskInfo.taskDetailResultVo.taskVos)
                   for(let vo of data.data.result && data.data.result.taskInfo.taskDetailResultVo.taskVos && false || []){
@@ -235,7 +242,7 @@ function getInfo(inviteId, flag = false) {
 }
 function receiveCash(roundNum = '') {
   let body = {"cashType":2}
-  if(roundNum) body = {...body,"roundNum":roundNum}
+  if(roundNum) body = {"cashType":1,"roundNum":roundNum}
   return new Promise((resolve) => {
     $.post(taskPostUrl("city_receiveCash",body), async (err, resp, data) => {
       try {
