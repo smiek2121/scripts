@@ -195,6 +195,7 @@ function getInfo(inviteId, flag = false) {
             data = JSON.parse(data);
             if (data.code === 0) {
               if (data.data && data['data']['bizCode'] === 0) {
+                console.log(`待提现:￥${data.data.result.userActBaseInfo.poolMoney}`)
                 for(let vo of data.data.result && data.data.result.popWindows || []){
                   if (vo && vo.type === "dailycash_second") {
                     await receiveCash()
