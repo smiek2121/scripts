@@ -346,7 +346,7 @@ function shareCodesFormat() {
     if ($.shareCodesArr[$.index - 1]) {
       $.newShareCodes = $.shareCodesArr[$.index - 1].split('@');
     }
-    if($.index == 1) $.newShareCodes = [...$.newShareCodes,...inviteCodes]
+    if($.index == 1) $.newShareCodes = [...inviteCodes,...$.newShareCodes]
     try{
       const readShareCodeRes = await readShareCode();
       if (readShareCodeRes && readShareCodeRes.code === 200) {
