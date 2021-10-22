@@ -13,6 +13,9 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 //自动抽奖 ，环境变量  JD_CITY_EXCHANGE
 let exchangeFlag = $.getdata('JD_CITY_EXCHANGE') || "false";//是否开启自动抽奖，建议活动快结束开启，默认关闭
 exchangeFlag = $.isNode() ? (process.env.JD_CITY_EXCHANGE ? process.env.JD_CITY_EXCHANGE : `${exchangeFlag}`) : ($.getdata('JD_CITY_EXCHANGE') ? $.getdata('JD_CITY_EXCHANGE') : `${exchangeFlag}`);
+// 优先助力[助力池]
+let helpShareFlag = "true";//是否优先助力[助力池]，默认是
+helpShareFlag = $.isNode() ? (process.env.JD_CITY_HELPSHARE ? process.env.JD_CITY_HELPSHARE : `${helpShareFlag}`) : ($.getdata('JD_CITY_HELPSHARE') ? $.getdata('JD_CITY_HELPSHARE') : `${helpShareFlag}`);
 
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', message;
@@ -38,6 +41,11 @@ $.shareCodesArr = [];
     return;
   }
   // await requireConfig();
+  if(helpShareFlag+"" == "true"){
+    console.log('脚本优先助力[助力池] 如需开启优先助力[内部账号]，请设置环境变量  JD_CITY_HELPSHARE 为false\n')
+  }else{
+    console.log('脚本优先助力[内部账号] 如需开启优先助力[助力池]，请设置环境变量  JD_CITY_HELPSHARE 为true\n')
+  }
   if (exchangeFlag+"" == "true") {
     console.log(`脚本自动抽奖`)
   } else {
@@ -348,8 +356,10 @@ function shareCodesFormat() {
   return new Promise(async resolve => {
     // console.log(`第${$.index}个京东账号的助力码:::${$.shareCodesArr[$.index - 1]}`)
     $.newShareCodes = [];
-    if ($.shareCodesArr[$.index - 1]) {
-      $.newShareCodes = $.shareCodesArr[$.index - 1].split('@');
+    if(helpShareFlag+"" != "true"){
+      if ($.shareCodesArr[$.index - 1]) {
+        $.newShareCodes = $.shareCodesArr[$.index - 1].split('@');
+      }
     }
     if($.index == 1) $.newShareCodes = [...inviteCodes,...$.newShareCodes]
     try{
