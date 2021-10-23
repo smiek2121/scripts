@@ -859,7 +859,6 @@ function readShareCode() {
         resolve(data);
       }
     })
-    resolve()
   })
 }
 //格式化助力码
