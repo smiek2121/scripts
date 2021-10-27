@@ -103,7 +103,6 @@ for (let i in productsArr) {
         $.cleancartProductsArr = cleancartProductsAll["*"]
       }else $.cleancartProductsArr = false
       console.log($.cleancartProductsArr)
-      if($.cleancartProductsArr === false) continue
       await run();
     }
   }
@@ -216,6 +215,7 @@ async function run(){
 }
 function toSDS(name){
   let res = true
+  if($.cleancartProductsArr === false) return false
   for(let t of $.cleancartProductsArr || []){
     if(t && name.indexOf(t) > -1 || t == '不清空'){
       res = false
