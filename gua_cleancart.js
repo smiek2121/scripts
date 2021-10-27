@@ -91,6 +91,7 @@ for (let i in productsArr) {
     console.log('脚本停止\n请添加环境变量[gua_cleancart_products]\n清空商品\n内容规则看脚本文件')
     return
   }
+  $.out = false
   for (let i = 0; i < cookiesArr.length; i++) {
     cookie = cookiesArr[i];
     if (cookie) {
@@ -102,8 +103,9 @@ for (let i in productsArr) {
       }else if(cleancartProductsAll["*"]){
         $.cleancartProductsArr = cleancartProductsAll["*"]
       }else $.cleancartProductsArr = false
-      console.log($.cleancartProductsArr)
+      if($.cleancartProductsArr) console.log($.cleancartProductsArr)
       await run();
+      if($.out) break
     }
   }
   if(message){
@@ -121,6 +123,7 @@ async function run(){
     let msg = ''
     let signBody = `{"homeWishListUserFlag":"1","userType":"0","updateTag":true,"showPlusEntry":"2","hitNewUIStatus":"1","cvhv":"049591","cartuuid":"hjudwgohxzVu96krv/T6Hg==","adid":""}`
     let body = await jdSign('cartClearQuery', signBody)
+    if($.out) return
     if(!body){
       console.log('获取不到算法')
       return
@@ -131,7 +134,7 @@ async function run(){
       if(res.resultCode == 0){
         if(!res.clearCartInfo || !res.subTitle){
           msg += `${res.mainTitle}\n`
-          console.log('未识别到购物车数据')
+          console.log(res.mainTitle)
         }else{
           let num = 0
           if(res.subTitle){
@@ -163,11 +166,12 @@ async function run(){
             }
             console.log(`准备清空${operNum}件商品`)
             if(operations.length == 0){
-              console.log('没有找到要清空的商品')
-              msg += '没有找到要清空的商品\n'
+              console.log(`清空${operNum}件商品|没有找到要清空的商品`)
+              msg += `清空${operNum}件商品|没有找到要清空的商品\n`
             }else{
               let clearBody = `{"homeWishListUserFlag":"1","userType":"0","updateTag":false,"showPlusEntry":"2","hitNewUIStatus":"1","cvhv":"049591","cartuuid":"hjudwgohxzVu96krv/T6Hg==","operations":${$.toStr(operations,operations)},"adid":"","coord_type":"0"}`
               clearBody = await jdSign('cartClearRemove', clearBody)
+              if($.out) return
               if(!clearBody){
                 console.log('获取不到算法')
               }else{
@@ -194,9 +198,10 @@ async function run(){
             }
           }else if(res.mainTitle){
             msg += `${res.mainTitle}\n`
+            console.log(res.mainTitle)
           }else{
-            console.log('未识别到购物车有商品')
             msg += `未识别到购物车有商品\n`
+            console.log(data)
           }
         }
       }else{
@@ -208,7 +213,7 @@ async function run(){
     if(msg){
       message += `【京东账号${$.index}】${$.nickName || $.UserName}\n${msg}\n`
     }
-    await $.wait(parseInt(Math.random() * 2000 + 1000, 10))
+    await $.wait(parseInt(Math.random() * 2000 + 2000, 10))
   }catch(e){
     console.log(e)
   }
@@ -267,7 +272,11 @@ function jdSign(fn,body) {
     flag = true
   }
   if(!flag) return sign
-  if(!jdSignUrl.match(/^https?:\/\//)) return ''
+  if(!jdSignUrl.match(/^https?:\/\//)){
+    console.log('请填写算法url')
+    $.out = true
+    return ''
+  }
   return new Promise((resolve) => {
     let url = {
       url: jdSignUrl,
