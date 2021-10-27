@@ -217,7 +217,7 @@ async function run(){
 function toSDS(name){
   let res = true
   for(let t of $.cleancartProductsArr || []){
-    if(name.indexOf(t) > -1 || t == '不清空'){
+    if(t && name.indexOf(t) > -1 || t == '不清空'){
       res = false
       break
     }
