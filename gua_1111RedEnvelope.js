@@ -4,7 +4,7 @@ ck1助力 作者呱呱呱
 其余助力ck1
 https://u.jd.com/3C7eCOr
 跳转到app 可查看助力情况
-1 0,12,18 * * *
+1 0,12,18 * * * https://raw.githubusercontent.com/smiek2221/scripts/master/gua_1111RedEnvelope.js
 */
 
 const $ = new Env('双十一无门槛红包🧧');
