@@ -297,7 +297,6 @@ function getEid(arr) {
       try {
         if (err) {
           console.log(`fcf: API查询请求失败 ‼️‼️`)
-          throw new Error(err);
         } else {
           if (data.indexOf("*_*") > 0) {
             data = data.split("*_*", 2);
