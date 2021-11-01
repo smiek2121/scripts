@@ -4,7 +4,7 @@
 let jdSignUrl = '' // 算法url
 let got = '';
 try{
-  got = require('gots');
+  got = require('got');
 }catch(e){
   console.log('请添加模块"got"')
 }
