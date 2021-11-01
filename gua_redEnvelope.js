@@ -1,12 +1,10 @@
 /*
 双十一无门槛红包
+cron 0 0,12,20 * * *  https://raw.githubusercontent.com/smiek2121/scripts/master/gua_redEnvelope.js
 ck1助力 作者
 其余助力ck1
 https://u.jd.com/3C7eCOr
 跳转到app 可查看助力情况
-
-[task_local]
-1 0,12,18 * * * https://raw.githubusercontent.com/smiek2121/scripts/master/gua_RedEnvelope.js, tag=双十一无门槛红包, enabled=true
 
 返利变量：gua_redEnvelope_rebateCode，默认给脚本作者返利，若需要返利给自己，请自己修改返利变量gua_redEnvelope_rebateCode
 例：gua_redEnvelope_rebateCode="你的返利code"
