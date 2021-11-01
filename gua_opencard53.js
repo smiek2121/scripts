@@ -157,6 +157,7 @@ async function run() {
     await takePostRequest('accessLogWithAD');
     await takePostRequest('getUserInfo');
     await takePostRequest('activityContent');
+    if($.hotFlag) return
     if(!$.actorUuid){
       console.log('获取不到[actorUuid]退出执行，请重新执行')
       return
