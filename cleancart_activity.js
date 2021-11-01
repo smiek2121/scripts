@@ -6,7 +6,7 @@ let got = '';
 try{
   got = require('got');
 }catch(e){
-  console.log('请添加模块"got"')
+  console.log('请添加依赖模块"got"')
 }
 
 
