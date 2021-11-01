@@ -104,7 +104,7 @@ let activityCookie =''
   // return
   $.appkey = '51B59BB805903DA4CE513D29EC448375'
   $.userId = '10299171'
-  $.actId = '17ba854eb84a4b228834e134_1025'
+  $.actId = '5256d57baccc480f94_11012'
   $.MixNicks = ''
   $.inviteNick = 'jJngxInVOgsjftAvjP1dgF4tLNYA4seuA67MOIYQxEk3Vl9+AVo4NF+tgyeIc6A6kdK3rLBQpEQH9V4tdrrh0w=='
   for (let i = 0; i < cookiesArr.length; i++) {
