@@ -1,6 +1,6 @@
 /*
 双十一无门槛红包
-cron 0 0,12,20 * * *  https://raw.githubusercontent.com/smiek2121/scripts/master/gua_redEnvelope.js
+cron 0 0,12,18 * * *  https://raw.githubusercontent.com/smiek2121/scripts/master/gua_redEnvelope.js
 ck1助力 作者
 其余助力ck1
 https://u.jd.com/3C7eCOr
