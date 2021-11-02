@@ -33,7 +33,7 @@ All变量适用
 ============Quantumultx===============
 [task_local]
 #11.1~11.13 酒水会员盛典
-30 9,21 1-21 9 * https://raw.githubusercontent.com/smiek2121/scripts/master/gua_opencard59.js, tag=11.1~11.13 酒水会员盛典, enabled=true
+30 10 1-13 11 * https://raw.githubusercontent.com/smiek2121/scripts/master/gua_opencard59.js, tag=11.1~11.13 酒水会员盛典, enabled=true
 
 */
 let guaopencard_addSku = "false"
