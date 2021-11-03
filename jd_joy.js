@@ -49,7 +49,7 @@ let joyRunFlag = true;
 let jdNotify = true;//是否开启静默运行，默认true开启
 let joyRunNotify = true;//宠汪汪赛跑获胜后是否推送通知，true推送，false不推送通知
 let JD_API_HOST = 'https://jdjoy.jd.com'
-$.invokeKey = 'JL1VTNRadM68cIMQ'
+$.invokeKey = 'q8DNJdpcfRQ69gIx'
 $.invokeKey = $.isNode() ? (process.env.JD_invokeKey ? process.env.JD_invokeKey : `${$.invokeKey}`) : ($.getdata('JD_invokeKey') ? $.getdata('JD_invokeKey') : `${$.invokeKey}`);
 let lkt = 0
 if(process.env.JOY_HOST){

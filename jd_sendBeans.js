@@ -27,7 +27,7 @@ let lkt = 0
   }
   $.activityId = '';
   $.completeNumbers = '';
-  $.invokeKey = 'JL1VTNRadM68cIMQ'
+  $.invokeKey = 'q8DNJdpcfRQ69gIx'
   $.invokeKey = $.isNode() ? (process.env.JD_invokeKey ? process.env.JD_invokeKey : `${$.invokeKey}`) : ($.getdata('JD_invokeKey') ? $.getdata('JD_invokeKey') : `${$.invokeKey}`);
   MD5()
   console.log(`开始获取活动信息`);

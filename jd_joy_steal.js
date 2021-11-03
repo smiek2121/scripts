@@ -45,7 +45,7 @@ let jdNotify = false;//是否开启静默运行，false关闭静默运行(即通
 let jdJoyHelpFeed = true;//是否给好友喂食，false为不给喂食，true为给好友喂食，默认给好友喂食
 let jdJoyStealCoin = true;//是否偷好友积分与狗粮，false为否，true为是，默认是偷
 let JD_API_HOST = 'https://jdjoy.jd.com'
-$.invokeKey = 'JL1VTNRadM68cIMQ'
+$.invokeKey = 'q8DNJdpcfRQ69gIx'
 $.invokeKey = $.isNode() ? (process.env.JD_invokeKey ? process.env.JD_invokeKey : `${$.invokeKey}`) : ($.getdata('JD_invokeKey') ? $.getdata('JD_invokeKey') : `${$.invokeKey}`);
 let lkt = 0
 if(process.env.JOY_HOST){
