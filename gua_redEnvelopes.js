@@ -132,6 +132,7 @@ function getCoupons(shareId = '',type = 1) {
         "User-Agent": $.UA ,
       }
     }
+    if($.url2) opts["headers"]["Referer"] = $.url2
     $.get(opts, async (err, resp, data) => {
       try {
         if (err) {
@@ -321,7 +322,7 @@ function getEid(arr) {
 }
 
 function getUA(){
-  $.UA = `jdapp;iPhone;10.2.0;13.1.2;${randomString(40)};M/5.0;network/wifi;ADID/;model/iPhone8,1;addressid/2308460611;appBuild/167853;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 13_1_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1;`
+  $.UA = `jdapp;iPhone;10.2.2;14.3;${randomString(40)};M/5.0;network/wifi;ADID/;model/iPhone12,1;addressid/4199175193;appBuild/167863;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1;`
   rebateCode = 'yLp9Rvu'
   if($.index != 1){
     let arr = [rebateCodes,'yLp9Rvu']
