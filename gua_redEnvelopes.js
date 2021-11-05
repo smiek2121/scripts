@@ -4,7 +4,7 @@ cron 0 0,12,18 * * *  https://raw.githubusercontent.com/smiek2121/scripts/master
 整点跑 红包几率大点
 ck1助力 作者
 其余助力ck1
-https://u.jd.com/3C7eCOr
+https://u.jd.com/yLp9Rvu
 跳转到app 可查看助力情况
 
 返利变量：gua_redEnvelope_rebateCode，默认给脚本作者返利，若需要返利给自己，请自己修改返利变量gua_redEnvelope_rebateCode
@@ -49,8 +49,8 @@ let nowTime = new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*
     if ($.isNode()) await notify.sendNotify($.name + '活动已结束', `请删除此脚本\n咱江湖再见`);
     return
   }
-  console.log('整点跑 红包几率大点\n0点 12点')
-  $.shareCode = 'zZDrk'
+  console.log('整点跑 红包几率大点')
+  $.shareCode = 'x6EtW'
   for (let i = 0; i < cookiesArr.length; i++) {
     cookie = cookiesArr[i];
     if (cookie) {
@@ -62,9 +62,9 @@ let nowTime = new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*
     }
   }
   if(message){
-    $.msg($.name, ``, `${message}\nhttps://u.jd.com/3C7eCOr\n\n跳转到app 可查看助力情况`);
+    $.msg($.name, ``, `${message}\nhttps://u.jd.com/yLp9Rvu\n\n跳转到app 可查看助力情况`);
     if ($.isNode()){
-      await notify.sendNotify(`${$.name}`, `${message}\n\nhttps://u.jd.com/3C7eCOr\n跳转到app 可查看助力情况`);
+      await notify.sendNotify(`${$.name}`, `${message}\n\nhttps://u.jd.com/yLp9Rvu\n跳转到app 可查看助力情况`);
     }
   }
 })()
@@ -322,11 +322,11 @@ function getEid(arr) {
 
 function getUA(){
   $.UA = `jdapp;iPhone;10.2.0;13.1.2;${randomString(40)};M/5.0;network/wifi;ADID/;model/iPhone8,1;addressid/2308460611;appBuild/167853;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 13_1_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1;`
-  rebateCode = '3C7eCOr'
+  rebateCode = 'yLp9Rvu'
   if($.index != 1){
-    let arr = [rebateCodes,'3C7eCOr']
+    let arr = [rebateCodes,'yLp9Rvu']
     rebateCode = arr[Math.floor(Math.random() * arr.length)] || rebateCode
-    if(!rebateCode) rebateCode = '3C7eCOr'
+    if(!rebateCode) rebateCode = 'yLp9Rvu'
   }
   console.log(rebateCode)
 }
