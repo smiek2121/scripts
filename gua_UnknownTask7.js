@@ -2,7 +2,7 @@
 
 https://prodev.m.jd.com/mall/active/2y1S9xVYdTud2VmFqhHbkcoAYhJT/index.html
 
-27 8,18 * 9 * https://raw.githubusercontent.com/smiek2121/scripts/master/gua_UnknownTask3.js
+27 8,18 * 9-12 * https://raw.githubusercontent.com/smiek2121/scripts/master/gua_UnknownTask7.js
 */
 const $ = new Env('寻找内容鉴赏官');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
@@ -24,63 +24,9 @@ message = ""
 let UA = ''
 $.hotFlag = false
 $.outFlag = 0
-$.list = [
-  {
-    "type": 5,
-    "projectId":"rfhKVBToUL4RGuaEo7NtSEUw2bA",
-    "assignmentId":"2PbAu1BAT79RxrM5V7c2VAPUQDSd",
-    "name":"签到",
-  },
-  {
-    "type": 9,
-    "projectId":"rfhKVBToUL4RGuaEo7NtSEUw2bA",
-    "assignmentId":"XTXNrKoUP5QK1LSU8LbTJpFwtbj",
-    "name":"逛发现内容",
-  },
-  {
-    "type": 9,
-    "projectId":"rfhKVBToUL4RGuaEo7NtSEUw2bA",
-    "assignmentId":"2bpKT3LMaEjaGyVQRr2dR8zzc9UU",
-    "name":"浏览话题",
-  },
-  {
-    "type": 1,
-    "projectId":"rfhKVBToUL4RGuaEo7NtSEUw2bA",
-    "assignmentId":"3dw9N5yB18RaN9T1p5dKHLrWrsX",
-    "name":"看大咖种草秀赢京豆",
-  },
-  {
-    "type": 1,
-    "projectId":"rfhKVBToUL4RGuaEo7NtSEUw2bA",
-    "assignmentId":"Hys8nCmAaqKmv1G3Y3a5LJEk36Y",
-    "name":"看精选视频赢京豆",
-  },
-  {
-    "type": 1,
-    "projectId":"rfhKVBToUL4RGuaEo7NtSEUw2bA",
-    "assignmentId":"2gWnJADG8JXMpp1WXiNHgSy4xUSv",
-    "name":"逛运动部落赢大奖",
-  },
-  {
-    "type": 1,
-    "projectId":"rfhKVBToUL4RGuaEo7NtSEUw2bA",
-    "assignmentId":"CtXTxzkh4ExFCrGf8si3ePxGnPy",
-    "name":"看三星新品晒单内容赢京豆",
-  },
-  {
-    "type": 1,
-    "projectId":"rfhKVBToUL4RGuaEo7NtSEUw2bA",
-    "assignmentId":"26KhtkXmoaj6f37bE43W5kF8a9EL",
-    "name":"一起潮有品，焕新家",
-  },
-  {
-    "type": 1,
-    "projectId":"rfhKVBToUL4RGuaEo7NtSEUw2bA",
-    "assignmentId":"bWE8RTJm5XnooFr4wwdDM5EYcKP",
-    "name":"玩转3c开学季",
-  },
-]
 $.temp = [];
+$.list = []
+$.canHelpInfo = {};
 !(async () => {
   if (!cookiesArr[0]) {
     $.msg($.name, '【提示】请先获取cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/', {
@@ -114,6 +60,7 @@ $.temp = [];
         cookie = cookiesArr[i];
         $.canHelp = true;//能否助力
         $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
+        $.canHelp = $.canHelpInfo[$.UserName];
         if ((cookiesArr && cookiesArr.length >= 1) && $.canHelp) {
           for (let t in $.temp) {
             let item = $.temp[t]
@@ -129,7 +76,7 @@ $.temp = [];
             }else if($.toHelpMsg.indexOf('任务已完成') > -1){
               $.temp[t] = ''
               break;
-            }else if($.toHelpMsg.indexOf('最多助力') > -1) break;
+            }else if($.toHelpMsg.indexOf('最多助力') > -1 || $.toHelpMsg.indexOf('火爆') > -1) break;
           }
         }
       }
@@ -137,7 +84,7 @@ $.temp = [];
   }
   if(allMessage){
     $.msg($.name, ``, `${allMessage}`);
-    if ($.isNode()){
+    if ($.isNode() && $.sendMessage){
       await notify.sendNotify(`${$.name}`, `${allMessage}`);
     }
   }
@@ -155,10 +102,20 @@ async function run() {
     $.helpType = 1
     $.itemId = ''
     await takePostRequest('help');
-    if($.total === ''){
-      console.log('账号异常')
-      allMessage += `【京东账号${$.index}】${$.nickName || $.UserName}\n账号异常\n`
+    $.canHelpInfo[$.UserName] = true;
+    if($.total === '' || $.hasRisk){
+      let msg = '账号异常'
+      if($.hasRisk){
+        $.canHelpInfo[$.UserName] = false;
+        msg = '账号火爆'
+      }
+      console.log(msg)
+      allMessage += `【京东账号${$.index}】${$.nickName || $.UserName}\n${msg}\n`
       return
+    }
+    if($.list.length == 0){
+      await getList1()
+      await getList2()
     }
     for(let i in $.list || []){
       if($.list[i]){
@@ -166,30 +123,82 @@ async function run() {
         $.projectId = $.list[i].projectId
         $.assignmentId = $.list[i].assignmentId
         $.Task = ''
+        $.infoBody = {"type":$.type+"","projectId":$.projectId+"","assignmentId":$.assignmentId+"","doneHide":false}
+        if($.list[i].agId) $.infoBody["agId"] = $.list[i].agId
+        if($.list[i].helpType) $.infoBody["helpType"] = $.list[i].helpType+""
+        if($.list[i].itemId) $.infoBody["itemId"] = $.list[i].itemId
+        $.infoBody = $.toStr($.infoBody,$.infoBody)
         await takePostRequest('interactive_info');
         // console.log($.Task)
-        if($.Task){
+        if(Object.getOwnPropertyNames($.Task).length > 0){
           if($.type == 5) console.log(`签到天数${$.Task.current || 0}/${$.Task.signDays || 0}`)
           $.projectId = $.Task.projectId
           $.assignmentId = $.Task.assignmentId
           $.itemId = $.Task.itemId || ''
-          let title = $.Task.title || $.list[i].name
+          let title = $.Task.title || $.list[i].name || ""
           if($.Task.status+"" === "0"){
             console.log(`${title}`)
             await $.wait(parseInt(Math.random() * 1000 + 1000, 10))
             if($.Task.waitDuration > 0){
               await takePostRequest('interactive_accept');
               await $.wait(parseInt($.Task.waitDuration > 0 && $.Task.waitDuration*1000, 10) || 10000)
-              UA = 'JD4iPhone/167814 (iPhone; iOS 13.1.2; Scale/2.00)'
+              UA = 'JD4iPhone/167863 (iPhone; iOS 13.1.2; Scale/2.00)'
               await takePostRequest('qryViewkitCallbackResult');
               UA = ''
             }else{
-              if($.type == 9) UA = 'JD4iPhone/167814 (iPhone; iOS 13.1.2; Scale/2.00)'
-              await takePostRequest('interactive_done');
-              if($.type == 9){
-                UA = ''
-                await $.wait(parseInt(Math.random() * 1000 + 1000, 10))
-                await takePostRequest('interactive_reward');
+              if($.type == 9 || $.type == 1 || $.type == 5){
+                if($.type == 9) UA = 'JD4iPhone/167863 (iPhone; iOS 13.1.2; Scale/2.00)'
+                await takePostRequest('interactive_done');
+                if($.type == 9){
+                  UA = ''
+                  await $.wait(parseInt(Math.random() * 1000 + 1000, 10))
+                  await takePostRequest('interactive_reward');
+                }
+              }else{
+                let num1 = 0
+                let num2 = 0
+                if($.type == 11){
+                  num1 = $.Task.viewNum - $.Task.viewedNum
+                  num2 = $.Task.evaluateNum - $.Task.evaluatedNum
+                }else if($.type == 10){
+                  num1 = $.Task.likeTotalCount - $.Task.likeAlreadyCount
+                  num2 = $.Task.watchTotalCount - $.Task.watchAlreadyCount
+                }
+                if(num1 > 0 || num2 > 0){
+                  let list = []
+                  if($.type == 10){
+                    $.agid = $.list[i].advIdKOC
+                    await takePostRequest('aha_card_list');
+                    await $.wait(parseInt(Math.random() * 1000 + 2000, 10))
+                    list = $.cardList
+                  }else{
+                    list = $.Task.videoDtoPageResult.list
+                  }
+                  for(let i of list || []){
+                    if(num1 <= 0 && num2 <= 0) break
+                    $.contentId = ''
+                    if(i.adMaterialDto){
+                      $.contentId = i.adMaterialDto.id
+                    }else if(i.id){
+                      $.contentId = i.id
+                    }
+                    if(!$.contentId) continue
+                    if(num1 > 0){
+                      $.actionType = 1
+                      await takePostRequest('interactive_done');
+                      await $.wait(parseInt(Math.random() * 1000 + 2000, 10))
+                    }
+                    if(num2 > 0){
+                      $.actionType = 2
+                      await takePostRequest('interactive_done');
+                      await $.wait(parseInt(Math.random() * 1000 + 2000, 10))
+                    }
+                    num1--
+                    num2--
+                  }
+                  await $.wait(parseInt(Math.random() * 1000 + 1000, 10))
+                  await takePostRequest('interactive_reward');
+                }
               }
             }
             await $.wait(parseInt(Math.random() * 1000 + 2000, 10))
@@ -203,12 +212,15 @@ async function run() {
             console.log(`${title}-未知 ${$.Task.status}`)
           }
         }else{
-          console.log(`${$.list[i].name} 获取失败`)
+          console.log(`${$.list[i].name || $.assignmentId} 获取失败`)
         }
       }
     }
     await takePostRequest('interactive_rewardInfo');
-    if($.earn > 0) allMessage += `【京东账号${$.index}】${$.nickName || $.UserName}\n本次运行获得${$.earn}京豆，共计${$.total}京豆\n`
+    if($.earn > 0) {
+      allMessage += `【京东账号${$.index}】${$.nickName || $.UserName}\n本次运行获得${$.earn}京豆，共计${$.total}京豆\n`
+      $.sendMessage = true
+    }
     await $.wait(parseInt(Math.random() * 1000 + 3000, 10))
   } catch (e) {
     console.log(e)
@@ -224,7 +236,7 @@ async function takePostRequest(type) {
       body = ``;
       break;
     case 'interactive_info':
-      url = `https://api.m.jd.com/interactive_info?functionId=interactive_info&appid=contenth5_common&body=[{"type":"${$.type}","projectId":"${$.projectId}","assignmentId":"${$.assignmentId}","doneHide":false}]&client=wh5`;
+      url = `https://api.m.jd.com/interactive_info?functionId=interactive_info&appid=contenth5_common&body=[${$.infoBody}]&client=wh5`;
       body = ``;
       break;
     case 'help':
@@ -233,14 +245,23 @@ async function takePostRequest(type) {
       break;
     case 'interactive_done':
     case 'interactive_accept':
+    case 'aha_card_list':
       let bodys = ''
       if($.type == 5) bodys = ',"agid":["05804754","05822013"]'
       if($.type == 2) bodys = ',"agid":["05804754","05804886"]'
-      url = `https://api.m.jd.com/${type}?functionId=${type}&appid=contenth5_common&body={"projectId":"${$.projectId}","assignmentId":"${$.assignmentId}","type":"${$.type}","itemId":"${$.itemId}"${bodys}}&client=wh5`;
+      if($.type == 11 || $.type == 10){
+        bodys = `,"actionType":${$.actionType},"contentId":"${$.contentId}"`
+        if(type == "aha_card_list"){
+          bodys = `,"agid":${$.toStr($.agid,$.agid)},"firstStart":1`
+        }
+        url = `https://api.m.jd.com/${type}?functionId=${type}&appid=contenth5_common&body={"projectId":"${$.projectId}","assignmentId":"${$.assignmentId}","type":"${$.type}"${bodys}}&client=wh5`;
+      }else{
+        url = `https://api.m.jd.com/${type}?functionId=${type}&appid=contenth5_common&body={"projectId":"${$.projectId}","assignmentId":"${$.assignmentId}","type":"${$.type}","itemId":"${$.itemId}"${bodys}}&client=wh5`;
+      }
       body = ``;
       if($.type == 9){
         url = `https://api.m.jd.com/client.action?functionId=interactive_done`;
-        body = `area=16_1315_1316_53522&body=%7B%22assignmentId%22%3A%22XTXNrKoUP5QK1LSU8LbTJpFwtbj%22%2C%22type%22%3A%229%22%2C%22projectId%22%3A%22rfhKVBToUL4RGuaEo7NtSEUw2bA%22%7D&build=167814&client=apple&clientVersion=10.1.4&d_brand=apple&d_model=iPhone8%2C1&eid=eidId10b812191seBCFGmtbeTX2vXF3lbgDAVwQhSA8wKqj6OA9J4foPQm3UzRwrrLdO23B3E2wCUY/bODH01VnxiEnAUvoM6SiEnmP3IPqRuO%2By/%2BZo&isBackground=N&joycious=63&lang=zh_CN&networkType=wifi&networklibtype=JDNetworkBaseAF&openudid=2f7578cb634065f9beae94d013f172e197d62283&osVersion=13.1.2&partner=apple&rfs=0000&scope=01&screen=750%2A1334&sign=0533863111d0e0d69410f56a7ef58fb9&st=1631296373128&sv=111&uemps=0-1&uts=0f31TVRjBSsqndu4/jgUPz6uymy50MQJgF04TMIkjbf0gVLusgIW5EdhotCsxFSHKJprkovrIgyVo4dZUGgBgL/RiEhL2bvOAuOce/8hqhTGUuEXz1rwspF1DPZ87zyLDiuE0/Yr8VmOUCLV2yp05R1%2BHqoEl280hhlwUaSLrG/h7tEBMu6dCrOsOEd5oQX6H74r9en/aKB2N59xTeMu4Q%3D%3D&uuid=hjudwgohxzVu96krv/T6Hg%3D%3D&wifiBssid=796606e8e181aa5865ec20728a27238b`;
+        body = `body=%7B%22assignmentId%22%3A%22485y3NEBCKGJg6L4brNg6PHhuM9d%22%2C%22type%22%3A%229%22%2C%22projectId%22%3A%22rfhKVBToUL4RGuaEo7NtSEUw2bA%22%7D&uuid=f3ee276edabfc0ad98ff9c35743ec729b3eb30af&client=apple&clientVersion=10.1.4&st=1636278455578&sv=111&sign=76313d9e2b4682324e557cbd0e9e3500`;
       }
       break;
     case 'interactive_reward':
@@ -265,7 +286,6 @@ async function takePostRequest(type) {
           console.log(`${$.toStr(err,err)}`)
           console.log(`${type} API请求失败，请检查网路重试`)
         } else {
-          // setActivityCookie(resp)
           dealReturn(type, data);
         }
       } catch (e) {
@@ -309,6 +329,13 @@ async function dealReturn(type, data) {
         console.log(`${type}-> ${data}`);
       }
       break;
+    case 'aha_card_list':
+      if (res.data && res.success && res.code+"" === "0" && res.data) {
+        $.cardList = res.data.cardList || [];
+      } else {
+        console.log(`${type}-> ${data}`);
+      }
+      break;
     case 'interactive_done':
     case 'interactive_reward':
       if (res.data && res.success && res.code+"" === "0" && res.data) {
@@ -320,15 +347,21 @@ async function dealReturn(type, data) {
     case 'help':
       if (res.data && res.success && res.code+"" === "0" && res.data) {
         let arr = res.data[0] || res.data || {}
-        if($.helpType == 1){
+        $.hasRisk = arr.hasRisk || false
+        if($.helpType == 1 && !arr.hasRisk){
           console.log(`助力码:${arr.itemId || '获取失败'}`)
           if(arr.itemId){
             $.temp.push(arr.itemId);
           }
         }else if($.helpType == 2){
           $.toHelp = arr.remainAssistTime
-          $.toHelpMsg = arr.msg
-          console.log(arr.msg)
+          if(arr.hasRisk){
+            $.toHelpMsg = '账号火爆'
+            console.log($.toHelpMsg)
+          }else{
+            $.toHelpMsg = arr.msg
+            console.log(arr.msg)
+          }
         }
       } else {
         console.log(`${type}-> ${data}`);
@@ -339,6 +372,100 @@ async function dealReturn(type, data) {
   }
 }
 
+function getList1() {
+  return new Promise(resolve => {
+    let opts = {
+      url:`https://prodev.m.jd.com/mall/active/2y1S9xVYdTud2VmFqhHbkcoAYhJT/index.html`,
+      followRedirect:false,
+      headers: {
+        "User-Agent": $.UA,
+      },
+      timeout:30000
+    }
+    $.get(opts, async(err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${$.toStr(err)}`)
+          console.log(`${$.name} list API请求失败，请检查网路重试`)
+        } else {
+          let list = data.match(/window.__react_data__ = (.+)/) && data.match(/window.__react_data__ = (.+)/)[1] || {}
+          list = $.toObj(list,list)
+          if(Object.getOwnPropertyNames(list).length > 0){
+            for(let i of list.activityData.floorList || []){
+              if(i.boardParams && i.boardParams.projectCode && i.boardParams.taskCode){
+                let type = 1
+                if(i.boardParams.taskCode == "2PbAu1BAT79RxrM5V7c2VAPUQDSd") type = 5
+                if(i.boardParams.taskCode == "2CCbSBbVWkFZzRDngs4F6q3YZ62o") type = 11
+                if(i.boardParams.taskCode == "4JHmm8nEpyuKgc3z9wkGArXDtEdh") type = 10
+                if(i.boardParams.taskCode == "2gWnJADG8JXMpp1WXiNHgSy4xUSv") type = 1
+                if(i.boardParams.taskCode == "485y3NEBCKGJg6L4brNg6PHhuM9d") type = 9
+                let arr = {"type":type,"projectId":i.boardParams.projectCode,"assignmentId":i.boardParams.taskCode,"doneHide":false,"name":""}
+                if(i.boardParams.titleText || i.boardParams.btnText) arr["name"] = i.boardParams.titleText || i.boardParams.btnText || ''
+                if(type == 11 && i.materialParams.advIdVideo[0].advGrpId) arr["agId"] = [i.materialParams.advIdVideo[0].advGrpId]
+                if(type == 10 && i.materialParams.advIdKOC[0].advGrpId) arr["advIdKOC"] = [i.materialParams.advIdKOC[0].advGrpId]
+                $.list.push(arr)
+              }
+            }
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve();
+      }
+    })
+  })
+}
+function getList2() {
+  return new Promise(resolve => {
+    let opts = {
+      url:`https://api.m.jd.com/?client=wh5&clientVersion=1.0.0&functionId=qryH5BabelFloors`,
+      followRedirect:false,
+      headers: {
+        "User-Agent": $.UA,
+        "Accept": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Cookie":cookie
+      },
+      body:`body=%7B%22activityId%22%3A%222y1S9xVYdTud2VmFqhHbkcoAYhJT%22%2C%22pageNum%22%3A%22-1%22%2C%22url%22%3A%22https%3A%2F%2Fprodev.m.jd.com%2Fmall%2Factive%2F2y1S9xVYdTud2VmFqhHbkcoAYhJT%2Findex.html%22%2C%22fullUrl%22%3A%22https%3A%2F%2Fprodev.m.jd.com%2Fmall%2Factive%2F2y1S9xVYdTud2VmFqhHbkcoAYhJT%2Findex.html%22%2C%22autoSkipEmptyPage%22%3Afalse%2C%22paginationParam%22%3A%222%22%2C%22paginationFlrs%22%3A%22%5B%5B62955735%2C62955736%2C62955737%2C62955739%2C64833751%2C62957541%2C62957542%2C64770387%2C64770388%2C64770389%2C67005145%2C65097981%2C65692910%2C63379295%5D%2C%5B64770390%2C63024171%2C63025563%2C62991890%2C62957544%2C64580300%2C63632301%2C63632302%2C63024170%2C63100654%2C63025564%2C63025566%2C63025567%2C63025568%5D%5D%22%2C%22siteClient%22%3A%22apple%22%2C%22siteClientVersion%22%3A%2210.2.2%22%7D&screen=1242*2208&sid=cbf05ee520115693835779783f222d7w&uuid=2f7578cb634065f9beae94d013f172e197d62283&area=16_1315_1316_53522&ext=%7B%22prstate%22%3A%220%22%7D&osVersion=13.1.2&d_model=iphone8%2C1`,
+      timeout:30000
+    }
+    $.post(opts, async(err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${$.toStr(err)}`)
+          console.log(`${$.name} list API请求失败，请检查网路重试`)
+        } else {
+          // console.log(data)
+          let list = $.toObj(data,data)
+          if(Object.getOwnPropertyNames(list).length > 0){
+            for(let i of list.floorList || []){
+              // console.log(i.boardParams)
+              if(i.boardParams && i.boardParams.projectCode && i.boardParams.taskCode){
+                let type = 1
+                if(i.boardParams.taskCode == "3PX8SPeYoQMgo1aJBZYVkeC7QzD3"){
+                  continue
+                  type = 2
+                }
+                let arr = {"type":type,"projectId":i.boardParams.projectCode,"assignmentId":i.boardParams.taskCode,"doneHide":false,"name":""}
+                if(i.boardParams.titleText || i.boardParams.btnText) arr["name"] = i.boardParams.titleText || i.boardParams.btnText || ''
+                if(type == 2 && i.materialParams.advIdVideo[0].advGrpId){
+                  arr["helpType"] = "1"
+                  arr["itemId"] = ""
+                }
+                $.list.push(arr)
+              }
+            }
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve();
+      }
+    })
+  })
+}
 function jdSign(fn,body) {
   return new Promise((resolve) => {
     let url = {
@@ -393,7 +520,7 @@ function getPostRequest(url,body) {
 }
 
 async function getUA(){
-  $.UA = `jdapp;iPhone;10.1.4;13.1.2;${randomString(40)};network/wifi;model/iPhone8,1;addressid/2308460611;appBuild/167814;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 13_1_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1`
+  $.UA = `jdapp;iPhone;10.2.2;13.1.2;${randomString(40)};M/5.0;network/wifi;ADID/;model/iPhone8,1;addressid/2308460611;appBuild/167863;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 13_1_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1;`
 }
 function randomString(e) {
   e = e || 32;
