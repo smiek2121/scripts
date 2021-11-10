@@ -94,6 +94,8 @@ async function run() {
     }
     // 寻宝
     await XBDetail()
+    // 加速卡
+    await GetProp()
     // 故事会
     await StoryInfo()
     // 建筑升级
@@ -105,7 +107,7 @@ async function run() {
     // 捡垃圾
     await pickshell(1)
     // 热气球接客
-    await service(serviceNum)
+    // await service(serviceNum)
     // 倒垃圾
     await RubbishOper()
     // 导游
@@ -167,6 +169,82 @@ async function XBDetail(){
     }
   }catch (e) {
     $.logErr(e);
+  }
+}
+// 加速卡任务
+async function GetProp(){
+  try{
+    console.log('\n加速卡任务')
+    await $.wait(2000)
+    $.propTask = await taskGet(`story/GetPropTask`, '_cfd_t,bizCode,dwEnv,ptag,source,strZone', '&ptag=')
+    if($.propTask && $.propTask.Data && $.propTask.Data.TaskList){
+      for(let t of $.propTask.Data.TaskList || []){
+        if([9,11].includes(t.dwPointType)) continue
+        let res = ''
+        if(t.dwCompleteNum < t.dwTargetNum){
+          res = await taskGet('DoTask2', '_cfd_t,bizCode,configExtra,dwEnv,ptag,source,strZone,taskId', `&ptag=&taskId=${t.ddwTaskId}&configExtra=`)
+          if (res.ret === 0) {
+            console.log(`[${t.strTaskName}]加速卡任务完成`)
+          } else {
+            console.log(`[${t.strTaskName}]加速卡任务失败`, res)
+            await $.wait(2000)
+            continue
+          }
+          await $.wait(2000)
+        }
+        if(t.dwAwardStatus == 2){
+          res = await taskGet('Award2', '_cfd_t,bizCode,dwEnv,ptag,source,strZone,taskId', `&ptag=&taskId=${t.ddwTaskId}`)
+          if (res.ret === 0) {
+            console.log(`[${t.strTaskName}]加速卡领取成功`)
+          } else {
+            console.log(`[${t.strTaskName}]加速卡领取失败`, res)
+            await $.wait(2000)
+            continue
+          }
+          await $.wait(2000)
+        }
+      }
+    }
+    await $.wait(2000)
+    $.propInfo = await taskGet(`user/GetPropCardCenterInfo`, '_cfd_t,bizCode,dwEnv,ptag,source,strZone', '&ptag=')
+    console.log('\n加速卡使用')
+    if($.propInfo && $.propInfo.cardInfo){
+      let flag = $.propInfo.cardInfo.dwWorkingType || 0
+      let res = ''
+      for (let card of $.propInfo.cardInfo.coincard || []) {
+        if(card.ddwCardTargetTm > 0 ) console.log(`[金币卡]结束时间:${$.time('yyyy-MM-dd HH:mm:ss',card.ddwCardTargetTm*1000)}`)
+        // if(flag == 1 || flag == 3) break
+        if (card.dwCardNums !== 0 && (flag == 0 || flag == 2)) {
+          res = await taskGet('user/UsePropCard', '_cfd_t,bizCode,dwCardType,dwEnv,ptag,source,strCardTypeIndex,strZone', `&ptag=&dwCardType=1&strCardTypeIndex=${encodeURIComponent(card.strCardTypeIndex)}`)
+          if (res.iRet === 0) {
+            console.log(`[${card.strCardName}]金币卡使用成功`)
+            if(res.ddwCardTargetTm > 0 ) console.log(`[金币卡]结束时间:${$.time('yyyy-MM-dd HH:mm:ss',res.ddwCardTargetTm*1000)}`)
+            flag += 1
+          } else {
+            console.log(`[${card.strCardName}]金币卡使用失败`, res)
+          }
+          await $.wait(2000)
+        }
+      }
+      for (let card of $.propInfo.cardInfo.richcard || []) {
+        if(card.ddwCardTargetTm > 0 ) console.log(`[财富卡]结束时间:${$.time('yyyy-MM-dd HH:mm:ss',card.ddwCardTargetTm*1000)}`)
+        // if(flag == 2 || flag == 3) break
+        if (card.dwCardNums !== 0 && (flag == 0 || flag == 1)) {
+          res = await taskGet('user/UsePropCard', '_cfd_t,bizCode,dwCardType,dwEnv,ptag,source,strCardTypeIndex,strZone', `&ptag=&dwCardType=2&strCardTypeIndex=${encodeURIComponent(card.strCardTypeIndex)}`)
+          if (res.iRet === 0) {
+            console.log(`[${card.strCardName}]财富卡使用成功`)
+            if(res.ddwCardTargetTm > 0 ) console.log(`[财富卡]结束时间:${$.time('yyyy-MM-dd HH:mm:ss',res.ddwCardTargetTm*1000)}`)
+            flag += 2
+          } else {
+            console.log(`[${card.strCardName}]财富卡使用失败`, res)
+          }
+          await $.wait(2000)
+        }
+      }
+
+    }
+  }catch (e) {
+    console.log(e);
   }
 }
 // 故事会
@@ -566,7 +644,7 @@ async function Pearl(){
   try{
     await $.wait(2000)
     $.ComposeGameState = await taskGet(`user/ComposePearlState`, '', '&dwGetType=0')
-    console.log(`\n当前有${$.ComposeGameState.dwCurProgress}个月饼${$.ComposeGameState.ddwVirHb && ' '+$.ComposeGameState.ddwVirHb/100+"红包" || ''}`)
+    console.log(`\n当前有${$.ComposeGameState.dwCurProgress}个珍珠${$.ComposeGameState.ddwVirHb && ' '+$.ComposeGameState.ddwVirHb/100+"红包" || ''}`)
     if($.ComposeGameState.dayDrawInfo.dwIsDraw == 0){
       let res = ''
       res = await taskGet(`user/GetPearlDailyReward`, '__t,strZone', ``)
@@ -587,7 +665,7 @@ async function Pearl(){
     }
     if (($.ComposeGameState.dwCurProgress < 8 || true) && $.ComposeGameState.strDT) {
       let b = 1
-      console.log(`合月饼${b}次 `)
+      console.log(`合珍珠${b}次 `)
       // b = 8-$.ComposeGameState.dwCurProgress
       for(i=1;b--;i++){
         let n = Math.ceil(Math.random()*12+12)
@@ -608,11 +686,11 @@ async function Pearl(){
             }
           }
         }
-        console.log("合成月饼")
+        console.log("合成珍珠")
         let strLT = ($.ComposeGameState.oPT || [])[$.ComposeGameState.ddwCurTime % ($.ComposeGameState.oPT || []).length]
         let res = await taskGet(`user/ComposePearlAddProcess`, '__t,strBT,strLT,strZone', `&strBT=${$.ComposeGameState.strDT}&strLT=${strLT}`)
         if(res && res.iRet == 0){
-          console.log(`合成成功:${res.ddwAwardHb && '获得'+res.ddwAwardHb/100+"红包 " || ''}当前有${res.dwCurProgress}个月饼${res.ddwVirHb && ' '+res.ddwVirHb/100+"红包" || ''}`)
+          console.log(`合成成功:${res.ddwAwardHb && '获得'+res.ddwAwardHb/100+"红包 " || ''}当前有${res.dwCurProgress}个珍珠${res.ddwVirHb && ' '+res.ddwVirHb/100+"红包" || ''}`)
         }else{
           console.log(JSON.stringify(res))
         }
@@ -623,7 +701,7 @@ async function Pearl(){
       if (i.dwIsAward == 0 && $.ComposeGameState.dwCurProgress >= i.dwCurStageEndCnt) {
         await $.wait(2000)
         let res = await taskGet(`user/ComposeGameAward`, '__t,dwCurStageEndCnt,strZone', `&dwCurStageEndCnt=${i.dwCurStageEndCnt}`)
-        await printRes(res,'月饼领奖')
+        await printRes(res,'珍珠领奖')
       }
     }
   }catch (e) {
@@ -729,8 +807,8 @@ async function UserTask(){
           await $.wait(1000)
         }
         if(item.dateType == 2){
-          if(item.completedTimes < item.targetTimes && ![6,7,8,9,10].includes(item.orderId)){
-            if(item.taskName.indexOf('捡贝壳') >-1 || item.taskName.indexOf('赚京币任务') >-1) continue
+          if(item.completedTimes < item.targetTimes && ![7,8,9,10].includes(item.orderId)){
+            if(item.taskName.indexOf('捡贝壳') >-1 || item.taskName.indexOf('赚京币任务') >-1 || item.taskName.indexOf('升级') >-1) continue
             let b = (item.targetTimes-item.completedTimes)
             for(i=1;b--;i++){
               console.log(`第${i}次`)
@@ -863,6 +941,15 @@ function taskGet(type, stk, additional){
 function getGetRequest(type, stk='', additional='') {
   let url = ``;
   let dwEnv = 7;
+  let types = {
+    'GetUserTaskStatusList':['GetUserTaskStatusList','jxbfd'],
+    'Award':['Award','jxbfd'],
+    'Award1':['Award','jxbfddch'],
+    'Award2':['Award','jxbfdprop'],
+    'DoTask':['DoTask','jxbfd'],
+    'DoTask1':['DoTask','jxbfddch'],
+    'DoTask2':['DoTask','jxbfdprop'],
+  }
   if(type == 'user/ComposeGameState'){
     url = `https://m.jingxi.com/jxbfd/${type}?__t=${Date.now()}&strZone=jxbfd${additional}&_=${Date.now()}&sceneval=2`
   }else if(type == 'user/RealTmReport'){
@@ -873,16 +960,8 @@ function getGetRequest(type, stk='', additional='') {
     if(type == 'story/GetTakeAggrPages' || type == 'story/RewardSigns') dwEnv = 6
     if(type == 'story/GetTakeAggrPages') type = 'story/GetTakeAggrPage'
     if(type == 'story/RewardSigns') type = 'story/RewardSign'
-    if(type == 'GetUserTaskStatusList' || type == 'Award' || type == 'Award1' || type == 'DoTask' || type == 'DoTask1'){
-      let bizCode = 'jxbfd'
-      if(type == 'Award1'){
-        bizCode = 'jxbfddch'
-        type = 'Award'
-      }else if(type == 'DoTask1'){
-        bizCode = 'jxbfddch'
-        type = 'DoTask'
-      }
-      url = `https://m.jingxi.com/newtasksys/newtasksys_front/${type}?strZone=jxbfd&bizCode=${bizCode}&source=jxbfd&dwEnv=${dwEnv}&_cfd_t=${Date.now()}${additional}${stks}&_ste=1&_=${Date.now()}&sceneval=2&g_login_type=1`
+    if(types[type]){
+      url = `https://m.jingxi.com/newtasksys/newtasksys_front/${types[type][0]}?strZone=jxbfd&bizCode=${types[type][1]}&source=jxbfd&dwEnv=${dwEnv}&_cfd_t=${Date.now()}${additional}${stks}&_ste=1&_=${Date.now()}&sceneval=2&g_login_type=1`
     }else if(type == 'user/ComposeGameAddProcess' || type == 'user/ComposeGameAward'){
       url = `https://m.jingxi.com/jxbfd/${type}?strZone=jxbfd&__t=${Date.now()}${additional}${stks}&_=${Date.now()}&sceneval=2`;
     }else{
