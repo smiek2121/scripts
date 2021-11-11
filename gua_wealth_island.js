@@ -179,14 +179,14 @@ async function GetProp(){
     $.propTask = await taskGet(`story/GetPropTask`, '_cfd_t,bizCode,dwEnv,ptag,source,strZone', '&ptag=')
     if($.propTask && $.propTask.Data && $.propTask.Data.TaskList){
       for(let t of $.propTask.Data.TaskList || []){
-        if([9,11].includes(t.dwPointType)) continue
         let res = ''
         if(t.dwCompleteNum < t.dwTargetNum){
+          if([9,11].includes(t.dwPointType)) continue
           res = await taskGet('DoTask2', '_cfd_t,bizCode,configExtra,dwEnv,ptag,source,strZone,taskId', `&ptag=&taskId=${t.ddwTaskId}&configExtra=`)
           if (res.ret === 0) {
             console.log(`[${t.strTaskName}]加速卡任务完成`)
           } else {
-            console.log(`[${t.strTaskName}]加速卡任务失败`, res)
+            console.log(`[${t.strTaskName}]加速卡任务失败`, $.toStr(res,res))
             await $.wait(2000)
             continue
           }
@@ -196,8 +196,16 @@ async function GetProp(){
           res = await taskGet('Award2', '_cfd_t,bizCode,dwEnv,ptag,source,strZone,taskId', `&ptag=&taskId=${t.ddwTaskId}`)
           if (res.ret === 0) {
             console.log(`[${t.strTaskName}]加速卡领取成功`)
+            if(res.data.prizeInfo){
+              let task = $.toObj(res.data.prizeInfo,res.data.prizeInfo)
+              let msg = []
+              for(let card of task.CardInfo.CardList || []){
+                msg.push(card.strCardName)
+              }
+              console.log(`获得[${msg.join(',')}]加速卡`)
+            }
           } else {
-            console.log(`[${t.strTaskName}]加速卡领取失败`, res)
+            console.log(`[${t.strTaskName}]加速卡领取失败`, $.toStr(res,res))
             await $.wait(2000)
             continue
           }
@@ -221,7 +229,7 @@ async function GetProp(){
             if(res.ddwCardTargetTm > 0 ) console.log(`[金币卡]结束时间:${$.time('yyyy-MM-dd HH:mm:ss',res.ddwCardTargetTm*1000)}`)
             flag += 1
           } else {
-            console.log(`[${card.strCardName}]金币卡使用失败`, res)
+            console.log(`[${card.strCardName}]金币卡使用失败`, $.toStr(res,res))
           }
           await $.wait(2000)
         }
@@ -236,7 +244,7 @@ async function GetProp(){
             if(res.ddwCardTargetTm > 0 ) console.log(`[财富卡]结束时间:${$.time('yyyy-MM-dd HH:mm:ss',res.ddwCardTargetTm*1000)}`)
             flag += 2
           } else {
-            console.log(`[${card.strCardName}]财富卡使用失败`, res)
+            console.log(`[${card.strCardName}]财富卡使用失败`, $.toStr(res,res))
           }
           await $.wait(2000)
         }
