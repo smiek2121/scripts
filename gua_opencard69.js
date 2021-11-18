@@ -505,12 +505,17 @@ async function dealReturn(type, data) {
             }else if(res.errorMessage){
               if(res.errorMessage.indexOf('火爆') >-1 ){
                 $.hotFlag = true
+              }else if(res.errorMessage.indexOf('未完成') > -1 || res.errorMessage.indexOf('擦肩') > -1){
+                $.runFalag = false
               }
               console.log(`${title || type} ${res.errorMessage || ''}`)
             }else{
               console.log(`${title || type} ${data}`)
             }
           }else if(res.errorMessage){
+            if(res.errorMessage.indexOf('未完成') > -1 || res.errorMessage.indexOf('擦肩') > -1){
+              $.runFalag = false
+            }
             console.log(`${title || type} ${res.errorMessage || ''}`)
           }else{
             console.log(`${title || type} ${data}`)
