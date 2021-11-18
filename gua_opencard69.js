@@ -193,21 +193,19 @@ async function run() {
           await joinShop()
           await takePostRequest('activity_load');
           await $.wait(parseInt(Math.random() * 3000 + 2000, 10))
-          if(!$.rewardBean) break
+          if(rewardBeanArr.includes(2)){
+            if(!$.rewardBean){
+              flag = 10
+              $.activityEnd = true
+              console.log('开卡成功，但没有京豆奖励')
+              break
+            } else flag = 11
+          }else {
+            flag = 2
+          }
           // break
         }
         $.joinVenderId = ''
-      }
-    }
-    if(flag == 4){
-      if(rewardBeanArr.includes(2)){
-        if(!$.rewardBean){
-          flag = 10
-          $.activityEnd = true
-          console.log('开卡成功，但没有京豆奖励')
-        } else flag = 11
-      }else {
-        flag = 2
       }
     }
     $.joinVenderId = ''
