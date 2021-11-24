@@ -399,19 +399,11 @@ function BarkNotify(text, desp, params = {}) {
 }
 
 function tgBotNotify(text, desp) {
-  // Markdown 格式需要转义 ['_','*','`','[']
-  // MarkdownV2 ['_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', ' -', '=', '|', '{', '}', '.', '!']
-  let arr = ['_','*','`','[']
-  for(let i of arr){
-    let s = "\\"+i
-    text = text.replace(new RegExp(s,'g'),'\\'+i)
-    desp = desp.replace(new RegExp(s,'g'),'\\'+i)
-  }
   return new Promise((resolve) => {
     if (TG_BOT_TOKEN && TG_USER_ID) {
       const options = {
         url: `https://${TG_API_HOST}/bot${TG_BOT_TOKEN}/sendMessage`,
-        body: `chat_id=${TG_USER_ID}&text=${text}\n\n${desp}&disable_web_page_preview=true&parse_mode=Markdown`,
+        body: `chat_id=${TG_USER_ID}&text=${text}\n\n${desp}&disable_web_page_preview=true`,
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
