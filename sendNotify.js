@@ -399,6 +399,14 @@ function BarkNotify(text, desp, params = {}) {
 }
 
 function tgBotNotify(text, desp) {
+  // Markdown 格式需要转义 ['_','*','`','[']
+  // MarkdownV2 ['_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', ' -', '=', '|', '{', '}', '.', '!']
+  let arr = ['_','*','`','[']
+  for(let i of arr){
+    let s = "\\"+i
+    text = text.replace(new RegExp(s,'g'),'\\'+i)
+    desp = desp.replace(new RegExp(s,'g'),'\\'+i)
+  }
   return new Promise((resolve) => {
     if (TG_BOT_TOKEN && TG_USER_ID) {
       const options = {
