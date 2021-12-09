@@ -359,7 +359,7 @@ async function takePostRequest(type) {
         break;
       case 'getShareRecord':
         url = `${domain}/joint/order/getHelpList`;
-        body = `activityId=${$.activityId}&pin=${encodeURIComponent($.Pin)}`
+        body = `activityId=${$.activityId}&pin=${encodeURIComponent($.Pin)}&actorUuid=${$.actorUuid}`
         break;
       case '抽奖':
         url = `${domain}/joint/order/draw`;
