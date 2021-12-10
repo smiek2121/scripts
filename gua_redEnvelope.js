@@ -23,8 +23,7 @@ if ($.isNode()) {
 rebateCodes = $.isNode() ? (process.env.gua_redEnvelope_rebateCodes ? process.env.gua_redEnvelope_rebateCodes : `${rebateCodes}`) : ($.getdata('gua_redEnvelope_rebateCodes') ? $.getdata('gua_redEnvelope_rebateCodes') : `${rebateCodes}`);
 let codeLsit = ['nLmoVvf']
 if(rebateCodes){
-  codeLsit = ['']
-  codeLsit.push(rebateCodes)
+  codeLsit = [`${rebateCodes}`]
 }
 $.code = codeLsit[random(0, codeLsit.length)];
 !(async () => {
