@@ -196,7 +196,7 @@ function Sign(i) {
               }
             }
           } else {
-            console.log(data)
+            console.log(`${turnTableId[i].name} ${data}`)
           }
         }
       } catch (e) {
