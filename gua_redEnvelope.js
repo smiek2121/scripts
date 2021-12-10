@@ -84,7 +84,6 @@ async function main() {
     let arr = getBody($.UA, $.url2);
     await getEid(arr);
     await getcouponUrl()
-    console.log($.couponUrl)
     if(!$.eid){
       $.eid = -1
     }
