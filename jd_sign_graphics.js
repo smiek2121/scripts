@@ -109,7 +109,7 @@ async function signRun() {
     }else{
       errorNum++;
     }
-    await $.wait(1000)
+    await $.wait(2000)
   }
 }
 
@@ -131,6 +131,7 @@ function Login(i) {
                 fp = arr.fp
                 await getEid(arr)
                 await Sign(i)
+                await $.wait(parseInt(Math.random() * 3000 + 5000, 10))
               } else if (data.hasSign === true) {
                 if(data.records && data.records[0]){
                   for(let i in data.records){
