@@ -27,11 +27,11 @@ All变量适用
 请求太频繁会被黑ip
 过10分钟再执行
 
-cron:30 1 17-31,1-3 12,1 *
+cron:30 1 18-31/2,1-3/2 12,1 *
 ============Quantumultx===============
 [task_local]
 #12.17~1.3 双旦寻宝 玩转大富翁
-0 1 17-31,1-3 12,1 * https://raw.githubusercontent.com/smiek2121/scripts/master/gua_opencard84.js, tag=12.17~1.3 双旦寻宝 玩转大富翁, enabled=true
+30 1 18-31/2,1-3/2 12,1 * https://raw.githubusercontent.com/smiek2121/scripts/master/gua_opencard84.js, tag=12.17~1.3 双旦寻宝 玩转大富翁, enabled=true
 
 */
 let guaopencard_addSku = "false"
