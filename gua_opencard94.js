@@ -230,6 +230,7 @@ async function run() {
     if($.drawCardNum && $.compositeCard+"" == "true"){
       let count = $.drawCardNum
       for(m=1;count--;m++){
+        if($.compositeCardNum > 0) break
         console.log(`第${m}次集卡`)
         await takePostRequest('集卡');
         await takePostRequest('getCardInfo');
