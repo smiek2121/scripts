@@ -177,7 +177,7 @@ function getCoupons(shareId = '',type = 1) {
   return new Promise(resolve => {
     let message = ''
     let opts = {
-      url: `https://api.m.jd.com/api?functionId=getCoupons&appid=u&_=${Date.now()}&loginType=2&body={%22actId%22:%22${$.actId}%22,%22unionActId%22:%2231137%22,%22unpl%22:%22%22,%22platform%22:4,%22unionShareId%22:%22${shareId}%22,%22d%22:%22${rebateCode}%22,%22eid%22:%22${$.eid}%22}&client=apple&clientVersion=8.3.6`,
+      url: `https://api.m.jd.com/api?functionId=getCoupons&appid=u&_=${Date.now()}&loginType=2&body={%22actId%22:%22${$.actId}%22,%22unionActId%22:%2231137%22,%22unpl%22:%22%22,%22platform%22:4,%22unionShareId%22:%22${shareId}%22,%22d%22:%22${rebateCode}%22,%22type%22:${type},%22eid%22:%22${$.eid}%22}&client=apple&clientVersion=8.3.6`,
       headers: {
         "Accept-Language": "zh-cn",
         "Accept-Encoding": "gzip, deflate, br",
@@ -236,8 +236,8 @@ function getCoupons(shareId = '',type = 1) {
               for(let i of res.data.groupInfo || []){
                 if(i.status == 2){
                   console.log(`助力满可以领取${i.info}元红包🧧`)
-                  // await $.wait(parseInt(Math.random() * 2000 + 2000, 10))
-                  // await getCoupons('',2)
+                  await $.wait(parseInt(Math.random() * 2000 + 2000, 10))
+                  await getCoupons('',2)
                 }
               }
             }
