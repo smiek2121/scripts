@@ -109,6 +109,10 @@ $.shareCodesArr = [];
         const res = await city_lotteryAward();//抽奖
         if (res && res > 0) {
           for (let i = 0; i < new Array(res).fill('').length; i++) {
+            if(i >= 10){
+              console.log('抽奖次数达10次，退出抽奖')
+              break
+            }
             await $.wait(1000)
             await city_lotteryAward();//抽奖
           }
