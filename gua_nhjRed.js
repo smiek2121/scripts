@@ -9,9 +9,18 @@ https://u.jd.com/SCLyQi4
 返利变量：gua_nhjRed_rebateCode，若需要返利给自己，请自己修改环境变量[gua_nhjRed_rebateCode]
 SCLyQi4换成自己的返利
 export gua_nhjRed_rebateCode="SCLyQi4"
+
+需要助力[火力值]的账号pin值
+如：【京东账号2】pin
+pin1换成对应的pin值 用,分开
+只助力2个 满了脚本自动从ck1开始替换未满的
+export gua_nhjRed_rebatePin="pin1,pin2"
+
+
 */
 
 let rebateCodes = 'SCLyQi4'
+let rebatePin = ''
 
 const $ = new Env('年货节红包');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
@@ -29,6 +38,8 @@ if ($.isNode()) {
 }
 rebateCodes = $.isNode() ? (process.env.gua_nhjRed_rebateCode ? process.env.gua_nhjRed_rebateCode : `${rebateCodes}`) : ($.getdata('gua_nhjRed_rebateCode') ? $.getdata('gua_nhjRed_rebateCode') : `${rebateCodes}`);
 
+rebatePin = $.isNode() ? (process.env.gua_nhjRed_rebatePin ? process.env.gua_nhjRed_rebatePin : `${rebatePin}`) : ($.getdata('gua_nhjRed_rebatePin') ? $.getdata('gua_nhjRed_rebatePin') : `${rebatePin}`);
+let rebatePinArr = rebatePin && rebatePin.split(',') || []
 rebateCode = rebateCodes
 message = ''
 newCookie = ''
@@ -56,18 +67,46 @@ let nowTime = new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*
   let pinUpdateTime = $.shareCodeArr["updateTime"] || ''
   $.shareCode = ''
   $.again = false
+  let getShare = false
   let timeH = $.time('H')
   if(Object.getOwnPropertyNames($.shareCodeArr).length > 0 && ($.shareCodeArr["updateTime"] && $.time('d',new Date($.shareCodeArr["updateTime"] || Date.now()).getTime()) == $.time('d')) && timeH != 20 && timeH != 0){
     $.shareCodeArr = {}
     $.shareCodeArr["flag"] = true
+    getShare = true
   }
   try{
-    for (let i = 0; i < cookiesArr.length; i++) {
+    for (let i = 0; i < cookiesArr.length && getShare; i++) {
       cookie = cookiesArr[i];
       if (cookie) {
         $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
+        if(rebatePinArr.length > 0 && rebatePinArr.indexOf($.UserName) == -1) continue
         $.index = i + 1;
-        if($.shareCodeArr[$.UserName]) continue
+        await getUA()
+        await run(1);
+        let n = 0
+        for(let s in $.shareCodeArr || {}){
+          if(s === 'flag' || s === 'updateTime') continue
+          if($.shareCodeArr[s]) n++
+        }
+        if($.endFlag || n >= 2) break
+      }
+    }
+  }catch(e){
+    console.log(e)
+  }
+  try{
+    for (let i = 0; i < cookiesArr.length && getShare; i++) {
+      cookie = cookiesArr[i];
+      if (cookie) {
+        let n = 0
+        for(let s in $.shareCodeArr || {}){
+          if(s === 'flag' || s === 'updateTime') continue
+          if($.shareCodeArr[s]) n++
+        }
+        if(n >= 2) break
+        $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
+        if(n >= 2 && rebatePinArr.length > 0 && $.rebatePinArr[$.UserName]) continue
+        $.index = i + 1;
         await getUA()
         await run(1);
         if($.endFlag) break
@@ -130,24 +169,31 @@ async function run(type = 0){
         $.eid = -1
       }
       if(type == 0){
-        // if(s == 0){
-        //   await getCoupons($.shareCode,1)
-        // }else{
-        //   await getCoupons('',1)
-        // }
         let n = 0
-        for(let i in shareCodeArr || {}){
-          if(i == $.UserName) continue
-          if(n == s) {
-            $.shareCode = shareCodeArr[i] || ''
-            if($.shareCode) console.log(`助力[${i}]`)
-            let res = await getCoupons($.shareCode,1)
-            if(res.indexOf('上限') > -1){
-              await $.wait(parseInt(Math.random() * 5000 + 3000, 10))
-              await getCoupons('',1)
+        if(Object.getOwnPropertyNames(shareCodeArr).length > s){
+          for(let i in shareCodeArr || {}){
+            if(i == $.UserName) {
+              $.flag = 1
+              continue
             }
+            if(n == s) {
+              $.flag = 0
+              $.shareCode = shareCodeArr[i] || ''
+              if($.shareCode) console.log(`助力[${i}]`)
+              let res = await getCoupons($.shareCode,1)
+              if(res.indexOf('上限') > -1){
+                await $.wait(parseInt(Math.random() * 5000 + 3000, 10))
+                await getCoupons('',1)
+              }
+            }
+            n++
           }
-          n++
+        }else{
+          let res = await getCoupons('',1)
+          if(res.indexOf('上限') > -1){
+            await $.wait(parseInt(Math.random() * 5000 + 3000, 10))
+            await getCoupons('',1)
+          }
         }
         if($.endFlag) break
       }else{
