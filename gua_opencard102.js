@@ -193,25 +193,25 @@ async function run() {
     }else{
       console.log('已全部开卡')
     }
-    if($.openCardScore1 == 1 && !$.outFlag){
-      $.startDraw = 1
-      flag = true
-      await takePostRequest('startDraw');
-      await $.wait(parseInt(Math.random() * 1000 + 3000, 10))
-    }
-    if($.openCardScore2 == 1 && !$.outFlag){
-      $.startDraw = 2
-      flag = true
-      await takePostRequest('startDraw');
-      await $.wait(parseInt(Math.random() * 1000 + 3000, 10))
-    }
+    // if($.openCardScore1 == 1 && !$.outFlag){
+    //   $.startDraw = 1
+    //   flag = true
+    //   await takePostRequest('startDraw');
+    //   await $.wait(parseInt(Math.random() * 1000 + 3000, 10))
+    // }
+    // if($.openCardScore2 == 1 && !$.outFlag){
+    //   $.startDraw = 2
+    //   flag = true
+    //   await takePostRequest('startDraw');
+    //   await $.wait(parseInt(Math.random() * 1000 + 3000, 10))
+    // }
     
-    if($.openCardScore3 == 1 && !$.outFlag){
-      $.startDraw = 3
-      flag = true
-      await takePostRequest('startDraw');
-      await $.wait(parseInt(Math.random() * 1000 + 3000, 10))
-    }
+    // if($.openCardScore3 == 1 && !$.outFlag){
+    //   $.startDraw = 3
+    //   flag = true
+    //   await takePostRequest('startDraw');
+    //   await $.wait(parseInt(Math.random() * 1000 + 3000, 10))
+    // }
     
     $.log("关注: " + $.followShop)
     if(!$.followShop && !$.outFlag){
