@@ -418,14 +418,9 @@ async function dealReturn(type, data) {
                 let value = 0
                 for(let i in res.data.list || []){
                   let item = res.data.list[i]
-                  if(item.awardDes == '20'){
-                    num++
-                    value = item.awardDes
-                  }else{
-                    console.log(`${item.awardName}`)
-                  }
+                  value += Number(item.awardDes)
                 }
-                if(num > 0) console.log(`邀请好友(${num}):${num*parseInt(value, 10) || 30}京豆`)
+                if(value > 0) console.log(`共获得${value}京豆\n无法判断奖励是否为邀请奖励，所以直接显示获得多少豆\n`)
               }else if(type == "missionInviteList"){
                 console.log(`邀请人数(${res.data.invitedLogList.total})`)
               }
