@@ -419,9 +419,15 @@ async function dealReturn(type, data) {
                 let value = 0
                 for(let i in res.data.list || []){
                   let item = res.data.list[i]
-                  value += Number(item.awardDes)
+                  if(item.awardDes == '20'){
+                    num++
+                    value = item.awardDes
+                  }else{
+                    if(type == "myAward") console.log(`${item.awardName}`)
+                  }
                 }
-                if(value > 0) console.log(`共获得${value}京豆\n无法判断奖励是否为邀请奖励，所以直接显示获得多少豆\n`)
+                if($.index == 1 || type == "myAwards") $.MAcount = num
+                if(num > 0 && type == "myAward") console.log(`邀请好友(${num}):${num*parseInt(value, 10) || 30}京豆`)
               }else if(type == "missionInviteList"){
                 console.log(`邀请人数(${res.data.invitedLogList.total})`)
               }
