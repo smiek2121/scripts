@@ -43,6 +43,7 @@ rebateCodes = $.isNode() ? (process.env.gua_nhjRed_rebateCode ? process.env.gua_
 rebatePin = $.isNode() ? (process.env.gua_nhjRed_rebatePin ? process.env.gua_nhjRed_rebatePin : `${rebatePin}`) : ($.getdata('gua_nhjRed_rebatePin') ? $.getdata('gua_nhjRed_rebatePin') : `${rebatePin}`);
 let rebatePinArr = rebatePin && rebatePin.split(',') || []
 rebateCode = rebateCodes
+console.log(rebateCodes)
 message = ''
 newCookie = ''
 resMsg = ''
@@ -155,6 +156,7 @@ async function run(type = 0){
     let s = 0
     let t = 0
     do{
+      rebateCode = rebateCodes
       if(t>2) s = 0
       $.flag = 0
       newCookie = ''
@@ -429,7 +431,6 @@ function getUrl1() {
 
 function getUrl() {
   return new Promise(resolve => {
-    if($.again == true) rebateCode = 'S'+'C'+'L'+'y'+'Q'+'i'+'4'
     const options = {
       url: `https://u.jd.com/${rebateCode}${$.shareCode && "?s="+$.shareCode || ""}`,
       followRedirect:false,
@@ -445,7 +446,6 @@ function getUrl() {
       } catch (e) {
         $.logErr(e, resp);
       } finally {
-        if($.again == true) $.again = false
         resolve(data);
       }
     })
