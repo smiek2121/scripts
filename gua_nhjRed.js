@@ -43,7 +43,6 @@ rebateCodes = $.isNode() ? (process.env.gua_nhjRed_rebateCode ? process.env.gua_
 rebatePin = $.isNode() ? (process.env.gua_nhjRed_rebatePin ? process.env.gua_nhjRed_rebatePin : `${rebatePin}`) : ($.getdata('gua_nhjRed_rebatePin') ? $.getdata('gua_nhjRed_rebatePin') : `${rebatePin}`);
 let rebatePinArr = rebatePin && rebatePin.split(',') || []
 rebateCode = rebateCodes
-console.log(rebateCodes)
 message = ''
 newCookie = ''
 resMsg = ''
@@ -152,6 +151,7 @@ let nowTime = new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*
 
 async function run(type = 0){
   try{
+    console.log(rebateCode)
     resMsg = ''
     let s = 0
     let t = 0
