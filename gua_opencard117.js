@@ -102,7 +102,7 @@ let activityCookie =''
   let s = Math.floor((Math.random()*10))
   let n = 0
   if(s >= 1 && s<= 4) n = Math.floor((Math.random()*shareUuidArr.length))
-  // if($.time("dd") == "06") $.shareUuid = shareUuidArr[n] ? shareUuidArr[n] : $.shareUuid
+  if($.time("dd") == "06") $.shareUuid = shareUuidArr[n] ? shareUuidArr[n] : $.shareUuid
 
   for (let i = 0; i < cookiesArr.length; i++) {
     cookie = cookiesArr[i];
