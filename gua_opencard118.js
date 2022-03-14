@@ -310,6 +310,7 @@ async function dealReturn(type, data) {
             $.helpStatus = res.data.helpStatus || ''
             $.openStatus = res.data.openStatus || ''
             $.assistCount = res.data.assistCount || 0
+            if(res.data.sendBeanNum) console.log(`获得${res.data.sendBeanNum}豆`)
           }else if(res.errorMessage){
             console.log(`${type} ${res.errorMessage || ''}`)
           }else{
