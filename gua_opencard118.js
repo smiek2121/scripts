@@ -122,12 +122,12 @@ async function run() {
       return
     }
     await getCk()
+    if (activityCookie == '') {
+      console.log(`获取cookie失败`); return;
+    }
     if($.activityEnd === true){
       console.log('活动结束')
       return
-    }
-    if (activityCookie == '') {
-      console.log(`获取cookie失败`); return;
     }
     if($.outFlag){
       console.log('此ip已被限制，请过10分钟后再执行脚本\n')
@@ -156,10 +156,13 @@ async function run() {
       console.log('开卡')
       $.joinVenderId = 1000410747
       await joinShop()
-      if($.errorJoinShop && $.errorJoinShop.indexOf('活动太火爆，请稍后再试') > -1){
+      if($.errorJoinShop.indexOf('活动太火爆，请稍后再试') > -1){
         console.log('重新开卡')
-        await $.wait(parseInt(Math.random() * 2000 + 2000, 10))
+        await $.wait(parseInt(Math.random() * 2000 + 3000, 10))
         await joinShop()
+      }
+      if($.errorJoinShop.indexOf('活动太火爆，请稍后再试') > -1){
+        console.log("开卡失败❌")
       }
       await takePostRequest('activityContent');
     }
@@ -305,6 +308,7 @@ async function dealReturn(type, data) {
           if(res.result && res.result === true){
             $.actorUuid = res.data.customerId || ''
             $.helpStatus = res.data.helpStatus || ''
+            $.openStatus = res.data.openStatus || ''
             $.assistCount = res.data.assistCount || 0
           }else if(res.errorMessage){
             console.log(`${type} ${res.errorMessage || ''}`)
