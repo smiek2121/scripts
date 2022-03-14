@@ -79,7 +79,7 @@ let activityCookie =''
     return;
   }
   $.activityId = "2203100041074702"
-  $.shareUuid = "76f9a4f1df2e42fd98c05997c0c9bc7d"
+  $.shareUuid = "0b040fd16d334886a60c9194ed39e156"
   console.log(`入口:\nhttps://lzkjdz-isv.isvjcloud.com/m/1000410747/99/${$.activityId}/?helpUuid=${$.shareUuid}`)
 
   for (let i = 0; i < cookiesArr.length; i++) {
