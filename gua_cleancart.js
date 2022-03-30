@@ -91,6 +91,9 @@ for (let i in productsArr) {
     console.log('脚本停止\n请添加环境变量[gua_cleancart_products]\n清空商品\n内容规则看脚本文件')
     return
   }
+  if(jdSignUrl.indexOf("://jd.smiek.tk/") > -1) {
+    return
+  }
   $.out = false
   for (let i = 0; i < cookiesArr.length; i++) {
     cookie = cookiesArr[i];
