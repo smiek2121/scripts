@@ -7,7 +7,7 @@
 默认：不执行 如需要请添加环境变量
 gua_cleancart_Run="true"
 gua_cleancart_SignUrl="" # 算法url
-Authorization="" # 算法url token 有则填
+gua_cleancart_Authorization="" # 算法url token 有则填
 
 ——————————————
 1.@&@ 前面加数字 指定账号pin
