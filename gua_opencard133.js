@@ -279,7 +279,7 @@ async function run() {
           await takePostRequest('集卡');
           await takePostRequest('集卡状态');
           await takePostRequest('getCardInfo');
-          if($.runFalag == false || $.compositeCardNum > 0 || [1,2,5].includes($.cardButtonStatus) == true) break
+          if($.runFalag == false || $.compositeCardNum > 0 || [2,3,5].includes($.cardButtonStatus) == true) break
           if(Number(count) <= 0) break
           if(m >= 10){
             console.log("集卡太多次，多余的次数请再执行脚本")
