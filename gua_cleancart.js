@@ -129,7 +129,7 @@ for (let i in productsArr) {
 async function run(){
   try{
     let msg = ''
-    let signBody = `{"ciphertype":5,"cipher":{"body":""},"ts":${parseInt(new Date().getTime()/1000)},"hdid":"","version":"1.0.3","appname":"com.360buy.jdmobile","ridx":-1}`
+    let signBody = `{"homeWishListUserFlag":"1","userType":"0","updateTag":true,"showPlusEntry":"2","hitNewUIStatus":"1","cvhv":"049591","cartuuid":"hjudwgohxzVu96krv/T6Hg==","adid":""}`
     let body = await jdSign('cartClearQuery', signBody)
     if($.out) return
     if(!body){
@@ -221,7 +221,10 @@ async function run(){
     if(msg){
       message += `【京东账号${$.index}】${$.nickName || $.UserName}\n${msg}\n`
     }
-    await $.wait(parseInt(Math.random() * 2000 + 2000, 10))
+    if(!$.out){
+      console.log('等待45秒')
+      await $.wait(parseInt(Math.random() * 2000 + 40000, 10))
+    }
   }catch(e){
     console.log(e)
   }
@@ -252,6 +255,9 @@ function jdApi(functionId,body) {
             if(res.mainTitle) console.log(res.mainTitle)
             if(res.resultCode == 0){
               resolve(res);
+            }else if (res.tips && res.tips.includes("正在努力加载")){
+              console.log("请求太快，ip被限制了")
+              $.out = true
             }
           }
         }
