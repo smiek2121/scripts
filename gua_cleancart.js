@@ -1,6 +1,6 @@
 /*
 清空购物车
-更新时间：2021-10-27
+更新时间：2022-05-26
 因其他脚本会加入商品到购物车，故此脚本用来清空购物车
 包括预售
 需要算法支持
@@ -129,7 +129,7 @@ for (let i in productsArr) {
 async function run(){
   try{
     let msg = ''
-    let signBody = `{"homeWishListUserFlag":"1","userType":"0","updateTag":true,"showPlusEntry":"2","hitNewUIStatus":"1","cvhv":"049591","cartuuid":"hjudwgohxzVu96krv/T6Hg==","adid":""}`
+    let signBody = `{"ciphertype":5,"cipher":{"body":""},"ts":${parseInt(new Date().getTime()/1000)},"hdid":"","version":"1.0.3","appname":"com.360buy.jdmobile","ridx":-1}`
     let body = await jdSign('cartClearQuery', signBody)
     if($.out) return
     if(!body){
