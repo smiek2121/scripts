@@ -1,11 +1,11 @@
 /*
   https://st.jingxi.com/fortune_island/index2.html
 
-  18 0,6-23/2 * * * https://raw.githubusercontent.com/smiek2121/scripts/master/gua_wealth_island.js 财富大陆
+  33 0,6-23/2 * * * https://raw.githubusercontent.com/smiek2121/scripts/master/gua_wealth_island.js 财富大陆
 
 */
 
-const $ = new Env('财富大陆');
+const $ = new Env('京喜财富岛');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 // const notify = $.isNode() ? require('./sendNotify') : '';
 CryptoScripts()
@@ -50,6 +50,7 @@ $.appId = 10032;
 我把它放在一个神奇的岛屿
 去找吧
 `)
+  $.pearlEnd = false
   await requestAlgo();
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
@@ -83,7 +84,7 @@ async function run() {
 
     if($.HomeInfo){
       $.InviteList.push($.HomeInfo.strMyShareId)
-      console.log(`等级:${$.HomeInfo.dwLandLvl} 当前金币:${$.HomeInfo.ddwCoinBalance} 当前财富:${$.HomeInfo.ddwRichBalance} 助力码:${$.HomeInfo.strMyShareId}`)
+      console.log(`等级:${$.HomeInfo.dwLandLvl} 当前金币:${addChineseUnit($.HomeInfo.ddwCoinBalance, 4)} 当前财富:${addChineseUnit($.HomeInfo.ddwRichBalance, 4)} 助力码:${$.HomeInfo.strMyShareId}`)
     }
     if($.LeadInfo && $.LeadInfo.dwLeadType == 2){
       await $.wait(2000)
@@ -113,7 +114,7 @@ async function run() {
     // 导游
     await Guide()
     // 撸珍珠
-    await Pearl()
+    if (!$.pearlEnd) await Pearl()
     // 牛牛任务
     await ActTask()
     // 日常任务、成就任务
@@ -151,7 +152,7 @@ async function XBDetail(){
           let res = await taskGet(`user/TreasureHunt`, '_cfd_t,bizCode,dwEnv,ptag,source,strIndex,strZone', `&strIndex=${k.strIndex}`)
           if(res && res.iRet == 0){
             if (res.AwardInfo.dwAwardType === 0) {
-              console.log(`${res.strAwardDesc}，获得 ${res.AwardInfo.ddwValue} 金币`)
+              console.log(`${res.strAwardDesc}，获得 ${addChineseUnit(res.AwardInfo.ddwValue, 4)} 金币`)
             } else if (res.AwardInfo.dwAwardType === 1) {
               console.log(`${res.strAwardDesc}，获得 ${res.AwardInfo.ddwValue} 财富`)
             } else {
@@ -351,7 +352,7 @@ async function StoryInfo(){
 async function buildList(){
   try{
     await $.wait(2000)
-    console.log(`\n升级房屋、收集金币\n(升级：需要当前金币大于升级金币的3.5倍)`)
+    console.log(`\n升级房屋、收集金币\n(升级：需要当前金币大于升级金币的2.5倍)`)
     if($.buildList){
       for(let i in $.buildList){
         let item = $.buildList[i]
@@ -369,18 +370,21 @@ async function buildList(){
         let stk= `_cfd_t,bizCode,dwEnv,ptag,source,strBuildIndex,strZone`
         let GetBuildInfo = await taskGet(`user/GetBuildInfo`, stk, additional)
         let msg = `\n[${title}] 当前等级:${item.dwLvl} 接待收入:${item.ddwOneceVistorAddCoin}/人 座位人数:${item.dwContain}`
-        if(GetBuildInfo) msg += `\n升级->需要金币:${GetBuildInfo.ddwNextLvlCostCoin} 获得财富:${GetBuildInfo.ddwLvlRich}`
+        if(GetBuildInfo) msg += `\n升级->需要金币:${addChineseUnit(GetBuildInfo.ddwNextLvlCostCoin, 4)} 获得财富:${GetBuildInfo.ddwLvlRich}`
         console.log(msg)
         await $.wait(1000)
         if(GetBuildInfo.dwCanLvlUp > 0){
-          console.log(`${item.dwLvl == 0 && '开启' || '升级'}${title}`)
           if(item.dwLvl == 0){
+            console.log(`开启${title}`)
             await taskGet(`user/createbuilding`, stk, additional)
+            await $.wait(2000)
           }else{
-            if(GetBuildInfo && GetBuildInfo.ddwNextLvlCostCoin * 3.5 < parseInt($.HomeInfo.ddwCoinBalance,10)){
+            if(GetBuildInfo && GetBuildInfo.ddwNextLvlCostCoin * 2.5 < parseInt($.HomeInfo.ddwCoinBalance,10)){
+              console.log(`升级${title}`)
               additional = `&strBuildIndex=${GetBuildInfo.strBuildIndex}&ddwCostCoin=${GetBuildInfo.ddwNextLvlCostCoin}`
               stk = `_cfd_t,bizCode,ddwCostCoin,dwEnv,ptag,source,strBuildIndex,strZone`
               let update = await taskGet(`user/BuildLvlUp`, stk, additional)
+              $.HomeInfo.ddwCoinBalance -= GetBuildInfo.ddwNextLvlCostCoin
               if(update && update.story && update.story.strToken){
                 await $.wait(Number(update.story.dwWaitTriTime) * 1000)
                 await $.wait(1000)
@@ -388,15 +392,16 @@ async function buildList(){
                 stk = `_cfd_t,bizCode,dwEnv,ptag,source,strBuildIndex,strZone`
                 // await taskGet(`story/QueryUserStory`, stk, additional)
               }
+              await $.wait(2000)
             }
           }
-          await $.wait(2000)
         }
         additional = `&strBuildIndex=${GetBuildInfo.strBuildIndex}&dwType=1`
         stk = `_cfd_t,bizCode,dwEnv,dwType,ptag,source,strBuildIndex,strZone`
         let CollectCoin = await taskGet(`user/CollectCoin`, stk, additional)
         if(CollectCoin && CollectCoin.ddwCoinBalance){
-          console.log(`收集金币:${CollectCoin.ddwCoin} 当前剩余:${CollectCoin.ddwCoinBalance}`)
+          console.log(`收集金币:${addChineseUnit(CollectCoin.ddwCoin, 4)} 当前剩余:${addChineseUnit(CollectCoin.ddwCoinBalance, 4)}`)
+          $.HomeInfo.ddwCoinBalance = CollectCoin.ddwCoinBalance
           await $.wait(Number(CollectCoin.story.dwWaitTriTime) * 1000)
           additional= `&strToken=${CollectCoin.story.strToken}&ddwTriTime=${CollectCoin.story.ddwTriTime}`
           stk = `_cfd_t,bizCode,dwEnv,ptag,source,strBuildIndex,strZone`
@@ -652,6 +657,12 @@ async function Pearl(){
   try{
     await $.wait(2000)
     $.ComposeGameState = await taskGet(`user/ComposePearlState`, '', '&dwGetType=0')
+    if (!$.ComposeGameState) return
+    if ($.ComposeGameState.iRet == "2240" || $.ComposeGameState.sErrMsg.indexOf("暂未开放") > -1) {
+      console.log("\n撸珍珠活动未开放")
+      $.pearlEnd = true
+      return
+    }
     console.log(`\n当前有${$.ComposeGameState.dwCurProgress}个珍珠${$.ComposeGameState.ddwVirHb && ' '+$.ComposeGameState.ddwVirHb/100+"红包" || ''}`)
     if($.ComposeGameState.dayDrawInfo.dwIsDraw == 0){
       let res = ''
@@ -743,7 +754,7 @@ async function ActTask(){
               res.data.prizeInfo = $.toObj(res.data.prizeInfo)
             }
             if(res.data.prizeInfo.ddwCoin || res.data.prizeInfo.ddwMoney){
-              console.log(`${item.strTaskName} 领取奖励:${res.data.prizeInfo.ddwCoin && res.data.prizeInfo.ddwCoin+'金币' || ''} ${res.data.prizeInfo.ddwMoney && res.data.prizeInfo.ddwMoney+'财富' || ''}`)
+              console.log(`${item.strTaskName} 领取奖励:${res.data.prizeInfo.ddwCoin && addChineseUnit(res.data.prizeInfo.ddwCoin, 4)+'金币' || ''} ${res.data.prizeInfo.ddwMoney && res.data.prizeInfo.ddwMoney+'财富' || ''}`)
             }else{
               console.log(`${item.strTaskName} 领取奖励:`, JSON.stringify(res))
             }
@@ -759,7 +770,7 @@ async function ActTask(){
             // 热气球接客
             await service(b)
             await $.wait((Number(item.dwLookTime) * 1000) || 1000)
-          }else if(item.dwPointType == 301){
+          }else if([15,16,301].includes(item.dwPointType)){
             await $.wait((Number(item.dwLookTime) * 1000) || 1000)
             res = await taskGet('DoTask1', '_cfd_t,bizCode,configExtra,dwEnv,ptag,source,strZone,taskId', `&ptag=&taskId=${item.ddwTaskId}&configExtra=`)
           }
@@ -769,8 +780,8 @@ async function ActTask(){
             if(res.data.prizeInfo){
               res.data.prizeInfo = $.toObj(res.data.prizeInfo)
             }
-            if(res.data.prizeInfo.ddwCoin || res.data.prizeInfo.ddwMoney){
-              console.log(`${item.strTaskName} 领取奖励:${res.data.prizeInfo.ddwCoin && res.data.prizeInfo.ddwCoin+'金币' || ''} ${res.data.prizeInfo.ddwMoney && res.data.prizeInfo.ddwMoney+'财富' || ''}`)
+            if(res.data.prizeInfo.ddwCoin || res.data.prizeInfo.ddwMoney || res.data.prizeInfo.strPrizeName){
+              console.log(`${item.strTaskName} 领取奖励:${res.data.prizeInfo.ddwCoin && ' '+addChineseUnit(res.data.prizeInfo.ddwCoin, 4)+'金币' || ''}${res.data.prizeInfo.ddwMoney && ' '+res.data.prizeInfo.ddwMoney+'财富' || ''}${res.data.prizeInfo.strPrizeName && ' '+res.data.prizeInfo.strPrizeName+'红包' || ''}`)
             }else{
               console.log(`${item.strTaskName} 领取奖励:`, JSON.stringify(res))
             }
@@ -793,7 +804,7 @@ async function UserTask(){
     let res = ''
     $.task = await taskGet(`GetUserTaskStatusList`, '_cfd_t,bizCode,dwEnv,ptag,source,strZone,taskId', '&ptag=&taskId=0')
     if($.task && $.task.data && $.task.data.userTaskStatusList){
-        console.log(`\n日常任务、成就任务`)
+      console.log(`\n日常任务、成就任务`)
       for(let i in $.task.data.userTaskStatusList){
         let item = $.task.data.userTaskStatusList[i]
         if(item.awardStatus != 2 && item.completedTimes === item.targetTimes) continue
@@ -805,7 +816,7 @@ async function UserTask(){
               res.data.prizeInfo = $.toObj(res.data.prizeInfo)
             }
             if(res.data.prizeInfo.ddwCoin || res.data.prizeInfo.ddwMoney || res.data.prizeInfo.strPrizeName){
-              console.log(`${item.taskName} 领取奖励:${res.data.prizeInfo.ddwCoin && ' '+res.data.prizeInfo.ddwCoin+'金币' || ''}${res.data.prizeInfo.ddwMoney && ' '+res.data.prizeInfo.ddwMoney+'财富' || ''}${res.data.prizeInfo.strPrizeName && ' '+res.data.prizeInfo.strPrizeName+'红包' || ''}`)
+              console.log(`${item.taskName} 领取奖励:${res.data.prizeInfo.ddwCoin && ' '+addChineseUnit(res.data.prizeInfo.ddwCoin, 4)+'金币' || ''}${res.data.prizeInfo.ddwMoney && ' '+res.data.prizeInfo.ddwMoney+'财富' || ''}${res.data.prizeInfo.strPrizeName && ' '+res.data.prizeInfo.strPrizeName+'红包' || ''}`)
             }else{
               console.log(`${item.taskName} 领取奖励:`, JSON.stringify(res))
             }
@@ -815,7 +826,7 @@ async function UserTask(){
           await $.wait(1000)
         }
         if(item.dateType == 2){
-          if(item.completedTimes < item.targetTimes && ![7,8,9,10].includes(item.orderId)){
+          if(item.completedTimes < item.targetTimes && ![7,8,9,10].includes(item.orderId) && ![20].includes(item.taskType)){
             if(item.taskName.indexOf('捡贝壳') >-1 || item.taskName.indexOf('赚京币任务') >-1 || item.taskName.indexOf('升级') >-1) continue
             let b = (item.targetTimes-item.completedTimes)
             for(i=1;b--;i++){
@@ -829,7 +840,7 @@ async function UserTask(){
                 res.data.prizeInfo = $.toObj(res.data.prizeInfo)
               }
               if(res.data.prizeInfo.ddwCoin || res.data.prizeInfo.ddwMoney || res.data.prizeInfo.strPrizeName){
-                console.log(`${item.taskName} 领取奖励:${res.data.prizeInfo.ddwCoin && ' '+res.data.prizeInfo.ddwCoin+'金币' || ''}${res.data.prizeInfo.ddwMoney && ' '+res.data.prizeInfo.ddwMoney+'财富' || ''}${res.data.prizeInfo.strPrizeName && ' '+res.data.prizeInfo.strPrizeName+'红包' || ''}`)
+                console.log(`${item.taskName} 领取奖励:${res.data.prizeInfo.ddwCoin && ' '+addChineseUnit(res.data.prizeInfo.ddwCoin, 4)+'金币' || ''}${res.data.prizeInfo.ddwMoney && ' '+res.data.prizeInfo.ddwMoney+'财富' || ''}${res.data.prizeInfo.strPrizeName && ' '+res.data.prizeInfo.strPrizeName+'红包' || ''}`)
               }else{
                 console.log(`${item.taskName} 领取奖励:`, JSON.stringify(res))
               }
@@ -858,7 +869,7 @@ function printRes(res, msg=''){
       result = res.Data
     }
     if(result.ddwCoin || result.ddwMoney || result.strPrizeName || result.StagePrizeInfo && result.StagePrizeInfo.strPrizeName){
-      console.log(`${msg}获得:${result.ddwCoin && ' '+result.ddwCoin+'金币' || ''}${result.ddwMoney && ' '+result.ddwMoney+'财富' || ''}${result.strPrizeName && ' '+result.strPrizeName+'红包' || ''}${result.StagePrizeInfo && result.StagePrizeInfo.strPrizeName && ' '+result.StagePrizeInfo.strPrizeName || ''}`)
+      console.log(`${msg}获得:${result.ddwCoin && ' '+addChineseUnit(result.ddwCoin, 4)+'金币' || ''}${result.ddwMoney && ' '+result.ddwMoney+'财富' || ''}${result.strPrizeName && ' '+result.strPrizeName+'红包' || ''}${result.StagePrizeInfo && result.StagePrizeInfo.strPrizeName && ' '+result.StagePrizeInfo.strPrizeName || ''}`)
     }else if(result.Prize){
       console.log(`${msg}获得: ${result.Prize.strPrizeName && '优惠券 '+result.Prize.strPrizeName || ''}`)
     }else if(res && res.sErrMsg){
@@ -984,7 +995,7 @@ function getGetRequest(type, stk='', additional='') {
       "Accept-Encoding": "gzip, deflate, br",
       "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
       "Connection": "keep-alive",
-      'Cookie': $.cookie,
+      'Cookie': `cid=4;${$.cookie}`,
       'Host': 'm.jingxi.com',
       "Referer": "https://st.jingxi.com/",
       "User-Agent": UA,
@@ -1002,7 +1013,7 @@ function biz(contents){
         "Accept-Encoding": "gzip, deflate, br",
         "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
         "Connection": "keep-alive",
-        'Cookie': $.cookie,
+        'Cookie': `cid=4;${$.cookie}`,
         'Host': 'm.jingxi.com',
         "Referer": "https://st.jingxi.com/",
         "User-Agent": UA,
@@ -1296,6 +1307,69 @@ function timeFn(dateBegin) {
   seconds = seconds < 10 ? '0'+ seconds : seconds
   var timeFn = hours + ":" + minutes + ":" + seconds;
   return timeFn;
+}
+
+/** 
+ * 为数字加上单位：万或亿 
+ * 
+ * 例如： 
+ * 1000.01 => 1000.01 
+ * 10000 => 1万 
+ * 99000 => 9.9万 
+ * 566000 => 56.6万 
+ * 5660000 => 566万 
+ * 44440000 => 4444万 
+ * 11111000 => 1111.1万 
+ * 444400000 => 4.44亿 
+ * 40000000,00000000,00000000 => 4000万亿亿 
+ * 4,00000000,00000000,00000000 => 4亿亿亿 
+ * 
+ * @param {number} number 输入数字. 
+ * @param {number} decimalDigit 小数点后最多位数，默认为2 
+ * @return {string} 加上单位后的数字 
+ */ 
+
+ function addChineseUnit(number, decimalDigit) {
+  decimalDigit = decimalDigit == null ? 2 : decimalDigit 
+  var integer = Math.floor(number) 
+  var digit = getDigit(integer) 
+  // ['个', '十', '百', '千', '万', '十万', '百万', '千万']; 
+  var unit = [] 
+  if (digit > 3) { 
+      var multiple = Math.floor(digit / 8) 
+      if (multiple >= 1) { 
+          var tmp = Math.round(integer / Math.pow(10, 8 * multiple)) 
+          unit.push(addWan(tmp, number, 8 * multiple, decimalDigit)) 
+          for (var i = 0; i < multiple; i++) { 
+              unit.push('亿') 
+          } 
+          return unit.join('') 
+      } else { 
+          return addWan(integer, number, 0, decimalDigit) 
+      } 
+  } else { 
+      return number 
+  } 
+}
+function addWan(integer, number, mutiple, decimalDigit) {
+  var digit = getDigit(integer) 
+  if (digit > 3) { 
+      var remainder = digit % 8 
+      if (remainder >= 5) { // ‘十万’、‘百万’、‘千万’显示为‘万’ 
+          remainder = 4 
+      } 
+      return Math.round(number / Math.pow(10, remainder + mutiple - decimalDigit)) / Math.pow(10, decimalDigit) + '万' 
+  } else { 
+      return Math.round(number / Math.pow(10, mutiple - decimalDigit)) / Math.pow(10, decimalDigit) 
+  } 
+}
+function getDigit(integer) { 
+  var digit = -1 
+  while (integer >= 1) { 
+      digit++ 
+      integer = integer / 10 
+  } 
+  return digit 
 }
 
 function jsonParse(str) {
