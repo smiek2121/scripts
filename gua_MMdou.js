@@ -67,7 +67,7 @@ async function run() {
   try{
     $.taskList = [];
     await takePostRequest('beanTaskList')
-    await takePostRequest('morningGetBean')
+    // await takePostRequest('morningGetBean')
     console.log(`做任务\n`);
     if($.viewAppHome && $.viewAppHome.takenTask == false){
       $.IconDoTaskFlag = 0
