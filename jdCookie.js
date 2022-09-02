@@ -30,3 +30,6 @@ for (let i = 0; i < CookieJDs.length; i++) {
   const index = (i + 1 === 1) ? '' : (i + 1);
   exports['CookieJD' + index] = CookieJDs[i].trim();
 }
+
+// 获取到cookie后屏蔽 使其他脚本引用时 获取不到环境变量[JD_COOKIE]
+process.env.JD_COOKIE = ''
