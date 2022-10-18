@@ -6,7 +6,11 @@ https://prodev.m.jd.com/mall/active/MSDaBeg4A2zfi2jhGnqcQAykze3/index.html
 自己定时每1、2小时跑一次
 脚本没有兑换京豆
 
-8 8 8 * *
+cron:8 8 8 * *
+============Quantumultx===============
+[task_local]
+#京东新百货大楼
+8 8 8 * * https://raw.githubusercontent.com/smiek2121/scripts/master/gua_xbh.js, tag=京东新百货大楼, enabled=true
 const $ = new Env('京东新百货大楼')
 */
 
