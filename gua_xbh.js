@@ -6,6 +6,7 @@ https://prodev.m.jd.com/mall/active/MSDaBeg4A2zfi2jhGnqcQAykze3/index.html
 自己定时每1、2小时跑一次
 脚本没有兑换京豆
 
+8 8 8 * *
 const $ = new Env('京东新百货大楼')
 */
 
