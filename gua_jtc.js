@@ -5,7 +5,6 @@ const notify = $.isNode() ? require('./sendNotify') : ''
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : ''
 //IOS等用户直接用NobyDa的jd cookie
-$.CryptoJS = require('crypto-js')
 
 let cookiesArr = [], cookie = '', message = '', messageTitle = '', messageBottom = ''
 
@@ -302,8 +301,7 @@ function getPostRequest(url, body, headers = '', method = "POST") {
 }
 
 async function getUA() {
-    $.UUID = $.CryptoJS.SHA1($.UserName).toString()
-    $.UA = `jdapp;iPhone;10.1.4;13.1.2;${$.UUID};network/wifi;model/iPhone8,1;addressid/;appBuild/167814;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 13_1_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1`
+    $.UA = `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36`
 }
 
 function delhtml(text){
