@@ -1,6 +1,6 @@
 
 
-const $ = new Env('京东调研问卷-京洞察')
+const $ = new Env('京东调研问卷 京洞察')
 const notify = $.isNode() ? require('./sendNotify') : ''
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : ''
@@ -45,9 +45,9 @@ if ($.isNode()) {
                 continue
             }
             await run()
-            // break
         }
     }
+    await showMsg()
 
 })()
     .catch((e) => $.logErr(e))
@@ -81,6 +81,19 @@ async function run() {
     } catch (e) {
         console.log(e)
     }
+}
+
+function showMsg() {
+    return new Promise(async resolve => {
+        console.log('\n运行完毕')
+        if(message){
+            $.msg($.name, '', `${message}`)
+            if ($.isNode()){
+                // await notify.sendNotify(`${$.name}`, `${message}`)
+            }
+        }
+        resolve()
+    })
 }
 
 async function takePostRequest(type) {
