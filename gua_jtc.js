@@ -60,8 +60,20 @@ async function run() {
         $.sid = ''
         await takePostRequest('有奖问答列表');
         if($.surveyList.length > 0){
+            let n = 1
             for(let s of $.surveyList){
-                console.log(`${s.title} ${s.subTitle} ${s.answerUrl}`)
+                console.log(`${n}、【${s.title}】 ${s.subTitle}\n${s.answerUrl}\n`)
+                message += `【账号${$.index}】${$.UserName}\n${n}、【${s.title}】 ${s.subTitle}\n${s.answerUrl}\n`
+                $.answerUrl = s.answerUrl
+                $.survey_id = ''
+                $.short_code = ''
+                await takePostRequest('有奖问答页面');
+                // console.log($.survey_id,$.short_code)
+                if($.survey_id && $.short_code){
+                    await takePostRequest('有奖问答题目');
+                    console.log()
+                }
+                n++
             }
         }else{
             console.log("无任何信息")
@@ -93,6 +105,29 @@ async function takePostRequest(type) {
                 "Cookie": $.cookie,
                 "Origin": `https://prodev.m.jd.com`,
                 "Referer": `https://prodev.m.jd.com/mall/active/2TADa7HkFatzGyeNG6KWZFyh96wM/index.html`,
+                "User-Agent": $.UA
+            }
+            break;
+        case '有奖问答页面':
+            url = $.answerUrl;
+            method = 'GET'
+            headers = {
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                "Accept-Encoding": "gzip, deflate, br",
+                "Accept-Language": "zh-cn",
+                "Cookie": $.cookie,
+                "User-Agent": $.UA
+            }
+            break;
+        case '有奖问答题目':
+            url = `https://answer.jd.com/answer/getSurveyDetail?surveyId=${$.survey_id}&shortCode=${$.short_code}`;
+            method = 'GET'
+            headers = {
+                "Accept": "application/json, text/plain, */*",
+                "Accept-Encoding": "gzip, deflate, br",
+                "Accept-Language": "zh-cn",
+                "Cookie": $.cookie,
+                "Referer": $.answerUrl,
                 "User-Agent": $.UA
             }
             break;
@@ -147,6 +182,37 @@ async function dealReturn(type, data) {
                     }
                 } else {
                     console.log(`${type}-> ${data}`);
+                }
+                break;
+            case '有奖问答页面':
+                // console.log(data)
+                try{
+                    $.survey_id = data.match(/id="?survey-id"? value="?([^>]+)"?/)[1]
+                } catch(e){}
+                if(!$.survey_id){
+                    try{
+                        $.survey_id = data.match(/surveyId: ?['"]([^'"]+)['"]/)[1]
+                    } catch(e){}
+                }
+                try{
+                    $.short_code = data.match(/id="?short-code"? value="?([^>]+)"?/)[1]
+                } catch(e){}
+                break;
+            case '有奖问答题目':
+                // console.log(data)
+                let index1 = []
+                try{
+                    index1 = res.messages.jsonStr.pages
+                } catch(e){}
+                for(let i of index1){
+                    for(let q of i.questions){
+                        let arr = []
+                        for(let o in q.options){
+                            let arr1 = q.options[o]
+                            if(arr1.goto == '-2') arr.push(delhtml(arr1.text))
+                        }
+                        if(arr.length > 0) console.log("题目："+delhtml(q.title)+"\n\t不要选："+arr.join("\n\t\t\t\t"))
+                    }
                 }
                 break;
             default:
@@ -231,6 +297,10 @@ function getPostRequest(url, body, headers = '', method = "POST") {
 async function getUA() {
     $.UUID = $.CryptoJS.SHA1($.UserName).toString()
     $.UA = `jdapp;iPhone;10.1.4;13.1.2;${$.UUID};network/wifi;model/iPhone8,1;addressid/;appBuild/167814;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 13_1_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1`
+}
+
+function delhtml(text){
+    return text && text.replace(/<\/?[\w \-"=:(),;+]+>/g,'').trim() || text
 }
 
 function jsonParse(str) {
