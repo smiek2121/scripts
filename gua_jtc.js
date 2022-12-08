@@ -54,10 +54,22 @@ if ($.isNode()) {
     .finally(() => $.done())
 
 
+function showMsg() {
+    return new Promise(async resolve => {
+        console.log('\n运行完毕')
+        if(message){
+            $.msg($.name, '', `${message}`)
+            if ($.isNode()){
+                // await notify.sendNotify(`${$.name}`, `${message}`)
+            }
+        }
+        resolve()
+    })
+}
+
 async function run() {
     try {
         $.surveyList = []
-        $.sid = ''
         await takePostRequest('有奖问答列表');
         if($.surveyList.length > 0){
             let n = 1
@@ -83,29 +95,11 @@ async function run() {
     }
 }
 
-function showMsg() {
-    return new Promise(async resolve => {
-        console.log('\n运行完毕')
-        if(message){
-            $.msg($.name, '', `${message}`)
-            if ($.isNode()){
-                // await notify.sendNotify(`${$.name}`, `${message}`)
-            }
-        }
-        resolve()
-    })
-}
-
 async function takePostRequest(type) {
     if ($.outFlag) return
     let url = '';
     let body = ``;
     let method = 'POST'
-    let admJson = ''
-    let signBody = ''
-    let sign = ''
-    let fn = ''
-    let jdck = false
     let headers = ''
     switch (type) {
         case '有奖问答列表':
@@ -172,7 +166,7 @@ async function dealReturn(type, data) {
     try {
         if (type != 'accessLogWithAD' || type != 'drawContent') {
             if (data) {
-                res = JSON.parse(data);
+                res = $.toObj(data,data);
             }
         }
     } catch (e) {
