@@ -217,7 +217,7 @@ async function dealReturn(type, data) {
                             let arr1 = q.options[o]
                             if(arr1.goto == '-2') arr.push(delhtml(arr1.text))
                         }
-                        if(arr.length > 0) console.log("题目："+delhtml(q.title)+"\n\t不要选："+arr.join("\n\t\t\t\t"))
+                        if(arr.length > 0) console.log("题目："+delhtml(q.title)+"\n  不要选："+arr.join("\n        "))
                     }
                 }
                 break;
