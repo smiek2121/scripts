@@ -452,11 +452,11 @@ function requireConfig() {
         //Node.js用户请在jdCookie.js处填写京东ck;
         let shareCodes = [];
         if ($.isNode()) {
-            if (process.env.CITY_SHARECODES) {
-                if (process.env.CITY_SHARECODES.indexOf('\n') > -1) {
-                    shareCodes = process.env.CITY_SHARECODES.split('\n');
+            if (process.env.GUA_CITY_SHARECODES) {
+                if (process.env.GUA_CITY_SHARECODES.indexOf('\n') > -1) {
+                    shareCodes = process.env.GUA_CITY_SHARECODES.split('\n');
                 } else {
-                    shareCodes = process.env.CITY_SHARECODES.split('&');
+                    shareCodes = process.env.GUA_CITY_SHARECODES.split('&');
                 }
             }
         }
