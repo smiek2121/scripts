@@ -73,7 +73,7 @@ $.token = process.env.gua_log_token || token // token
     if (exchangeFlag + "" == "true") {
         console.log(`脚本自动抽奖`)
     } else {
-        console.log(`脚本不会自动抽奖，建议活动快结束开启，默认关闭(在10.29日自动开启抽奖),如需自动抽奖请设置环境变量  JD_CITY_EXCHANGE 为true`);
+        console.log(`脚本不会自动抽奖，建议活动快结束开启，默认关闭(在12.12日自动开启抽奖),如需自动抽奖请设置环境变量  JD_CITY_EXCHANGE 为true`);
     }
     $.inviteIdCodesArr = {}
     for (let i = 0; i < cookiesArr.length && true; i++) {
@@ -177,8 +177,9 @@ $.token = process.env.gua_log_token || token // token
                     }
                 }
             } else {
+                var times = new Date(new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*60*60*1000)
                 //默认10.29开启抽奖
-                if ((new Date().getMonth() + 1) === 10 && new Date().getDate() >= 29) {
+                if ($.time("MM", times) == "12" && $.time("dd", times) >= 12) {
                     const res = await city_lotteryAward();//抽奖
                     if (res && res > 0) {
                         for (let i = 0; i < new Array(res).fill('').length; i++) {
@@ -408,7 +409,7 @@ function readShareCode() {
     }
     console.log(`开始`)
     return new Promise(async resolve => {
-        $.get({ url: `${$.getSignUrl}/city`, 'timeout': 10000 }, (err, resp, data) => {
+        $.post({ url: `${$.getSignUrl}/city`, 'timeout': 10000 }, (err, resp, data) => {
             try {
                 if (err) {
                     console.log(`${JSON.stringify(err)}`)
