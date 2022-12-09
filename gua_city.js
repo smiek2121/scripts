@@ -51,6 +51,7 @@ $.token = process.env.gua_log_token || token // token
       console.log("填写log token[gua_log_token]")
       return
     }
+    console.log("TOKEN："+$.token.replace(/(.{5}).+(.{5})/, '$1***$2')+"\n")
     let urlArr = [
         // "http://127.0.0.1",
         "http://g.zxi7.cn",
