@@ -117,6 +117,7 @@ $.token = process.env.gua_log_token || token // token
             await shareCodesFormat()
             // continue
             $.joyytoken = ''
+            let isLogin = true
             $.joyytokenb = ($.getdata("jd_blog_joyytoken") && $.getdata("jd_blog_joyytoken")[$.UserName]) || ''
             for (let i = 0; i < $.newShareCodes.length && true; ++i) {
                 console.log(`\n开始助力 【${$.newShareCodes[i]}】`)
@@ -138,7 +139,14 @@ $.token = process.env.gua_log_token || token // token
                     // 助力次数耗尽 || 黑号
                     break
                 }
+                if(/火爆|登陆失败/.test($.toStr(res, res))){
+                    isLogin = false
+                    break
+                }
                 // await $.wait(3000)
+            }
+            if(!isLogin){
+                continue
             }
             let jd_blog_joyytoken = $.getdata("jd_blog_joyytoken") || {}
             if($.joyytokenb){
