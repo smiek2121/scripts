@@ -117,6 +117,8 @@ $.token = process.env.gua_log_token || token // token
             await shareCodesFormat()
             // continue
             $.joyytoken = ''
+            $.uid = ''
+            let noHelpCount = 0
             let isLogin = true
             $.joyytokenb = ($.getdata("jd_blog_joyytoken") && $.getdata("jd_blog_joyytoken")[$.UserName]) || ''
             for (let i = 0; i < $.newShareCodes.length && true; ++i) {
@@ -125,7 +127,8 @@ $.token = process.env.gua_log_token || token // token
                 if (res && res['data'] && res['data']['bizCode'] === 0) {
                     if(!res['data']['result']['toasts']){
                         console.log("\n\n无法助力")
-                        break
+                        noHelpCount++
+                        if(noHelpCount > 1) break
                     }
                     if (res['data']['result']['toasts'] && res['data']['result']['toasts'][0] && res['data']['result']['toasts'][0]['status'] === '3') {
                         console.log(`助力次数已耗尽，跳出`)
@@ -139,7 +142,9 @@ $.token = process.env.gua_log_token || token // token
                     // 助力次数耗尽 || 黑号
                     break
                 }
-                if(/火爆|登陆失败/.test($.toStr(res, res))){
+                if(/火爆/.test($.toStr(res, res))){
+                    break
+                }else if(/登陆失败/.test($.toStr(res, res))){
                     isLogin = false
                     break
                 }
@@ -196,8 +201,7 @@ $.token = process.env.gua_log_token || token // token
 function taskPostUrl(functionId, body) {
     return {
         url: `${JD_API_HOST}`,
-        // body: `functionId=${functionId}&body=${(JSON.stringify(body))}&client=wh5&clientVersion=1.0.0`,
-        body: `functionId=${functionId}&appid=signed_wh5&body=${(JSON.stringify(body))}&osVersion=14.3&screen=&networkType=wifi&timestamp=${new Date().getTime()}&d_brand=iPhone&d_model=iPhone12,1&client=iOS&clientVersion=10.2.0&partner=&build=167853&openudid=`,
+        body: `functionId=${functionId}&appid=signed_wh5&body=${(JSON.stringify(body))}&client=wh5&clientVersion=1.0.0`,
         headers: {
             'Cookie': cookie,
             'Connection': 'keep-alive',
@@ -268,14 +272,14 @@ async function getInfo(inviteId, flag = false) {
                                 for (let vo of data.data.result && data.data.result.popWindows || []) {
                                     if (vo && vo.type === "dailycash_second") {
                                         await receiveCash()
-                                        await $.wait(2 * 1000)
+                                        await $.wait(1 * 1000)
                                     }
                                 }
                                 for (let vo of data.data.result && data.data.result.mainInfos || []) {
                                     if (vo && vo.remaingAssistNum === 0 && vo.status === "1") {
                                         // console.log(vo.roundNum)
                                         await receiveCash(vo.roundNum)
-                                        await $.wait(2 * 1000)
+                                        await $.wait(1 * 1000)
                                     }
                                 }
                                 if (flag) {
