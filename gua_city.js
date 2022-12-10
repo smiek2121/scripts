@@ -75,6 +75,7 @@ $.token = process.env.gua_log_token || token // token
     } else {
         console.log(`脚本不会自动抽奖，建议活动快结束开启，默认关闭(在12.12日自动开启抽奖),如需自动抽奖请设置环境变量  JD_CITY_EXCHANGE 为true`);
     }
+    $.collectAllCount = 0
     $.inviteIdCodesArr = {}
     for (let i = 0; i < cookiesArr.length && true; i++) {
         if (cookiesArr[i]) {
@@ -83,8 +84,8 @@ $.token = process.env.gua_log_token || token // token
             $.index = i + 1;
             await getUA()
             await getInviteId();
-            if($.index >= 10) {
-                console.log("已获取超过10个")
+            if($.index >= (10 + $.collectAllCount)) {
+                console.log(`已获取超过10个`)
                 break
             }
         }
@@ -233,8 +234,13 @@ function getInviteId() {
                         if (data.code === 0) {
                             if (data.data && data['data']['bizCode'] === 0) {
                                 if (data.data && data.data.result.userActBaseInfo.inviteId) {
-                                    console.log(`\n【京东账号${$.index}（${$.UserName}）的${$.name}好友互助码】${data.data && data.data.result.userActBaseInfo.inviteId}\n`);
-                                    $.inviteIdCodesArr[$.index - 1] = data.data.result.userActBaseInfo.inviteId
+                                    if(data.data.result.userActBaseInfo.actStatus != 4){
+                                        console.log(`\n【京东账号${$.index}（${$.UserName}）的${$.name}好友互助码】${data.data && data.data.result.userActBaseInfo.inviteId}\n`);
+                                        $.inviteIdCodesArr[$.index - 1] = data.data.result.userActBaseInfo.inviteId
+                                    }else{
+                                        $.collectAllCount += 1
+                                        console.log(`\n【账号${$.index}（${$.UserName}）】已领完所有现金\n【好友互助码】${data.data && data.data.result.userActBaseInfo.inviteId}`)
+                                    }
                                 }
                             } else {
                                 console.log(`\n\n获取邀请码失败:${data.data.bizMsg}`)
