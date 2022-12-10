@@ -143,7 +143,7 @@ $.token = process.env.gua_log_token || token // token
                     // 助力次数耗尽 || 黑号
                     break
                 }
-                if(/火爆/.test($.toStr(res, res))){
+                if(/火爆|已有账号参与活动/.test($.toStr(res, res))){
                     break
                 }else if(/登陆失败/.test($.toStr(res, res))){
                     isLogin = false
@@ -213,7 +213,8 @@ function taskPostUrl(functionId, body) {
             'Accept': 'application/json, text/plain, */*',
             'Accept-Language': 'zh-cn',
             'Accept-Encoding': 'gzip, deflate, br',
-        }
+        },
+        timeout: 20000
     }
 }
 
