@@ -207,7 +207,7 @@ function taskPostUrl(functionId, body) {
         url: `${JD_API_HOST}`,
         body: `functionId=${functionId}&appid=signed_wh5&body=${(JSON.stringify(body))}&client=wh5&clientVersion=1.0.0`,
         headers: {
-            'Cookie': cookie,
+            'Cookie': ($.abcv ? $.abcv : "")+cookie,
             'Connection': 'keep-alive',
             'Content-Type': 'application/x-www-form-urlencoded',
             "User-Agent": $.UA,
