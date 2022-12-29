@@ -84,8 +84,9 @@ $.token = process.env.gua_log_token || token // token
             $.index = i + 1;
             await getUA()
             await getInviteId();
-            if($.index >= (10 + $.collectAllCount)) {
-                console.log(`已获取超过10个`)
+            await $.wait(3000)
+            if($.index >= (5 + $.collectAllCount)) {
+                console.log(`已获取超过5个`)
                 break
             }
         }
@@ -151,7 +152,7 @@ $.token = process.env.gua_log_token || token // token
                     isLogin = false
                     break
                 }
-                // await $.wait(3000)
+                await $.wait(3000)
             }
             if(!isLogin){
                 continue
