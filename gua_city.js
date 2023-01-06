@@ -187,8 +187,8 @@ $.token = process.env.gua_log_token || token // token
                 }
             } else {
                 var times = new Date(new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*60*60*1000)
-                //默认1.2开启抽奖
-                if ($.time("MM", times) == 1 && $.time("dd", times) >= 2) {
+                //默认1.9开启抽奖
+                if ($.time("MM", times) == 1 && $.time("dd", times) >= 9) {
                     const res = await city_lotteryAward();//抽奖
                     if (res && res > 0) {
                         for (let i = 0; i < new Array(res).fill('').length; i++) {
