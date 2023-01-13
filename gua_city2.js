@@ -3,7 +3,7 @@
 
 [task_local]
 #城城领现金
-0 0-23/5,22 6-13 1 * gua_city.js, tag=城城领现金, enabled=true
+0 0-23/5,22 6-15 1 * gua_city.js, tag=城城领现金, enabled=true
 
  */
 const $ = new Env('城城领现金');
