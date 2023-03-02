@@ -34,6 +34,7 @@ cron:
 #3.2~3.8 诠饰你的每一面
  https://raw.githubusercontent.com/smiek2121/scripts/master/gua_opencard283.js, tag=3.2~3.8 诠饰你的每一面, enabled=true
 
+ const $ = new Env('3.2~3.8 诠饰你的每一面 1')
 */
 let guaopencard_addSku = 'false' // 加购
 let guaopencard = 'false' // 执行
