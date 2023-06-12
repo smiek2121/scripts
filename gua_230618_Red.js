@@ -24,7 +24,7 @@ export JD_230618_Red_proxy='[{"host":"","port":"15320","auth":""},{"host":"10.0.
 */
 
 let rebateCodes = ''; // 返利变量
-let redTimes = 15000 // 等待时间单位毫秒
+let redTimes = 10000 // 等待时间单位毫秒
 let redCount = 0 // 领取次数
 let shareHelpCount = 0 // 助力次数 0=默认 1=1次满 2=2次满
 let proxyGetIpUrl = [ // 代理
