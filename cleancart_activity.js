@@ -32,6 +32,12 @@ async function clean(ck,url,goodsArr){
       let signBody = `{"homeWishListUserFlag":"1","userType":"0","updateTag":true,"showPlusEntry":"2","hitNewUIStatus":"1","cvhv":"049591","cartuuid":"hjudwgohxzVu96krv/T6Hg==","adid":""}`
       let body = await jdSign('cartClearQuery', signBody)
       if(out) return
+      let c = 0
+      while (!body && c <= 4) {
+        c++
+        body = await jdSign('cartClearQuery', signBody)
+        await $.wait(3000)
+      }
       if(!body){
         console.log('获取不到算法')
         return
@@ -90,9 +96,15 @@ async function clean(ck,url,goodsArr){
               if(operations.length == 0){
                 console.log(`清空${operNum}件商品|没有找到要清空的商品`)
               }else{
-                let clearBody = `{"homeWishListUserFlag":"1","userType":"0","updateTag":false,"showPlusEntry":"2","hitNewUIStatus":"1","cvhv":"049591","cartuuid":"hjudwgohxzVu96krv/T6Hg==","operations":${jsonStringify(operations)},"adid":"","coord_type":"0"}`
-                clearBody = await jdSign('cartClearRemove', clearBody)
-                if(out) return
+                let clearBodys = `{"homeWishListUserFlag":"1","userType":"0","updateTag":false,"showPlusEntry":"2","hitNewUIStatus":"1","cvhv":"049591","cartuuid":"hjudwgohxzVu96krv/T6Hg==","operations":${$.toStr(operations, operations)},"adid":"","coord_type":"0"}`
+                let clearBody = await jdSign('cartClearRemove', clearBodys)
+                if ($.out) return
+                let c = 0
+                while (!clearBody && c <= 4) {
+                  c++
+                  clearBody = await jdSign('cartClearRemove', clearBodys)
+                  await $.wait(3000)
+                }
                 if(!clearBody){
                   console.log('获取不到算法')
                 }else{
