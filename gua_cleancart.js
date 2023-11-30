@@ -126,7 +126,7 @@ for (let i in productsArr) {
 async function run() {
     try {
         let msg = ''
-        let signBody = `{"homeWishListUserFlag":"3","updateTag":false,"userType":"2","longitude":"","tabMenuValue":"","latitude":"","openudid":"","guideType":0,"addressId":"0","hasSearchParam":false,"hitNewUIStatus":"1","cvhv":"049717","cartuuid":"","degradation":0,"operations":[{"itemType":"1","skuUuid":"F2R2J2o127996122${Math.floor(Math.random()*1e9)}","itemId":"1000${Math.floor(Math.random()*1e8)}","useUuid":false}],"adid":"","coord_type":"0","configVersion":"247"}`
+        let signBody = `{"homeWishListUserFlag":"1","userType":"0","updateTag":false,"showPlusEntry":"2","hitNewUIStatus":"1","cvhv":"049591","cartuuid":"hjudwgohxzVu96krv/T6Hg==","operations":[{"itemType":"1","skuUuid":"F2R2J2o127996122${Math.floor(Math.random()*1e9)}","itemId":"1000${Math.floor(Math.random()*1e8)}","useUuid":false}],"adid":"","coord_type":"0"}`
         let body = await jdSign('cartClearRemove', signBody)
         if ($.out) return
         let c = 0
