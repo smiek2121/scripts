@@ -126,20 +126,20 @@ for (let i in productsArr) {
 async function run() {
     try {
         let msg = ''
-        let signBody = `{"homeWishListUserFlag":"1","userType":"0","updateTag":false,"showPlusEntry":"2","hitNewUIStatus":"1","cvhv":"049591","cartuuid":"hjudwgohxzVu96krv/T6Hg==","operations":[{"itemType":"1","skuUuid":"F2R2J2o127996122${Math.floor(Math.random()*1e9)}","itemId":"1000${Math.floor(Math.random()*1e8)}","useUuid":false}],"adid":"","coord_type":"0"}`
-        let body = await jdSign('cartClearRemove', signBody)
+        let signBody = `{"homeWishListUserFlag":"1","userType":"0","updateTag":true,"showPlusEntry":"2","hitNewUIStatus":"1","cvhv":"049591","cartuuid":"hjudwgohxzVu96krv/T6Hg==","adid":""}`
+        let body = await jdSign('cartClearQuery', signBody)
         if ($.out) return
         let c = 0
         while (!body && c <= 4) {
           c++
-          body = await jdSign('cartClearRemove', signBody)
+          body = await jdSign('cartClearQuery', signBody)
           await $.wait(3000)
         }
         if (!body) {
             console.log('获取不到算法')
             return
         }
-        let data = await jdApi('cartClearRemove', body)
+        let data = await jdApi('cartClearQuery', body)
         let res = $.toObj(data, data);
         if (typeof res == 'object' && res) {
             if (res.resultCode == 0) {
@@ -350,7 +350,8 @@ function taskPostUrl(url, body) {
             'Cookie': `${cookie}`,
             "Host": "api.m.jd.com",
             "User-Agent": "JD4iPhone/167853 (iPhone; iOS; Scale/2.00)",
-        }
+        },
+        secureProtocol: 'TLSv1_2_method',
     }
 }
 
