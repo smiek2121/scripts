@@ -197,7 +197,7 @@ async function dealReturn(type, res) {
     case 'beanHomeIconDoTask':
       if (data.data && (data.data.bizMsg || data.data.remindMsg)) {
         console.log((data.data.bizMsg || data.data.remindMsg));
-        if(data.data.growthResult && data.data.growthResult.sceneLevelConfig){
+        if(data.data.growthResult && data.data.growthResult.beanSent && data.data.growthResult.sceneLevelConfig){
           console.log(`获得:${data.data.growthResult.sceneLevelConfig.beanNum || 0}京豆`)
           $.bean += Number(data.data.growthResult.sceneLevelConfig.beanNum) || 0
           if(!data.data.growthResult.sceneLevelConfig.beanNum){
